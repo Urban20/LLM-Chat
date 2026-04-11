@@ -23,9 +23,11 @@ func main() {
 
 		prompt = input()
 
-		i, _ := prompts.Enviar_prompt(prompt)
+		if err := prompts.Comunicacion(prompt); err != nil {
 
-		fmt.Println(i.Response)
+			fmt.Println(err)
+			break
+		}
 
 	}
 
