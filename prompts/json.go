@@ -10,14 +10,6 @@ import (
 
 var url = "http://localhost:11434/api/chat"
 
-/*
-var prompt_base = `CONTEXTO: La IA debe funcionar obligatoriamente como una IA de alto rendimiento .
-Responde siempre como IA (nunca como humano) y de forma breve y no tan amplia.
-Sé preciso y orgánico; prioriza eficiencia.
-Si falta información pide solo lo imprescindible con preguntas puntuales.
-PROMPT: %s`
-*/
-
 func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
