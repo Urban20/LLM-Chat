@@ -7,8 +7,10 @@ import (
 	"os"
 )
 
+const LIMITE_MEMORIA = 50
+
 func input() string {
-	fmt.Print("Prompt >> ")
+	fmt.Print("\nPrompt >> ")
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	return sc.Text()
@@ -19,9 +21,21 @@ func main() {
 
 	var prompt string
 
-	for prompt != "salir" {
+	for {
 
 		prompt = input()
+
+		if prompt == "salir" {
+			fmt.Println("\nsaliendo ...")
+			return
+
+		}
+
+		if len(prompts.Memoria) >= LIMITE_MEMORIA {
+			fmt.Printf("Se llego al limite de la memoria: %d\n", LIMITE_MEMORIA)
+			prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
+
+		}
 
 		if err := prompts.Comunicacion(prompt); err != nil {
 

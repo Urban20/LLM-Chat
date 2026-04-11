@@ -10,18 +10,12 @@ import (
 
 var url = "http://localhost:11434/api/chat"
 
-/*
-var prompt_base = `CONTEXTO: La IA debe funcionar obligatoriamente como una IA de alto rendimiento .
-Responde siempre como IA (nunca como humano) y de forma breve y no tan amplia.
-Sé preciso y orgánico; prioriza eficiencia.
-Si falta información pide solo lo imprescindible con preguntas puntuales.
-PROMPT: %s`
-*/
-
 func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
 	var respuesta_str string
+
+	defer resp.Body.Close()
 
 	sc := bufio.NewScanner(resp.Body)
 
@@ -35,29 +29,18 @@ func recibir_prompt(resp *http.Response) error {
 		respuesta_str += json_respuesta.Message.Content
 	}
 
-	mensaje_IA := fmt.Sprintf(`{"role":"assistant",
-					"content":"%s"}`, respuesta_str)
+	guardar_en_memoria(respuesta_str)
 
-	Memoria = append(Memoria, mensaje_IA)
-
-	fmt.Print("\n")
 	return nil
 }
 
 func enviar_prompt(prompt string) (*http.Response, error) {
 
-	mensaje_usuario := fmt.Sprintf(`{
-       "role": "user",
-       "content": "%s"
-    }`, prompt)
-
-	Memoria = append(Memoria, mensaje_usuario)
+	guardar_en_memoria(prompt)
 
 	json_prompt_usuario := fmt.Sprintf(`{
    "model": "llama3",
-   "messages": [
-    %s
-  	]
+   "messages": [%s]
 	}`, strings.Join(Memoria, ","))
 
 	data := strings.NewReader(json_prompt_usuario)
