@@ -28,6 +28,7 @@ func main() {
 			fmt.Println(err)
 			break
 		}
+		//fmt.Println(prompts.Memoria)
 
 	}
 

@@ -1,5 +1,7 @@
 package prompts
 
+var Memoria = []string{}
+
 type Info struct {
 	Model      string  `json:"model"`
 	Created_at string  `json:"created_at"`

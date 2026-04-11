@@ -21,6 +21,7 @@ PROMPT: %s`
 func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
+	var respuesta_str string
 
 	sc := bufio.NewScanner(resp.Body)
 
@@ -31,22 +32,35 @@ func recibir_prompt(resp *http.Response) error {
 			return fmt.Errorf("error en unmarshall: %s", marsherr.Error())
 		}
 		fmt.Print(json_respuesta.Message.Content)
+		respuesta_str += json_respuesta.Message.Content
 	}
+
+	mensaje_IA := fmt.Sprintf(`{"role":"assistant",
+					"content":"%s"}`, respuesta_str)
+
+	Memoria = append(Memoria, mensaje_IA)
+
 	fmt.Print("\n")
 	return nil
 }
 
 func enviar_prompt(prompt string) (*http.Response, error) {
 
-	data := strings.NewReader(fmt.Sprintf(`{
-   "model": "llama3",
-   "messages": [
-    {
+	mensaje_usuario := fmt.Sprintf(`{
        "role": "user",
        "content": "%s"
-    }
+    }`, prompt)
+
+	Memoria = append(Memoria, mensaje_usuario)
+
+	json_prompt_usuario := fmt.Sprintf(`{
+   "model": "llama3",
+   "messages": [
+    %s
   	]
-	}`, prompt))
+	}`, strings.Join(Memoria, ","))
+
+	data := strings.NewReader(json_prompt_usuario)
 
 	resp, resperr := http.Post(url, "aplication/json", data)
 
