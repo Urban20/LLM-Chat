@@ -47,6 +47,11 @@ func enviar_prompt(prompt string) (*http.Response, error) {
 
 	resp, resperr := http.Post(url, "aplication/json", data)
 
+	if resp.StatusCode != http.StatusOK {
+
+		return resp, fmt.Errorf("hubo un problema con la solicitud post, codigo de estado: %d", resp.StatusCode)
+	}
+
 	if resperr != nil {
 
 		return resp, fmt.Errorf("error en post: %s", resperr.Error())

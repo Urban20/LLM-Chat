@@ -13,3 +13,6 @@ type message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
+
+// estas structs se usan unicamente para parsear el json
+// para comunicarse con la ia uso un mapa
