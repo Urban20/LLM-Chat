@@ -54,15 +54,14 @@ func intentar_reconexiones() {
 
 	for {
 
-		if conectado := modelo.Conectar(); conectado {
-
-			fmt.Println("Conexion exitosa!")
-			return
+		if err := modelo.Crear_modelo(); err != nil {
+			time.Sleep(time.Second * 3)
+			fmt.Println("reconectando...")
+			continue
 		}
 
-		time.Sleep(time.Second * 3)
-		fmt.Println("reconectando ...")
-
+		fmt.Println("exito!")
+		return
 	}
 
 }
@@ -75,11 +74,10 @@ func main() {
 		time.Sleep(time.Second * 3)
 		return
 	}
+	fmt.Println("Ollama detectado")
 
 	llama3.Iniciar_Ollama(ollama)
 	intentar_reconexiones()
-
-	modelo.Crear_modelo()
 
 	iniciar_prompts()
 

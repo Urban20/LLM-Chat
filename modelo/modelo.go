@@ -21,7 +21,7 @@ comporte el modelo de ia, si el modelo ya fue creado no se vuelve a crear
 
 */
 
-func Conectar() bool {
+func Conectar() bool { // TODO: quiza esta funcion me convenga eliminarla (ver que hago)
 
 	resp, resperr := http.Post(utilidades.Info_modelo, utilidades.Content_type, utilidades.Json_modelo)
 
@@ -34,9 +34,26 @@ func Conectar() bool {
 
 }
 
-func Crear_modelo() {
+func enviar_instruccion(instrucciones []byte) error {
 
-	fmt.Println("creando modelo...")
+	instruccion_post := strings.NewReader(string(instrucciones))
+
+	_, posterr := http.Post(utilidades.Api_modelo, utilidades.Content_type, instruccion_post)
+	if posterr != nil {
+		return posterr
+	}
+	return nil
+
+}
+
+func Crear_modelo() error {
+
+	/*
+		intenta crear comportamiento que va a tener la ia
+		por el momento se crea cada vez que se inicia la CLI
+	*/
+
+	fmt.Println("iniciando modelo...")
 
 	data := map[string]string{
 		"from":   utilidades.IA,
@@ -44,10 +61,16 @@ func Crear_modelo() {
 		"system": utilidades.Instruccion,
 	}
 
-	instrucciones, _ := json.Marshal(&data)
+	instrucciones, marsherr := json.Marshal(&data)
 
-	instruccion_post := strings.NewReader(string(instrucciones))
+	if marsherr != nil {
+		return marsherr
+	}
 
-	http.Post(utilidades.Api_modelo, utilidades.Content_type, instruccion_post)
+	if err := enviar_instruccion(instrucciones); err != nil {
+		return err
+	}
+
+	return nil
 
 }
