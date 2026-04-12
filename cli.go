@@ -4,6 +4,7 @@ import (
 	"Cli-ia/llama3"
 	"Cli-ia/modelo"
 	"Cli-ia/prompts"
+	"Cli-ia/web"
 	"bufio"
 	"fmt"
 	"os"
@@ -12,8 +13,8 @@ import (
 
 const LIMITE_MEMORIA = 100
 
-func input() string {
-	fmt.Print("\n\nPrompt >> ")
+func input(input string) string {
+	fmt.Printf("\n\n%s >> ", input)
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	return sc.Text()
@@ -24,30 +25,46 @@ func iniciar_prompts() {
 
 	for {
 
-		prompt := input()
+		prompt := input("Prompt")
 
-		if prompt == "salir" {
+		switch prompt {
+		case "salir":
+
 			fmt.Println("\nsaliendo ...")
 			time.Sleep(time.Second * 2)
 			return
 
+		case "url":
+
+			url := input("Url")
+			doc, weberr := web.Buscar(url)
+
+			if weberr != nil {
+				fmt.Println("hubo un problema al buscar la url: ", weberr)
+				continue
+			}
+			prompt = input("Prompt")
+			url_prompt := fmt.Sprintf("%s:\n %s", prompt, doc)
+			prompts.Comunicacion(url_prompt)
+
+		default:
+
+			if len(prompts.Memoria) >= LIMITE_MEMORIA {
+				fmt.Printf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
+				prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
+
+			}
+
+			if err := prompts.Comunicacion(prompt); err != nil {
+
+				fmt.Println(err)
+				break
+			}
+			//fmt.Println(prompts.Memoria)
+
 		}
-
-		if len(prompts.Memoria) >= LIMITE_MEMORIA {
-			fmt.Printf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
-			prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
-
-		}
-
-		if err := prompts.Comunicacion(prompt); err != nil {
-
-			fmt.Println(err)
-			break
-		}
-		//fmt.Println(prompts.Memoria)
 
 	}
-
 }
 
 func intentar_reconexiones() {
