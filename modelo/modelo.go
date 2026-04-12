@@ -12,27 +12,7 @@ import (
 en esta seccion voy a definir como quiero que se
 comporte el modelo de ia, si el modelo ya fue creado no se vuelve a crear
 
-
-{
-  "from": "gemma3",
-  "model": "alpaca",
-  "system": "You are Alpaca, a helpful AI assistant. You only answer with Emojis."
-}
-
 */
-
-func Conectar() bool { // TODO: quiza esta funcion me convenga eliminarla (ver que hago)
-
-	resp, resperr := http.Post(utilidades.Info_modelo, utilidades.Content_type, utilidades.Json_modelo)
-
-	if resperr != nil {
-		//fmt.Println(resperr)
-		return false
-	}
-
-	return resp.StatusCode == http.StatusOK
-
-}
 
 func enviar_instruccion(instrucciones []byte) error {
 
