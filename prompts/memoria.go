@@ -2,10 +2,10 @@ package prompts
 
 import "encoding/json"
 
-func guardar_en_memoria(prompt string) {
+func guardar_en_memoria(prompt, rol string) {
 
 	mensaje_usuario := map[string]string{
-		"role":    "user",
+		"role":    rol,
 		"content": prompt,
 	}
 

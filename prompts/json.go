@@ -29,14 +29,14 @@ func recibir_prompt(resp *http.Response) error {
 		respuesta_str += json_respuesta.Message.Content
 	}
 
-	guardar_en_memoria(respuesta_str)
+	guardar_en_memoria(respuesta_str, "assistant")
 
 	return nil
 }
 
 func enviar_prompt(prompt string) (*http.Response, error) {
 
-	guardar_en_memoria(prompt)
+	guardar_en_memoria(prompt, "user")
 
 	json_prompt_usuario := fmt.Sprintf(`{
    "model": "llama3",

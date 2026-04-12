@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const LIMITE_MEMORIA = 50
+const LIMITE_MEMORIA = 100
 
 func input() string {
 	fmt.Print("\nPrompt >> ")
@@ -32,7 +32,7 @@ func main() {
 		}
 
 		if len(prompts.Memoria) >= LIMITE_MEMORIA {
-			fmt.Printf("Se llego al limite de la memoria: %d\n", LIMITE_MEMORIA)
+			fmt.Printf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
 			prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
 
 		}
