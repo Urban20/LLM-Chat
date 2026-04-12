@@ -5,12 +5,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 )
 
 const LIMITE_MEMORIA = 100
 
 func input() string {
-	fmt.Print("\nPrompt >> ")
+	fmt.Print("\n\nPrompt >> ")
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	return sc.Text()
@@ -27,6 +28,7 @@ func main() {
 
 		if prompt == "salir" {
 			fmt.Println("\nsaliendo ...")
+			time.Sleep(time.Second * 2)
 			return
 
 		}

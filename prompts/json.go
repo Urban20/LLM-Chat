@@ -58,8 +58,6 @@ func enviar_prompt(prompt string) (*http.Response, error) {
 
 func Comunicacion(prompt string) error {
 
-	//prompt = strings.Replace(fmt.Sprintf(prompt_base, prompt), "\n", `\n`, -1)
-
 	resp, prompterr := enviar_prompt(prompt)
 
 	if prompterr != nil {
