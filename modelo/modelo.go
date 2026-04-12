@@ -21,28 +21,20 @@ comporte el modelo de ia, si el modelo ya fue creado no se vuelve a crear
 
 */
 
-func Modelo_existe() bool {
+func Conectar() bool {
 
-	info_modelo := strings.NewReader(fmt.Sprintf(`{"model":"%s"}`, strings.ReplaceAll(utilidades.Modelo, "\n", `\n`)))
-
-	resp, resperr := http.Post(utilidades.Info_modelo, utilidades.Content_type, info_modelo)
+	resp, resperr := http.Post(utilidades.Info_modelo, utilidades.Content_type, utilidades.Json_modelo)
 
 	if resperr != nil {
-		fmt.Println(resperr)
+		//fmt.Println(resperr)
 		return false
 	}
-	fmt.Println(resp.StatusCode)
 
 	return resp.StatusCode == http.StatusOK
 
 }
 
 func Crear_modelo() {
-
-	if Modelo_existe() {
-		fmt.Println("el modelo ya fue creado previamente")
-		return
-	}
 
 	fmt.Println("creando modelo...")
 

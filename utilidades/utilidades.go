@@ -1,6 +1,9 @@
 package utilidades
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 var Host = "localhost"
 var Puerto = 11434
@@ -16,3 +19,5 @@ var Instruccion = `Te comportas como un experto en programacion, tu vision es em
 					Sos una IA integrada a una herranmienta en linea de comandos`
 
 var Info_modelo = fmt.Sprintf("http://%s:%d/api/show", Host, Puerto)
+
+var Json_modelo = strings.NewReader(fmt.Sprintf(`{"model":"%s"}`, Modelo))

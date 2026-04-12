@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Cli-ia/llama3"
 	"Cli-ia/modelo"
 	"Cli-ia/prompts"
 	"bufio"
@@ -19,14 +20,11 @@ func input() string {
 
 }
 
-func main() {
-
-	var prompt string
-	modelo.Crear_modelo()
+func iniciar_prompts() {
 
 	for {
 
-		prompt = input()
+		prompt := input()
 
 		if prompt == "salir" {
 			fmt.Println("\nsaliendo ...")
@@ -49,5 +47,40 @@ func main() {
 		//fmt.Println(prompts.Memoria)
 
 	}
+
+}
+
+func intentar_reconexiones() {
+
+	for {
+
+		if conectado := modelo.Conectar(); conectado {
+
+			fmt.Println("Conexion exitosa!")
+			return
+		}
+
+		time.Sleep(time.Second * 3)
+		fmt.Println("reconectando ...")
+
+	}
+
+}
+
+func main() {
+
+	ollama, instalado := llama3.Ollama_instalado()
+
+	if !instalado {
+		time.Sleep(time.Second * 3)
+		return
+	}
+
+	llama3.Iniciar_Ollama(ollama)
+	intentar_reconexiones()
+
+	modelo.Crear_modelo()
+
+	iniciar_prompts()
 
 }
