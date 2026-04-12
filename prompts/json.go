@@ -1,14 +1,13 @@
 package prompts
 
 import (
+	"Cli-ia/utilidades"
 	"bufio"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 )
-
-var url = "http://localhost:11434/api/chat"
 
 func recibir_prompt(resp *http.Response) error {
 
@@ -39,13 +38,13 @@ func enviar_prompt(prompt string) (*http.Response, error) {
 	guardar_en_memoria(prompt, "user")
 
 	json_prompt_usuario := fmt.Sprintf(`{
-   "model": "llama3",
+   "model": "%s",
    "messages": [%s]
-	}`, strings.Join(Memoria, ","))
+	}`, utilidades.Modelo, strings.Join(Memoria, ","))
 
 	data := strings.NewReader(json_prompt_usuario)
 
-	resp, resperr := http.Post(url, "aplication/json", data)
+	resp, resperr := http.Post(utilidades.Api_chat, utilidades.Content_type, data)
 
 	if resp.StatusCode != http.StatusOK {
 

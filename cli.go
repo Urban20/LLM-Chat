@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Cli-ia/modelo"
 	"Cli-ia/prompts"
 	"bufio"
 	"fmt"
@@ -21,6 +22,7 @@ func input() string {
 func main() {
 
 	var prompt string
+	modelo.Crear_modelo()
 
 	for {
 
