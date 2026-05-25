@@ -1,4 +1,4 @@
-package llama3
+package ollama
 
 import (
 	"fmt"

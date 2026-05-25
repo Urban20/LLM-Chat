@@ -14,11 +14,11 @@ comporte el modelo de ia, si el modelo ya fue creado no se vuelve a crear
 
 */
 
-func enviar_instruccion(instrucciones []byte) error {
+func enviar_instruccion(instrucciones []byte, api_modelo, content_type string) error {
 
 	instruccion_post := strings.NewReader(string(instrucciones))
 
-	_, posterr := http.Post(utilidades.Api_modelo, utilidades.Content_type, instruccion_post)
+	_, posterr := http.Post(api_modelo, content_type, instruccion_post)
 	if posterr != nil {
 		return posterr
 	}
@@ -26,7 +26,7 @@ func enviar_instruccion(instrucciones []byte) error {
 
 }
 
-func Crear_modelo() error {
+func Crear_modelo(IA, modelo, api_modelo, content_type string) error {
 
 	/*
 		intenta crear comportamiento que va a tener la ia
@@ -36,8 +36,8 @@ func Crear_modelo() error {
 	fmt.Println("iniciando modelo...")
 
 	data := map[string]string{
-		"from":   utilidades.IA,
-		"model":  utilidades.Modelo,
+		"from":   IA,
+		"model":  modelo,
 		"system": utilidades.Instruccion,
 	}
 
@@ -47,7 +47,7 @@ func Crear_modelo() error {
 		return marsherr
 	}
 
-	if err := enviar_instruccion(instrucciones); err != nil {
+	if err := enviar_instruccion(instrucciones, api_modelo, content_type); err != nil {
 		return err
 	}
 

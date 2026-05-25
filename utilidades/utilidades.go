@@ -2,7 +2,6 @@ package utilidades
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/charmbracelet/glamour"
 )
@@ -16,17 +15,6 @@ func Imprimir_markdown(txt string) error {
 	fmt.Print(md)
 	return nil
 }
-
-var Host = "localhost"
-var Puerto = 11434
-var Api_chat = fmt.Sprintf("http://%s:%d/api/chat", Host, Puerto)
-
-var Api_modelo = fmt.Sprintf("http://%s:%d/api/create", Host, Puerto)
-var Content_type = "aplication/json"
-var IA = "llama3"
-var Modelo = "llama3-CLI"
-var Info_modelo = fmt.Sprintf("http://%s:%d/api/show", Host, Puerto)
-var Json_modelo = strings.NewReader(fmt.Sprintf(`{"model":"%s"}`, Modelo))
 
 var Instruccion = `[ROL]
 Eres un LLM (IA) de proposito general, por el momento no tienes acceso a la red
@@ -49,7 +37,6 @@ Eres un LLM (IA) de proposito general, por el momento no tienes acceso a la red
 
 
 [ESTILO DE RESPUESTA]
-- Comienzo : siempre comenzaras resaltando tu respuesta con "# LLM: [respuesta]"
 - Idioma: responderas en el idioma que utiliza el usuario a menos que se especifique un lenguaje concreto.
 - Tono: directo, sin relleno.
 - Estructura: responderas siempre en formato markdown teniendo en cuenta separadores.

@@ -27,14 +27,14 @@ func recibir_prompt(resp *http.Response) error {
 		return jsonerr
 	}
 
-	utilidades.Imprimir_markdown(json_respuesta.Message.Content)
+	utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content)
 
 	guardar_en_memoria(respuesta_str, "assistant")
 
 	return nil
 }
 
-func enviar_prompt(prompt string) (*http.Response, error) {
+func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Response, error) {
 
 	guardar_en_memoria(prompt, "user")
 
@@ -42,11 +42,11 @@ func enviar_prompt(prompt string) (*http.Response, error) {
    "model": "%s",
    "messages": [%s],
    "stream":false
-	}`, utilidades.Modelo, strings.Join(Memoria, ","))
+	}`, Modelo, strings.Join(Memoria, ","))
 
 	data := strings.NewReader(json_prompt_usuario)
 
-	resp, resperr := http.Post(utilidades.Api_chat, utilidades.Content_type, data)
+	resp, resperr := http.Post(Api_chat, Content_type, data)
 
 	if resp.StatusCode != http.StatusOK {
 
@@ -62,9 +62,9 @@ func enviar_prompt(prompt string) (*http.Response, error) {
 
 }
 
-func Comunicacion(prompt string) error {
+func Comunicacion(prompt, modelo, api_chat, content_type string) error {
 
-	resp, prompterr := enviar_prompt(prompt)
+	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type)
 
 	if prompterr != nil {
 
