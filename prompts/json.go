@@ -2,9 +2,9 @@ package prompts
 
 import (
 	"Cli-ia/utilidades"
-	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -16,17 +16,18 @@ func recibir_prompt(resp *http.Response) error {
 
 	defer resp.Body.Close()
 
-	sc := bufio.NewScanner(resp.Body)
+	b, berror := io.ReadAll(resp.Body)
 
-	for sc.Scan() {
-
-		if marsherr := json.Unmarshal(sc.Bytes(), &json_respuesta); marsherr != nil {
-
-			return fmt.Errorf("error en unmarshall: %s", marsherr.Error())
-		}
-		fmt.Print(json_respuesta.Message.Content)
-		respuesta_str += json_respuesta.Message.Content
+	if berror != nil {
+		return berror
 	}
+
+	if jsonerr := json.Unmarshal(b, &json_respuesta); jsonerr != nil {
+
+		return jsonerr
+	}
+
+	utilidades.Imprimir_markdown(json_respuesta.Message.Content)
 
 	guardar_en_memoria(respuesta_str, "assistant")
 
@@ -39,7 +40,8 @@ func enviar_prompt(prompt string) (*http.Response, error) {
 
 	json_prompt_usuario := fmt.Sprintf(`{
    "model": "%s",
-   "messages": [%s]
+   "messages": [%s],
+   "stream":false
 	}`, utilidades.Modelo, strings.Join(Memoria, ","))
 
 	data := strings.NewReader(json_prompt_usuario)
