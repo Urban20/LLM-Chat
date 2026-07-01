@@ -1,6 +1,6 @@
 package prompts
 
-var Memoria = []string{}
+// modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
 	Model      string  `json:"model"`

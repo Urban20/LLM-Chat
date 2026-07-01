@@ -3,6 +3,7 @@ package main
 import (
 	"Cli-ia/ollama"
 	"Cli-ia/prompts"
+	"Cli-ia/utilidades"
 	"bufio"
 	"flag"
 	"fmt"
@@ -44,9 +45,9 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 
 		default:
 
-			if len(prompts.Memoria) >= LIMITE_MEMORIA {
+			if len(utilidades.Memoria) >= LIMITE_MEMORIA {
 				fmt.Printf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
-				prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
+				utilidades.Memoria = utilidades.Memoria[:LIMITE_MEMORIA]
 
 			}
 

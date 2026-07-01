@@ -30,7 +30,7 @@ func recibir_prompt(resp *http.Response) error {
 
 	utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content)
 
-	guardar_en_memoria(respuesta_str, "LLM (IA)")
+	utilidades.Guardar_en_memoria(respuesta_str, "LLM (IA)")
 
 	return nil
 }
@@ -38,13 +38,13 @@ func recibir_prompt(resp *http.Response) error {
 // envio el prompt desde el usuario al LLM
 func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Response, error) {
 
-	guardar_en_memoria(prompt, "user")
+	utilidades.Guardar_en_memoria(prompt, "user")
 
 	json_prompt_usuario := fmt.Sprintf(`{
    "model": "%s",
    "messages": [%s],
    "stream":false
-	}`, Modelo, strings.Join(Memoria, ",")) // no puedo pasarlo a mapa y a json porque se pierde el formateo
+	}`, Modelo, strings.Join(utilidades.Memoria, ",")) // no puedo pasarlo a mapa y a json porque se pierde el formateo
 
 	data := strings.NewReader(json_prompt_usuario)
 
