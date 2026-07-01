@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 )
@@ -77,6 +78,18 @@ func main() {
 	if !instalado {
 		time.Sleep(time.Second * 3)
 		return
+	}
+
+	status := fmt.Sprintf("http://%s:%d/api/version", Host, Puerto)
+
+	resp, err := http.Get(status)
+
+	if err != nil || resp.StatusCode == 404 {
+
+		fmt.Println("servidor apagado o no disponible") // TODO: modificar
+
+		return
+
 	}
 
 	iniciar_prompts(IA_MODELO, Api_chat, Content_type)

@@ -14,8 +14,6 @@ func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
 
-	defer resp.Body.Close()
-
 	b, berror := io.ReadAll(resp.Body)
 
 	if berror != nil {
@@ -27,9 +25,14 @@ func recibir_prompt(resp *http.Response) error {
 		return jsonerr
 	}
 
-	utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content)
+	if mderr := utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content); mderr != nil {
+
+		return mderr
+	}
 
 	utilidades.Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
+
+	resp.Body.Close()
 
 	return nil
 }
@@ -49,14 +52,14 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Respons
 
 	resp, resperr := http.Post(Api_chat, Content_type, data)
 
+	if resperr != nil {
+
+		return resp, resperr
+	}
+
 	if resp.StatusCode != http.StatusOK {
 
 		return resp, fmt.Errorf("hubo un problema con la solicitud post, codigo de estado: %d", resp.StatusCode)
-	}
-
-	if resperr != nil {
-
-		return resp, fmt.Errorf("error en post: %s", resperr.Error())
 	}
 
 	return resp, nil
