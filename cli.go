@@ -1,9 +1,9 @@
 package main
 
 import (
-	consola "Cli-ia/ansi"
-	"Cli-ia/prompts"
-	"Cli-ia/utilidades"
+	consola "LLM-Chat/ansi"
+	"LLM-Chat/prompts"
+	"LLM-Chat/utilidades"
 	"bufio"
 	"flag"
 	"fmt"
@@ -11,6 +11,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/rvfet/rich-go"
 )
 
 const LIMITE_MEMORIA = 100
@@ -47,21 +49,21 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 		switch prompt {
 		case "salir":
 
-			fmt.Println("\nsaliendo ...")
+			rich.Info("\nsaliendo ...")
 			time.Sleep(time.Second * 2)
 			return
 
 		default:
 
 			if len(utilidades.Memoria) >= LIMITE_MEMORIA {
-				fmt.Printf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
+				rich.Warning("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
 				utilidades.Memoria = utilidades.Memoria[:LIMITE_MEMORIA]
 
 			}
 
 			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type); err != nil {
 
-				fmt.Println(err)
+				rich.Error(err)
 				break
 			}
 			//fmt.Println(prompts.Memoria)
@@ -74,7 +76,7 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 func main() {
 
 	if conserr != nil {
-		fmt.Printf("Problema al habilitar ansi: %v\n", conserr)
+		rich.Error("Problema al habilitar ansi: %v\n", conserr)
 		return
 	}
 
@@ -99,11 +101,13 @@ func main() {
 
 	if err != nil || resp.StatusCode == 404 {
 
-		fmt.Println("servidor apagado o no disponible") // TODO: modificar
+		rich.Error("servidor apagado o no disponible")
 
 		return
 
 	}
+
+	utilidades.Limpieza_rapida()
 
 	iniciar_prompts(IA_MODELO, Api_chat, Content_type)
 

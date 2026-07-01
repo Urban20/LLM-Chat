@@ -1,7 +1,7 @@
 package prompts
 
 import (
-	"Cli-ia/utilidades"
+	"LLM-Chat/utilidades"
 	"encoding/json"
 	"fmt"
 	"io"

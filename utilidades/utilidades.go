@@ -69,6 +69,13 @@ func Guardar_en_memoria(prompt, rol string) {
 
 }
 
+func Limpieza_rapida() {
+
+	fmt.Print("\033[2J")
+	fmt.Print("\033[H")
+
+}
+
 var estilos = `{
   "document": {
     "block_prefix": "\n",
