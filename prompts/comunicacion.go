@@ -13,7 +13,6 @@ import (
 func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
-	var respuesta_str string
 
 	defer resp.Body.Close()
 
@@ -30,7 +29,7 @@ func recibir_prompt(resp *http.Response) error {
 
 	utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content)
 
-	utilidades.Guardar_en_memoria(respuesta_str, "LLM (IA)")
+	utilidades.Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
 
 	return nil
 }
