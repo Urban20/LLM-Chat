@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -23,10 +24,12 @@ var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 
 func input(input string) string { // este input es provisorio, lo ideal es meter multilinea
-	fmt.Printf("\n\n%s >> ", input)
-	sc := bufio.NewScanner(os.Stdin)
-	sc.Scan()
-	return sc.Text()
+
+	fmt.Print("\n\n[presionar TAB + ENTER para enviar]")
+	fmt.Printf("\n\n%s :\n", input)
+	lector := bufio.NewReader(os.Stdin)
+	texto, _ := lector.ReadString('\t')
+	return strings.Trim(texto, "\t")
 
 }
 
