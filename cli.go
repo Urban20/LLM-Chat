@@ -25,10 +25,13 @@ var ia_selec = flag.String("modelo", IA_default, "modelo de ia a utilizar")
 var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 
-func input(input string) string { // este input es provisorio, lo ideal es meter multilinea
+func input(input string) string {
 
 	fmt.Print("\n\n[presionar TAB + ENTER para enviar]")
+
+	fmt.Print(utilidades.CELESTE_CLARO)
 	fmt.Printf("\n\n%s :\n", input)
+	fmt.Print(utilidades.RESET)
 	lector := bufio.NewReader(os.Stdin)
 	texto, _ := lector.ReadString('\t')
 	return strings.Trim(texto, "\t")

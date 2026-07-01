@@ -13,6 +13,12 @@ import (
 
 var Memoria = []string{}
 
+const (
+	AMARILLO      = "\033[43m"
+	RESET         = "\033[0m"
+	CELESTE_CLARO = "\033[38;2;125;255;216m"
+)
+
 func separador() {
 
 	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
