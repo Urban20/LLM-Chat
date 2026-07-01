@@ -1,7 +1,6 @@
 package main
 
 import (
-	"Cli-ia/ollama"
 	"Cli-ia/prompts"
 	"Cli-ia/utilidades"
 	"bufio"
@@ -73,7 +72,7 @@ func main() {
 
 	var Api_chat = fmt.Sprintf("http://%s:%d/api/chat", Host, Puerto)
 
-	instalado := ollama.Ollama_instalado()
+	instalado := utilidades.Ollama_instalado()
 
 	if !instalado {
 		time.Sleep(time.Second * 3)
