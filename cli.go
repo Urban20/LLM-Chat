@@ -21,7 +21,7 @@ var ia_selec = flag.String("modelo", IA_default, "modelo de ia a utilizar")
 var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 
-func input(input string) string {
+func input(input string) string { // este input es provisorio, lo ideal es meter multilinea
 	fmt.Printf("\n\n%s >> ", input)
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
@@ -32,7 +32,7 @@ func input(input string) string {
 func iniciar_prompts(modelo, api_chat, content_type string) {
 
 	for {
-
+		// TODO : quiza modifique esto
 		prompt := input("Prompt")
 
 		switch prompt {

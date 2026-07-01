@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response) error {
 
 	json_respuesta := Info{}
@@ -34,6 +35,7 @@ func recibir_prompt(resp *http.Response) error {
 	return nil
 }
 
+// envio el prompt desde el usuario al LLM
 func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Response, error) {
 
 	guardar_en_memoria(prompt, "user")
@@ -42,7 +44,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Respons
    "model": "%s",
    "messages": [%s],
    "stream":false
-	}`, Modelo, strings.Join(Memoria, ","))
+	}`, Modelo, strings.Join(Memoria, ",")) // no puedo pasarlo a mapa y a json porque se pierde el formateo
 
 	data := strings.NewReader(json_prompt_usuario)
 
@@ -62,6 +64,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Respons
 
 }
 
+// esta funcion se ocupa del envio y recepcion de los mensajes
 func Comunicacion(prompt, modelo, api_chat, content_type string) error {
 
 	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type)
