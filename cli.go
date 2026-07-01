@@ -1,6 +1,7 @@
 package main
 
 import (
+	consola "Cli-ia/ansi"
 	"Cli-ia/prompts"
 	"Cli-ia/utilidades"
 	"bufio"
@@ -18,6 +19,7 @@ var Host_default = "localhost"
 var Puerto_default = 11434
 var Content_type = "aplication/json"
 var IA_default = "llama3"
+var conserr = consola.Iniciar_ANSI()
 
 var ia_selec = flag.String("modelo", IA_default, "modelo de ia a utilizar")
 var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
@@ -67,6 +69,11 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 }
 
 func main() {
+
+	if conserr != nil {
+		fmt.Printf("Problema al habilitar ansi: %v\n", conserr)
+		return
+	}
 
 	flag.Parse()
 
