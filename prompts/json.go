@@ -29,7 +29,7 @@ func recibir_prompt(resp *http.Response) error {
 
 	utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content)
 
-	guardar_en_memoria(respuesta_str, "assistant")
+	guardar_en_memoria(respuesta_str, "LLM (IA)")
 
 	return nil
 }
