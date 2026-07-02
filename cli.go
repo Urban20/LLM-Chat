@@ -97,7 +97,7 @@ func main() {
 		return
 	}
 
-	status := fmt.Sprintf("http://%s:%d/api/version", Host, Puerto)
+	status := fmt.Sprintf("http://%s:%d/api/status", Host, Puerto)
 
 	resp, err := http.Get(status)
 
