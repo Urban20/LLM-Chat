@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,7 +22,7 @@ const LIMITE_MEMORIA = 100
 var Host_default = "localhost"
 var Puerto_default = 11434
 var Content_type = "aplication/json"
-var IA_default = "llama3"
+var IA_default = "qwen3:4b"
 var conserr = consola.Iniciar_ANSI()
 
 var ia_selec = flag.String("modelo", IA_default, "modelo de ia a utilizar")
@@ -29,7 +31,7 @@ var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha e
 
 func input(input string) string {
 
-	fmt.Print("\n\n[presionar TAB + ENTER para enviar]")
+	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", utilidades.GRIS_AZUL, utilidades.RESET)
 
 	fmt.Print(utilidades.CELESTE_CLARO)
 	fmt.Printf("\n\n%s :\n", input)
@@ -108,6 +110,16 @@ func main() {
 	}
 
 	utilidades.Limpieza_rapida()
+
+	contenido_box := map[string]string{
+
+		"Modelo selecionado": IA_MODELO,
+		"Host":               fmt.Sprintf("%s:%d", Host, Puerto),
+		"Limite de memoria":  strconv.Itoa(LIMITE_MEMORIA),
+		"Sistema operativo":  runtime.GOOS,
+	}
+	contenidos := utilidades.Formato_string_box(contenido_box)
+	utilidades.Box(contenidos...)
 
 	iniciar_prompts(IA_MODELO, Api_chat, Content_type)
 

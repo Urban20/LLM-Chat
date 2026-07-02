@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/pterm/pterm"
 	"golang.org/x/term"
 )
 
@@ -17,14 +18,16 @@ const (
 	AMARILLO      = "\033[43m"
 	RESET         = "\033[0m"
 	CELESTE_CLARO = "\033[38;2;125;255;216m"
+	GRIS_AZUL     = "\033[38;2;49;59;115m"
+	BLANCO        = "\033[47m"
 )
 
 func separador() {
 
 	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
-	fmt.Println("\033[47m")
+	fmt.Println(BLANCO)
 	fmt.Println(strings.Repeat(" ", x))
-	fmt.Println("\033[0m")
+	fmt.Println(RESET)
 
 }
 
@@ -69,10 +72,34 @@ func Guardar_en_memoria(prompt, rol string) {
 
 }
 
+func Box(msgs ...string) {
+
+	superficie := pterm.DefaultBox.WithHorizontalPadding(5).WithBottomPadding(1)
+
+	superficie.Println(strings.Join(msgs, "\n"))
+
+}
+
 func Limpieza_rapida() {
 
 	fmt.Print("\033[2J")
 	fmt.Print("\033[H")
+
+}
+
+func Formato_string_box(cuerpo map[string]string) []string {
+
+	var retorno []string
+
+	for clave, valor := range cuerpo {
+
+		elemento := CELESTE_CLARO + clave + RESET + " : " + valor
+
+		retorno = append(retorno, elemento)
+
+	}
+
+	return retorno
 
 }
 
