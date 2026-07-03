@@ -15,10 +15,10 @@ import (
 var Memoria = []string{}
 
 const (
-	AMARILLO      = "\033[43m"
+	AMARILLO      = "\033[0;33m"
 	RESET         = "\033[0m"
 	CELESTE_CLARO = "\033[38;2;125;255;216m"
-	GRIS_AZUL     = "\033[38;2;49;59;115m"
+	GRIS_AZUL     = "\033[38;2;90;112;176m"
 	BLANCO        = "\033[47m"
 )
 

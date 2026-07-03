@@ -2,6 +2,7 @@ package main
 
 import (
 	consola "LLM-Chat/ansi"
+	"LLM-Chat/menu"
 	"LLM-Chat/prompts"
 	"LLM-Chat/utilidades"
 	"bufio"
@@ -31,7 +32,7 @@ var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha e
 
 func input(input string) string {
 
-	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", utilidades.GRIS_AZUL, utilidades.RESET)
+	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", utilidades.AMARILLO, utilidades.RESET)
 
 	fmt.Print(utilidades.CELESTE_CLARO)
 	fmt.Printf("\n\n%s :\n", input)
@@ -44,21 +45,34 @@ func input(input string) string {
 
 func iniciar_prompts(modelo, api_chat, content_type string) {
 
+	opciones := []string{"Salir", "Borrar contexto", "Ingresar prompt"}
+
 	for {
 		// TODO : quiza modifique esto
-		prompt := input("Prompt")
+		seleccion, _ := menu.Menu(opciones...)
 
-		switch prompt {
-		case "salir":
+		switch seleccion {
 
-			rich.Info("\nsaliendo ...")
+		case opciones[0]:
+
+			print("\n\n")
+			rich.Info("saliendo ...")
 			time.Sleep(time.Second * 2)
 			return
 
-		default:
+		case opciones[1]:
+			utilidades.Limpieza_rapida()
+			utilidades.Memoria = []string{}
+			fmt.Print("\n")
+			rich.Info("la memoria del LLM fue borrada")
+
+		case opciones[2]:
+
+			prompt := input("Prompt")
 
 			if len(utilidades.Memoria) >= LIMITE_MEMORIA {
-				rich.Warning("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas\n", LIMITE_MEMORIA)
+				fmt.Print("\n")
+				rich.Warning("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas", LIMITE_MEMORIA)
 				utilidades.Memoria = utilidades.Memoria[:LIMITE_MEMORIA]
 
 			}
@@ -68,7 +82,6 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 				rich.Error(err)
 				break
 			}
-			//fmt.Println(prompts.Memoria)
 
 		}
 
