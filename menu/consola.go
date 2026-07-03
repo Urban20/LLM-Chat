@@ -56,9 +56,9 @@ func desplegar_opcion(opciones []string) string {
 			}
 
 			if op == opciones[i] { // opcion seleccionada
-				fmt.Println(utilidades.CELESTE_CLARO + op + utilidades.RESET + "\r")
+				fmt.Println(utilidades.CELESTE_CLARO + "> " + op + utilidades.RESET + "\r")
 			} else {
-				fmt.Println(op + "\r")
+				fmt.Println("  " + op + "\r")
 			}
 		}
 
@@ -74,7 +74,11 @@ func desplegar_opcion(opciones []string) string {
 
 func Menu(opciones ...string) (string, error) {
 
-	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n" + utilidades.RESET)
+	fmt.Print("\033[?25l")
+	defer fmt.Print("\033[?25h")
+
+	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n")
+	fmt.Print(utilidades.AMARILLO + "navegar con ↑↓\n\n" + utilidades.RESET)
 
 	fd := int(os.Stdin.Fd())
 
