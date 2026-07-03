@@ -6,8 +6,11 @@ import (
 	"LLM-Chat/prompts"
 	"LLM-Chat/utilidades"
 	"bufio"
+	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"runtime"
@@ -23,10 +26,8 @@ const LIMITE_MEMORIA = 100
 var Host_default = "localhost"
 var Puerto_default = 11434
 var Content_type = "aplication/json"
-var IA_default = "qwen3:4b"
 var conserr = consola.Iniciar_ANSI()
 
-var ia_selec = flag.String("modelo", IA_default, "modelo de ia a utilizar")
 var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 
@@ -104,6 +105,65 @@ func box_informacion(IA_MODELO, Host string, Puerto int) {
 
 }
 
+func listar_modelos_disponibles(Host string, Puerto int) []string {
+
+	tags := fmt.Sprintf("http://%s:%d/api/tags", Host, Puerto)
+
+	resp, resperr := http.Get(tags)
+
+	modelos_disponibles := []string{}
+
+	var modelos prompts.Modelos
+
+	if resperr != nil {
+
+		return modelos_disponibles
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+
+		return modelos_disponibles
+	}
+
+	data, rderr := io.ReadAll(resp.Body)
+
+	if rderr != nil {
+
+		return modelos_disponibles
+	}
+
+	if jsonerr := json.Unmarshal(data, &modelos); jsonerr != nil {
+
+		return modelos_disponibles
+	}
+
+	for _, modelo := range modelos.Models {
+
+		modelos_disponibles = append(modelos_disponibles, modelo.Model)
+	}
+
+	return modelos_disponibles
+
+}
+
+func checkear_status(Host string, Puerto int) error {
+
+	status := fmt.Sprintf("http://%s:%d/api/status", Host, Puerto)
+
+	resp, err := http.Get(status)
+
+	if err != nil || resp.StatusCode == 404 {
+
+		return errors.New("servidor apagado o no disponible")
+
+	}
+
+	return nil
+
+}
+
 func main() {
 
 	if conserr != nil {
@@ -115,7 +175,6 @@ func main() {
 
 	Host := *host_selec
 	Puerto := *puerto_selec
-	IA_MODELO := *ia_selec
 
 	var Api_chat = fmt.Sprintf("http://%s:%d/api/chat", Host, Puerto)
 
@@ -126,14 +185,27 @@ func main() {
 		rich.Warning("ollama no fue encontrado en las variables de entorno")
 	}
 
-	status := fmt.Sprintf("http://%s:%d/api/status", Host, Puerto)
+	if err := checkear_status(Host, Puerto); err != nil {
 
-	resp, err := http.Get(status)
+		rich.Error(err)
+		return
 
-	if err != nil || resp.StatusCode == 404 {
+	}
 
-		rich.Error("servidor apagado o no disponible")
+	modelos_disponibles := listar_modelos_disponibles(Host, Puerto)
 
+	if len(modelos_disponibles) == 0 {
+
+		rich.Warning(`No hay modelos disponibles intalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
+		fmt.Println("visitar https://ollama.com/search para mas info")
+		return
+	}
+
+	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
+
+	if menuerr != nil {
+
+		rich.Error(menuerr)
 		return
 
 	}

@@ -16,3 +16,14 @@ type message struct {
 
 // estas structs se usan unicamente para parsear el json
 // para comunicarse con la ia uso un mapa
+
+type modelo struct { // esto lo uso con la api de tags para listar los modelos disponibles
+
+	Name         string   `json:"name"`
+	Model        string   `json:"model"`
+	Capabilities []string `json:"capabilities"` // (capacidades de los LLMs) no lo voy a usar pero quiza en un futuro me sirve
+}
+
+type Modelos struct {
+	Models []modelo `json:"models"`
+}
