@@ -75,6 +75,22 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 	}
 }
 
+func box_informacion(IA_MODELO, Host string, Puerto int) {
+
+	utilidades.Limpieza_rapida()
+
+	contenido_box := map[string]string{
+
+		"Modelo selecionado": IA_MODELO,
+		"Host":               fmt.Sprintf("%s:%d", Host, Puerto),
+		"Limite de memoria":  strconv.Itoa(LIMITE_MEMORIA),
+		"Sistema operativo":  runtime.GOOS,
+	}
+	contenidos := utilidades.Formato_string_box(contenido_box)
+	utilidades.Box(contenidos...)
+
+}
+
 func main() {
 
 	if conserr != nil {
@@ -93,8 +109,8 @@ func main() {
 	instalado := utilidades.Ollama_instalado()
 
 	if !instalado {
-		time.Sleep(time.Second * 3)
-		return
+
+		rich.Warning("ollama no fue encontrado en las variables de entorno")
 	}
 
 	status := fmt.Sprintf("http://%s:%d/api/status", Host, Puerto)
@@ -109,17 +125,7 @@ func main() {
 
 	}
 
-	utilidades.Limpieza_rapida()
-
-	contenido_box := map[string]string{
-
-		"Modelo selecionado": IA_MODELO,
-		"Host":               fmt.Sprintf("%s:%d", Host, Puerto),
-		"Limite de memoria":  strconv.Itoa(LIMITE_MEMORIA),
-		"Sistema operativo":  runtime.GOOS,
-	}
-	contenidos := utilidades.Formato_string_box(contenido_box)
-	utilidades.Box(contenidos...)
+	box_informacion(IA_MODELO, Host, Puerto)
 
 	iniciar_prompts(IA_MODELO, Api_chat, Content_type)
 
