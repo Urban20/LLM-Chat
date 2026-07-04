@@ -63,7 +63,7 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 
 		case opciones[1]:
 			utilidades.Limpieza_rapida()
-			utilidades.Memoria = []string{}
+			prompts.Borrar_memoria()
 			fmt.Print("\n")
 			rich.Info("la memoria del LLM fue borrada")
 
@@ -71,10 +71,10 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 
 			prompt := input("Prompt")
 
-			if len(utilidades.Memoria) >= LIMITE_MEMORIA {
+			if len(prompts.Memoria) >= LIMITE_MEMORIA {
 				fmt.Print("\n")
 				rich.Warning("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas", LIMITE_MEMORIA)
-				utilidades.Memoria = utilidades.Memoria[:LIMITE_MEMORIA]
+				prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
 
 			}
 

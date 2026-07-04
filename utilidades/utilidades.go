@@ -1,7 +1,6 @@
 package utilidades
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,8 +10,6 @@ import (
 	"github.com/pterm/pterm"
 	"golang.org/x/term"
 )
-
-var Memoria = []string{}
 
 const (
 	AMARILLO      = "\033[0;33m"
@@ -58,18 +55,6 @@ func Imprimir_markdown(txt string) error {
 	separador()
 
 	return nil
-}
-
-func Guardar_en_memoria(prompt, rol string) {
-
-	mensaje_usuario := map[string]string{
-		"role":    rol,
-		"content": prompt,
-	}
-
-	msg, _ := json.Marshal(&mensaje_usuario)
-	Memoria = append(Memoria, string(msg))
-
 }
 
 func Box(msgs ...string) {

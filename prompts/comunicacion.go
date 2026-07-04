@@ -9,6 +9,22 @@ import (
 	"strings"
 )
 
+var Memoria = []message{}
+
+func Borrar_memoria() {
+
+	Memoria = []message{}
+
+}
+
+func Guardar_en_memoria(prompt, rol string) {
+
+	mensaje_usuario := message{Role: rol, Content: prompt}
+
+	Memoria = append(Memoria, mensaje_usuario)
+
+}
+
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response) error {
 
@@ -30,7 +46,7 @@ func recibir_prompt(resp *http.Response) error {
 		return mderr
 	}
 
-	utilidades.Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
+	Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
 
 	resp.Body.Close()
 
@@ -40,15 +56,17 @@ func recibir_prompt(resp *http.Response) error {
 // envio el prompt desde el usuario al LLM
 func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Response, error) {
 
-	utilidades.Guardar_en_memoria(prompt, "user")
+	Guardar_en_memoria(prompt, "user")
 
-	json_prompt_usuario := fmt.Sprintf(`{
-   "model": "%s",
-   "messages": [%s],
-   "stream":false
-	}`, Modelo, strings.Join(utilidades.Memoria, ",")) // no puedo pasarlo a mapa y a json porque se pierde el formateo
+	json_prompt_usuario := Mensaje_usuario{
+		Model:    Modelo,
+		Messages: Memoria,
+		Stream:   false,
+	}
 
-	data := strings.NewReader(json_prompt_usuario)
+	msg_byte, _ := json.Marshal(&json_prompt_usuario)
+
+	data := strings.NewReader(string(msg_byte))
 
 	resp, resperr := http.Post(Api_chat, Content_type, data)
 

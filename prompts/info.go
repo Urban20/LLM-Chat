@@ -27,3 +27,9 @@ type modelo struct { // esto lo uso con la api de tags para listar los modelos d
 type Modelos struct {
 	Models []modelo `json:"models"`
 }
+
+type Mensaje_usuario struct {
+	Model    string
+	Messages []message
+	Stream   bool
+}
