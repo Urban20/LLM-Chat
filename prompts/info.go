@@ -3,10 +3,11 @@ package prompts
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
-	Model      string  `json:"model"`
-	Created_at string  `json:"created_at"`
-	Message    message `json:"message"`
-	Done       bool    `json:"done"`
+	Model       string  `json:"model"`
+	Created_at  string  `json:"created_at"`
+	Message     message `json:"message"`
+	Done        bool    `json:"done"`
+	Done_reason string  `json:"done_reason"`
 }
 
 type message struct {
@@ -32,4 +33,5 @@ type Mensaje_usuario struct {
 	Model    string
 	Messages []message
 	Stream   bool
+	Options  map[string]any
 }

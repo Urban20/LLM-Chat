@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/rvfet/rich-go"
 )
 
 var Memoria = []message{}
@@ -46,6 +48,13 @@ func recibir_prompt(resp *http.Response) error {
 		return mderr
 	}
 
+	if json_respuesta.Done_reason == "length" {
+
+		fmt.Print("\n\n")
+		rich.Warning("se llego al limite de tokens soportado por el modelo")
+
+	}
+
 	Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
 
 	resp.Body.Close()
@@ -54,17 +63,28 @@ func recibir_prompt(resp *http.Response) error {
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Response, error) {
+func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp float64) (*http.Response, error) {
 
 	Guardar_en_memoria(prompt, "user")
+
+	opciones := map[string]any{
+		"num_ctx":     ctx, //controla tokens totales (memoria de trabajo total)
+		"num_predict": -1,  // sin limite de generacion de tokens (limite de tokens)
+		"temperature": temp,
+	}
 
 	json_prompt_usuario := Mensaje_usuario{
 		Model:    Modelo,
 		Messages: Memoria,
 		Stream:   false,
+		Options:  opciones,
 	}
 
-	msg_byte, _ := json.Marshal(&json_prompt_usuario)
+	msg_byte, jsonerr := json.Marshal(&json_prompt_usuario)
+
+	if jsonerr != nil {
+		return &http.Response{}, jsonerr
+	}
 
 	data := strings.NewReader(string(msg_byte))
 
@@ -85,9 +105,9 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string) (*http.Respons
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt, modelo, api_chat, content_type string) error {
+func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp float64) error {
 
-	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type)
+	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type, ctx, temp)
 
 	if prompterr != nil {
 

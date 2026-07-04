@@ -25,11 +25,15 @@ const LIMITE_MEMORIA = 100
 
 var Host_default = "localhost"
 var Puerto_default = 11434
+var ctx_default = 16_000
+var temp_defalut = 0.5
 var Content_type = "aplication/json"
 var conserr = consola.Iniciar_ANSI()
 
 var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
+var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
+var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
 
 func input(input string) string {
 
@@ -44,7 +48,7 @@ func input(input string) string {
 
 }
 
-func iniciar_prompts(modelo, api_chat, content_type string) {
+func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float64) {
 
 	opciones := []string{"Salir", "Borrar contexto", "Ingresar prompt"}
 
@@ -78,7 +82,7 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 
 			}
 
-			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type); err != nil {
+			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp); err != nil {
 
 				rich.Error(err)
 				break
@@ -89,16 +93,18 @@ func iniciar_prompts(modelo, api_chat, content_type string) {
 	}
 }
 
-func box_informacion(IA_MODELO, Host string, Puerto int) {
+func box_informacion(IA_MODELO, Host string, Puerto int, temp float64, ctx int) {
 
 	utilidades.Limpieza_rapida()
 
 	contenido_box := map[string]string{
 
-		"Modelo selecionado": IA_MODELO,
-		"Host":               fmt.Sprintf("%s:%d", Host, Puerto),
-		"Limite de memoria":  strconv.Itoa(LIMITE_MEMORIA),
-		"Sistema operativo":  runtime.GOOS,
+		"Modelo selecionado":  IA_MODELO,
+		"Host":                fmt.Sprintf("%s:%d", Host, Puerto),
+		"Limite de memoria":   strconv.Itoa(LIMITE_MEMORIA),
+		"Sistema operativo":   runtime.GOOS,
+		"Temperatura del LLM": fmt.Sprintf("%.2f", temp),
+		"Contexto del LLM":    strconv.Itoa(ctx),
 	}
 	contenidos := utilidades.Formato_string_box(contenido_box)
 	utilidades.Box(contenidos...)
@@ -175,6 +181,8 @@ func main() {
 
 	Host := *host_selec
 	Puerto := *puerto_selec
+	Ctx := *ctx // el nivel de memoria de trabajo que puede maneja el LLM
+	Temp := *temp
 
 	var Api_chat = fmt.Sprintf("http://%s:%d/api/chat", Host, Puerto)
 
@@ -210,8 +218,8 @@ func main() {
 
 	}
 
-	box_informacion(IA_MODELO, Host, Puerto)
+	box_informacion(IA_MODELO, Host, Puerto, Temp, Ctx)
 
-	iniciar_prompts(IA_MODELO, Api_chat, Content_type)
+	iniciar_prompts(IA_MODELO, Api_chat, Content_type, Ctx, Temp)
 
 }
