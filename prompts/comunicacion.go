@@ -2,13 +2,13 @@ package prompts
 
 import (
 	"LLM-Chat/utilidades"
+	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
-	"github.com/rvfet/rich-go"
+	"github.com/charmbracelet/glamour"
 )
 
 var Memoria = []message{}
@@ -30,34 +30,33 @@ func Guardar_en_memoria(prompt, rol string) {
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response) error {
 
-	json_respuesta := Info{}
+	escaner := bufio.NewScanner(resp.Body)
+	defer resp.Body.Close()
 
-	b, berror := io.ReadAll(resp.Body)
+	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(utilidades.Estilos)))
 
-	if berror != nil {
-		return berror
+	if termerr != nil {
+
+		return termerr
 	}
 
-	if jsonerr := json.Unmarshal(b, &json_respuesta); jsonerr != nil {
+	utilidades.Imprimir_markdown("# LLM:", render)
 
-		return jsonerr
+	for escaner.Scan() {
+
+		json_respuesta := Info{}
+
+		if marsherr := json.Unmarshal(escaner.Bytes(), &json_respuesta); marsherr != nil {
+
+			return marsherr
+		}
+
+		if markerr := utilidades.Imprimir_markdown(json_respuesta.Message.Content, render); markerr != nil {
+
+			return markerr
+		}
+
 	}
-
-	if mderr := utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content); mderr != nil {
-
-		return mderr
-	}
-
-	if json_respuesta.Done_reason == "length" {
-
-		fmt.Print("\n\n")
-		rich.Warning("se llego al limite de tokens soportado por el modelo")
-
-	}
-
-	Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
-
-	resp.Body.Close()
 
 	return nil
 }
@@ -76,7 +75,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 	json_prompt_usuario := Mensaje_usuario{
 		Model:    Modelo,
 		Messages: Memoria,
-		Stream:   false,
+		Stream:   true,
 		Options:  opciones,
 	}
 

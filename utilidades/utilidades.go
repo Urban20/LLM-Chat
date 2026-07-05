@@ -41,23 +41,16 @@ func Ollama_instalado() bool {
 
 }
 
-func Imprimir_markdown(txt string) error {
+func Imprimir_markdown(txt string, render *glamour.TermRenderer) error {
 
-	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(estilos)))
-
-	if termerr != nil {
-
-		return termerr
-	}
-
-	separador()
+	//separador()
 	md, err := render.Render(txt)
 
 	if err != nil {
 		return err
 	}
-	fmt.Print(md)
-	separador()
+	fmt.Print(strings.Replace(strings.TrimSpace(md), "\n", "", 2))
+	//separador()
 
 	return nil
 }
@@ -93,7 +86,7 @@ func Formato_string_box(cuerpo map[string]string) []string {
 
 }
 
-var estilos = `{
+var Estilos = `{
   "document": {
     "block_prefix": "\n",
     "block_suffix": "\n",
