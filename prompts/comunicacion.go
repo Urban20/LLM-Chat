@@ -19,6 +19,23 @@ func Borrar_memoria() {
 
 }
 
+func imprimir_prompt(respuesta Info) error {
+
+	if mderr := utilidades.Imprimir_markdown("# LLM:\n" + respuesta.Message.Content); mderr != nil {
+
+		return mderr
+	}
+
+	if respuesta.Done_reason == "length" {
+
+		fmt.Print("\n\n")
+		rich.Warning("se llego al limite de tokens soportado por el modelo")
+
+	}
+
+	return nil
+}
+
 func Guardar_en_memoria(prompt, rol string) {
 
 	mensaje_usuario := message{Role: rol, Content: prompt}
@@ -43,16 +60,9 @@ func recibir_prompt(resp *http.Response) error {
 		return jsonerr
 	}
 
-	if mderr := utilidades.Imprimir_markdown("# LLM:\n" + json_respuesta.Message.Content); mderr != nil {
+	if prompterr := imprimir_prompt(json_respuesta); prompterr != nil {
 
-		return mderr
-	}
-
-	if json_respuesta.Done_reason == "length" {
-
-		fmt.Print("\n\n")
-		rich.Warning("se llego al limite de tokens soportado por el modelo")
-
+		return prompterr
 	}
 
 	Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
