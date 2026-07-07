@@ -41,16 +41,22 @@ func Ollama_instalado() bool {
 
 }
 
-func Imprimir_markdown(txt string, render *glamour.TermRenderer) error {
+func Imprimir_markdown(txt string) error {
 
-	//separador()
+	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(Estilos)))
+
+	if termerr != nil {
+
+		return termerr
+	}
+	separador()
 	md, err := render.Render(txt)
 
 	if err != nil {
 		return err
 	}
-	fmt.Print(strings.Replace(strings.TrimSpace(md), "\n", "", 2))
-	//separador()
+	fmt.Print(md)
+	separador()
 
 	return nil
 }

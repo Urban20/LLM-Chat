@@ -3,12 +3,11 @@ package prompts
 import (
 	"LLM-Chat/utilidades"
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/charmbracelet/glamour"
 )
 
 var Memoria = []message{}
@@ -30,17 +29,12 @@ func Guardar_en_memoria(prompt, rol string) {
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response) error {
 
+	var cuerpo string
+
 	escaner := bufio.NewScanner(resp.Body)
 	defer resp.Body.Close()
 
-	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(utilidades.Estilos)))
-
-	if termerr != nil {
-
-		return termerr
-	}
-
-	utilidades.Imprimir_markdown("# LLM:", render)
+	fmt.Print(strings.Repeat("\n", 4))
 
 	for escaner.Scan() {
 
@@ -51,11 +45,15 @@ func recibir_prompt(resp *http.Response) error {
 			return marsherr
 		}
 
-		if markerr := utilidades.Imprimir_markdown(json_respuesta.Message.Content, render); markerr != nil {
+		fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use
 
-			return markerr
-		}
+		cuerpo += json_respuesta.Message.Content
 
+	}
+
+	if markerr := utilidades.Imprimir_markdown("# LLM:\n" + strings.TrimSpace(cuerpo)); markerr != nil {
+
+		return markerr
 	}
 
 	return nil
@@ -66,13 +64,14 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 
 	Guardar_en_memoria(prompt, "user")
 
-	opciones := map[string]any{
-		"num_ctx":     ctx, //controla tokens totales (memoria de trabajo total)
-		"num_predict": -1,  // sin limite de generacion de tokens (limite de tokens)
-		"temperature": temp,
+	opciones := Opciones{
+		num_ctx:     ctx,
+		num_predict: -1,
+		temperature: temp,
 	}
 
 	json_prompt_usuario := Mensaje_usuario{
+
 		Model:    Modelo,
 		Messages: Memoria,
 		Stream:   true,
@@ -85,7 +84,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 		return &http.Response{}, jsonerr
 	}
 
-	data := strings.NewReader(string(msg_byte))
+	data := bytes.NewReader(msg_byte)
 
 	resp, resperr := http.Post(Api_chat, Content_type, data)
 
