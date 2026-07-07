@@ -11,8 +11,9 @@ type Info struct {
 }
 
 type message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role     string `json:"role"`
+	Content  string `json:"content"`
+	Thinking string `json:"thinking"`
 }
 
 // estas structs se usan unicamente para parsear el json
@@ -33,5 +34,11 @@ type Mensaje_usuario struct {
 	Model    string
 	Messages []message
 	Stream   bool
-	Options  map[string]any
+	Options  Opciones
+}
+
+type Opciones struct {
+	num_ctx     int //controla tokens totales (memoria de trabajo total)
+	num_predict int // sin limite de generacion de tokens (limite de tokens)
+	temperature float64
 }

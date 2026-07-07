@@ -54,6 +54,7 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 	for {
 		// TODO : quiza modifique esto
+
 		seleccion, _ := menu.Menu(opciones...)
 
 		switch seleccion {
@@ -62,6 +63,7 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 			print("\n\n")
 			rich.Info("saliendo ...")
+			print("\n\n")
 			time.Sleep(time.Second * 2)
 			return
 

@@ -2,13 +2,12 @@ package prompts
 
 import (
 	"LLM-Chat/utilidades"
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
-
-	"github.com/rvfet/rich-go"
 )
 
 var Memoria = []message{}
@@ -17,23 +16,6 @@ func Borrar_memoria() {
 
 	Memoria = []message{}
 
-}
-
-func imprimir_prompt(respuesta Info) error {
-
-	if mderr := utilidades.Imprimir_markdown("# LLM:\n" + respuesta.Message.Content); mderr != nil {
-
-		return mderr
-	}
-
-	if respuesta.Done_reason == "length" {
-
-		fmt.Print("\n\n")
-		rich.Warning("se llego al limite de tokens soportado por el modelo")
-
-	}
-
-	return nil
 }
 
 func Guardar_en_memoria(prompt, rol string) {
@@ -47,27 +29,32 @@ func Guardar_en_memoria(prompt, rol string) {
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response) error {
 
-	json_respuesta := Info{}
+	var cuerpo string
 
-	b, berror := io.ReadAll(resp.Body)
+	escaner := bufio.NewScanner(resp.Body)
+	defer resp.Body.Close()
 
-	if berror != nil {
-		return berror
+	fmt.Print(strings.Repeat("\n", 4))
+
+	for escaner.Scan() {
+
+		json_respuesta := Info{}
+
+		if marsherr := json.Unmarshal(escaner.Bytes(), &json_respuesta); marsherr != nil {
+
+			return marsherr
+		}
+
+		fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use
+
+		cuerpo += json_respuesta.Message.Content
+
 	}
 
-	if jsonerr := json.Unmarshal(b, &json_respuesta); jsonerr != nil {
+	if markerr := utilidades.Imprimir_markdown("# LLM:\n" + strings.TrimSpace(cuerpo)); markerr != nil {
 
-		return jsonerr
+		return markerr
 	}
-
-	if prompterr := imprimir_prompt(json_respuesta); prompterr != nil {
-
-		return prompterr
-	}
-
-	Guardar_en_memoria(json_respuesta.Message.Content, "LLM (IA)")
-
-	resp.Body.Close()
 
 	return nil
 }
@@ -77,16 +64,17 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 
 	Guardar_en_memoria(prompt, "user")
 
-	opciones := map[string]any{
-		"num_ctx":     ctx, //controla tokens totales (memoria de trabajo total)
-		"num_predict": -1,  // sin limite de generacion de tokens (limite de tokens)
-		"temperature": temp,
+	opciones := Opciones{
+		num_ctx:     ctx,
+		num_predict: -1,
+		temperature: temp,
 	}
 
 	json_prompt_usuario := Mensaje_usuario{
+
 		Model:    Modelo,
 		Messages: Memoria,
-		Stream:   false,
+		Stream:   true,
 		Options:  opciones,
 	}
 
@@ -96,7 +84,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 		return &http.Response{}, jsonerr
 	}
 
-	data := strings.NewReader(string(msg_byte))
+	data := bytes.NewReader(msg_byte)
 
 	resp, resperr := http.Post(Api_chat, Content_type, data)
 
