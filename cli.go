@@ -21,7 +21,10 @@ import (
 	"github.com/rvfet/rich-go"
 )
 
-const LIMITE_MEMORIA = 100
+const (
+	LIMITE_MEMORIA = 100
+	TIEMPO_PAUSA   = 4
+)
 
 var Host_default = "localhost"
 var Puerto_default = 11434
@@ -193,12 +196,13 @@ func main() {
 	if !instalado {
 
 		rich.Warning("ollama no fue encontrado en las variables de entorno")
+		time.Sleep(time.Second * TIEMPO_PAUSA)
 	}
 
 	if err := checkear_status(Host, Puerto); err != nil {
 
 		rich.Error(err)
-		time.Sleep(time.Second * 4)
+		time.Sleep(time.Second * TIEMPO_PAUSA)
 		return
 
 	}
@@ -211,6 +215,8 @@ func main() {
 		fmt.Println("visitar https://ollama.com/search para mas info")
 		return
 	}
+
+	utilidades.Limpieza_rapida()
 
 	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
 

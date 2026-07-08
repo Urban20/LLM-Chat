@@ -52,6 +52,9 @@ func recibir_prompt(resp *http.Response) error {
 
 	}
 	fmt.Print(utilidades.RESET)
+
+	utilidades.Limpieza_rapida()
+
 	if markerr := utilidades.Imprimir_markdown("# LLM:\n" + strings.TrimSpace(cuerpo)); markerr != nil {
 
 		return markerr
