@@ -23,7 +23,6 @@ import (
 
 const (
 	LIMITE_MEMORIA = 100
-	TIEMPO_PAUSA   = 4
 )
 
 var Host_default = "localhost"
@@ -53,7 +52,7 @@ func input(input string) string {
 
 func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float64) {
 
-	opciones := []string{"Salir", "Borrar contexto", "Ingresar prompt"}
+	opciones := []string{"Volver", "Salir", "Borrar contexto", "Ingresar prompt"}
 
 	for {
 		// TODO : quiza modifique esto
@@ -64,19 +63,23 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 		case opciones[0]:
 
+			return
+
+		case opciones[1]:
+
 			print("\n\n")
 			rich.Info("saliendo ...")
 			print("\n\n")
 			time.Sleep(time.Second * 2)
-			return
+			os.Exit(0)
 
-		case opciones[1]:
+		case opciones[2]:
 			utilidades.Limpieza_rapida()
 			prompts.Borrar_memoria()
 			fmt.Print("\n")
 			rich.Info("la memoria del LLM fue borrada")
 
-		case opciones[2]:
+		case opciones[3]:
 
 			prompt := input("Prompt")
 
@@ -89,12 +92,10 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp); err != nil {
 
-				rich.Error(err)
-				break
+				rich.Warning(err)
 			}
 
 		}
-
 	}
 }
 
@@ -175,6 +176,21 @@ func checkear_status(Host string, Puerto int) error {
 
 }
 
+func menu_modelos(modelos_disponibles []string) (string, error) {
+
+	if len(modelos_disponibles) == 0 {
+
+		return "", errors.New(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
+	}
+
+	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
+
+	if menuerr != nil {
+		return "", menuerr
+	}
+	return IA_MODELO, nil
+}
+
 func main() {
 
 	if conserr != nil {
@@ -196,39 +212,34 @@ func main() {
 	if !instalado {
 
 		rich.Warning("ollama no fue encontrado en las variables de entorno")
-		time.Sleep(time.Second * TIEMPO_PAUSA)
+		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 
 	if err := checkear_status(Host, Puerto); err != nil {
 
-		rich.Error(err)
-		time.Sleep(time.Second * TIEMPO_PAUSA)
+		utilidades.Logueo_simple(err)
 		return
 
 	}
 
 	modelos_disponibles := listar_modelos_disponibles(Host, Puerto)
 
-	if len(modelos_disponibles) == 0 {
+	for {
+		utilidades.Limpieza_rapida()
+		IA_MODELO, menuerr := menu_modelos(modelos_disponibles)
 
-		rich.Warning(`No hay modelos disponibles intalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
-		fmt.Println("visitar https://ollama.com/search para mas info")
-		return
+		if menuerr != nil {
+
+			rich.Error(menuerr)
+			fmt.Println("visitar https://ollama.com/search para mas info")
+			time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
+			return
+
+		}
+
+		box_informacion(IA_MODELO, Host, Puerto, Temp, Ctx)
+
+		iniciar_prompts(IA_MODELO, Api_chat, Content_type, Ctx, Temp)
+
 	}
-
-	utilidades.Limpieza_rapida()
-
-	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
-
-	if menuerr != nil {
-
-		rich.Error(menuerr)
-		return
-
-	}
-
-	box_informacion(IA_MODELO, Host, Puerto, Temp, Ctx)
-
-	iniciar_prompts(IA_MODELO, Api_chat, Content_type, Ctx, Temp)
-
 }

@@ -51,7 +51,8 @@ func recibir_prompt(resp *http.Response) error {
 		cuerpo += json_respuesta.Message.Content
 
 	}
-	fmt.Print(utilidades.RESET)
+
+	//fmt.Print(utilidades.RESET)
 
 	utilidades.Limpieza_rapida()
 

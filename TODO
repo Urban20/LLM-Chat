@@ -1,3 +1,2 @@
- debo checkear que no hay errores gaves al usar el llm
- crear comandos con /comando
- verificar ultimos cambios
+manejar codigos de estado 500 para no romper el programa
+agregar sistema de carga

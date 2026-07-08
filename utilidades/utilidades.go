@@ -5,11 +5,15 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/pterm/pterm"
+	"github.com/rvfet/rich-go"
 	"golang.org/x/term"
 )
+
+const TIEMPO_PAUSA = 4
 
 const (
 	AMARILLO    = "\033[0;33m"
@@ -74,6 +78,12 @@ func Limpieza_rapida() {
 
 	fmt.Print("\033[2J")
 	fmt.Print("\033[H")
+
+}
+
+func Logueo_simple(mensaje any) {
+	rich.Error(mensaje)
+	time.Sleep(time.Second * TIEMPO_PAUSA)
 
 }
 
