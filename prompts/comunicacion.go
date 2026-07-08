@@ -36,6 +36,7 @@ func recibir_prompt(resp *http.Response) error {
 
 	fmt.Print(strings.Repeat("\n", 4))
 
+	fmt.Print(utilidades.GRIS_AZUL)
 	for escaner.Scan() {
 
 		json_respuesta := Info{}
@@ -50,7 +51,7 @@ func recibir_prompt(resp *http.Response) error {
 		cuerpo += json_respuesta.Message.Content
 
 	}
-
+	fmt.Print(utilidades.RESET)
 	if markerr := utilidades.Imprimir_markdown("# LLM:\n" + strings.TrimSpace(cuerpo)); markerr != nil {
 
 		return markerr

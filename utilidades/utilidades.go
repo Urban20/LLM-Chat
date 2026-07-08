@@ -12,11 +12,12 @@ import (
 )
 
 const (
-	AMARILLO      = "\033[0;33m"
-	RESET         = "\033[0m"
-	CELESTE_CLARO = "\033[38;2;125;255;216m"
-	GRIS_AZUL     = "\033[38;2;90;112;176m"
-	BLANCO        = "\033[47m"
+	AMARILLO    = "\033[0;33m"
+	RESET       = "\033[0m"
+	VIOLETA     = "\033[38;2;146;68;219m"
+	GRIS_AZUL   = "\033[38;2;90;112;176m"
+	BLANCO      = "\033[47m"
+	AZUL_OSCURO = "\033[38;2;116;116;247m"
 )
 
 func separador() {
@@ -82,7 +83,7 @@ func Formato_string_box(cuerpo map[string]string) []string {
 
 	for clave, valor := range cuerpo {
 
-		elemento := CELESTE_CLARO + clave + RESET + " : " + valor
+		elemento := VIOLETA + clave + RESET + " : " + valor
 
 		retorno = append(retorno, elemento)
 
@@ -115,30 +116,34 @@ var Estilos = `{
   "h1": {
     "prefix": " ",
     "suffix": " ",
-    "color": "228",
-    "background_color": "#42C77A",
+    "color": "#000000",
+    "background_color": "#705ac6",
     "bold": true
   },
   "h2": {
     "prefix": "> ",
-    "background_color": "#3AB56E"
+    "background_color": "#54397c",
+    "color": "#000000"
   },
   "h3": {
     "prefix": ">>> ",
-    "background_color": "#35A664"
+    "background_color": "#623d86",
+    "color": "#000000"
   },
   "h4": {
     "prefix": ">>>> ",
-    "background_color": "#2E8F56"
+    "background_color": "#522a79",
+    "color": "#000000"
   },
   "h5": {
     "prefix": ">>>>> ",
-    "background_color": "#277546"
+    "background_color": "#49205f",
+    "color": "#000000"
   },
   "h6": {
     "prefix": ">>>>>> ",
-    "background_color": "#087832",
-    "color": "#0DDB58",
+    "background_color": "#472466",
+    "color": "#000000",
     "bold": false
   },
   "text": {},

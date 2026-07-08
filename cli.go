@@ -39,7 +39,7 @@ func input(input string) string {
 
 	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", utilidades.AMARILLO, utilidades.RESET)
 
-	fmt.Print(utilidades.CELESTE_CLARO)
+	fmt.Print(utilidades.VIOLETA)
 	fmt.Printf("\n\n%s :\n", input)
 	fmt.Print(utilidades.RESET)
 	lector := bufio.NewReader(os.Stdin)
@@ -198,6 +198,7 @@ func main() {
 	if err := checkear_status(Host, Puerto); err != nil {
 
 		rich.Error(err)
+		time.Sleep(time.Second * 4)
 		return
 
 	}
