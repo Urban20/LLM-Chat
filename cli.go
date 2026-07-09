@@ -90,7 +90,10 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 			}
 
-			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp); err != nil {
+			carga := menu.Crear_carga()
+			go carga.Iniciar()
+
+			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp, &carga); err != nil {
 
 				rich.Warning(err)
 			}

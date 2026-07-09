@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"LLM-Chat/menu"
 	"LLM-Chat/utilidades"
 	"bufio"
 	"bytes"
@@ -27,7 +28,7 @@ func Guardar_en_memoria(prompt, rol string) {
 }
 
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response) error {
+func recibir_prompt(resp *http.Response, carga *menu.Carga) error {
 
 	var cuerpo string
 
@@ -35,6 +36,8 @@ func recibir_prompt(resp *http.Response) error {
 	defer resp.Body.Close()
 
 	fmt.Print(strings.Repeat("\n", 4))
+
+	carga.Cargando = false
 
 	fmt.Print(utilidades.GRIS_AZUL)
 	for escaner.Scan() {
@@ -108,7 +111,7 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp float64) error {
+func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp float64, carga *menu.Carga) error {
 
 	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type, ctx, temp)
 
@@ -117,7 +120,7 @@ func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp f
 		return prompterr
 	}
 
-	if recerr := recibir_prompt(resp); recerr != nil {
+	if recerr := recibir_prompt(resp, carga); recerr != nil {
 
 		return recerr
 	}

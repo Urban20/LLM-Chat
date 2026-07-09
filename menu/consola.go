@@ -4,9 +4,49 @@ import (
 	"LLM-Chat/utilidades"
 	"fmt"
 	"os"
+	"time"
 
 	"golang.org/x/term"
 )
+
+type Carga struct {
+	estado_1 string
+	estado_2 string
+	Cargando bool
+	tiempo   int
+}
+
+func (p *Carga) Iniciar() {
+
+	fmt.Print("\n\n")
+
+	for {
+
+		if !p.Cargando {
+			break
+		}
+
+		for _, estado := range []string{p.estado_1, p.estado_2} {
+
+			fmt.Print("\r" + estado)
+			time.Sleep(time.Second * time.Duration(p.tiempo))
+
+		}
+	}
+	fmt.Print("\n")
+
+}
+
+func Crear_carga() Carga {
+
+	c := Carga{estado_1: "◌◌◌",
+		estado_2: "●●●",
+		Cargando: true,
+		tiempo:   1}
+
+	return c
+
+}
 
 func actualizar_seccion(n int) {
 
