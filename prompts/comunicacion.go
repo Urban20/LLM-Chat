@@ -55,7 +55,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 
 	}
 
-	//fmt.Print(utilidades.RESET)
+	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
 	utilidades.Limpieza_rapida()
 
