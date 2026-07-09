@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/rvfet/rich-go"
@@ -91,9 +92,12 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 			}
 
 			carga := menu.Crear_carga()
-			go carga.Iniciar()
 
-			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp, &carga); err != nil {
+			wg := sync.WaitGroup{}
+
+			go carga.Iniciar(&wg)
+
+			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp, &carga, &wg); err != nil {
 
 				rich.Warning(err)
 			}

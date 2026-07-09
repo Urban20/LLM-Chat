@@ -4,6 +4,7 @@ import (
 	"LLM-Chat/utilidades"
 	"fmt"
 	"os"
+	"sync"
 	"time"
 
 	"golang.org/x/term"
@@ -12,19 +13,24 @@ import (
 type Carga struct {
 	estado_1 string
 	estado_2 string
-	Cargando bool
-	tiempo   int
+	cargando bool
+	tiempo   float32
 }
 
-func (p *Carga) Iniciar() {
+const (
+	OCULTAR_CURSOR = "\033[?25l"
+	MOSTRAR_CURSOR = "\033[?25h"
+)
 
-	fmt.Print("\n\n")
+func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
-	for {
+	fmt.Print("\n\n" + OCULTAR_CURSOR)
+	defer fmt.Print(MOSTRAR_CURSOR)
 
-		if !p.Cargando {
-			break
-		}
+	wg.Add(1)
+	defer wg.Done()
+
+	for p.cargando {
 
 		for _, estado := range []string{p.estado_1, p.estado_2} {
 
@@ -33,16 +39,20 @@ func (p *Carga) Iniciar() {
 
 		}
 	}
-	fmt.Print("\n")
 
+}
+
+func (p *Carga) Detener() {
+
+	p.cargando = false
 }
 
 func Crear_carga() Carga {
 
 	c := Carga{estado_1: "◌◌◌",
 		estado_2: "●●●",
-		Cargando: true,
-		tiempo:   1}
+		cargando: true,
+		tiempo:   0.85}
 
 	return c
 
@@ -114,8 +124,8 @@ func desplegar_opcion(opciones []string) string {
 
 func Menu(opciones ...string) (string, error) {
 
-	fmt.Print("\033[?25l")
-	defer fmt.Print("\033[?25h")
+	fmt.Print(OCULTAR_CURSOR)
+	defer fmt.Print(MOSTRAR_CURSOR)
 
 	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n")
 	fmt.Print(utilidades.AZUL_OSCURO + "navegar con ↑↓\n\n" + utilidades.RESET)
