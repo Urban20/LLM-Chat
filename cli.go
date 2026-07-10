@@ -86,7 +86,7 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 			if len(prompts.Memoria) >= LIMITE_MEMORIA {
 				fmt.Print("\n")
-				rich.Warning("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas", LIMITE_MEMORIA)
+				rich.Warning(fmt.Sprintf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas", LIMITE_MEMORIA))
 				prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
 
 			}
@@ -201,7 +201,7 @@ func menu_modelos(modelos_disponibles []string) (string, error) {
 func main() {
 
 	if conserr != nil {
-		rich.Error("Problema al habilitar ansi: %v\n", conserr)
+		rich.Error(fmt.Sprintf("Problema al habilitar ansi: %v\n", conserr))
 		return
 	}
 
