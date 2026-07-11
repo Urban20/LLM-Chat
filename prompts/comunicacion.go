@@ -6,8 +6,10 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 	"sync"
 )
@@ -47,6 +49,18 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 		if marsherr := json.Unmarshal(escaner.Bytes(), &json_respuesta); marsherr != nil {
 
 			return marsherr
+		}
+
+		if json_respuesta.Done_reason == "length" {
+
+			return errors.New("se agoto el contexto disponible para la generacion de nuevos tokens")
+
+		}
+
+		if !slices.Contains([]string{"", "stop"}, json_respuesta.Done_reason) {
+
+			return fmt.Errorf("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason)
+
 		}
 
 		fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use

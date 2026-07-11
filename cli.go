@@ -64,6 +64,8 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 		case opciones[0]:
 
+			prompts.Borrar_memoria()
+
 			return
 
 		case opciones[1]:
@@ -98,7 +100,7 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 			go carga.Iniciar(&wg)
 
 			if err := prompts.Comunicacion(prompt, modelo, api_chat, content_type, ctx, temp, &carga, &wg); err != nil {
-
+				fmt.Print("\n")
 				rich.Warning(err)
 			}
 

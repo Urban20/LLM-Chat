@@ -30,14 +30,19 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
+	estados := []string{p.estado_1, p.estado_2}
+	var i int
+
 	for p.cargando {
 
-		for _, estado := range []string{p.estado_1, p.estado_2} {
-
-			fmt.Print("\r" + estado)
-			time.Sleep(time.Second * time.Duration(p.tiempo))
-
+		if i > len(estados)-1 {
+			i = 0
 		}
+
+		fmt.Printf("\r%s", estados[i])
+		i++
+		time.Sleep(time.Second * time.Duration(p.tiempo))
+
 	}
 
 }
