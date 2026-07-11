@@ -86,13 +86,6 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 
 			prompt := input("Prompt")
 
-			if len(prompts.Memoria) >= LIMITE_MEMORIA {
-				fmt.Print("\n")
-				rich.Warning(fmt.Sprintf("Se llego al limite de la memoria: %d, la IA ya no puede recordar mas", LIMITE_MEMORIA))
-				prompts.Memoria = prompts.Memoria[:LIMITE_MEMORIA]
-
-			}
-
 			carga := menu.Crear_carga()
 
 			wg := sync.WaitGroup{}
