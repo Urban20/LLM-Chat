@@ -38,8 +38,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 	escaner := bufio.NewScanner(resp.Body)
 	defer resp.Body.Close()
 
-	carga.Detener()
-	wg.Wait() //sincronizo la carga para que no haya cond de carrera
+	carga.Detener(wg)
 
 	fmt.Print("\n\n" + utilidades.GRIS_AZUL)
 	for escaner.Scan() {
@@ -51,9 +50,11 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 			return marsherr
 		}
 
+		cuerpo += json_respuesta.Message.Content
+
 		if json_respuesta.Done_reason == "length" {
 
-			return errors.New("se agoto el contexto disponible para la generacion de nuevos tokens")
+			return errors.New("se agoto el contexto disponible para la generacion de nuevas respuestas")
 
 		}
 
@@ -65,15 +66,13 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 
 		fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use
 
-		cuerpo += json_respuesta.Message.Content
-
 	}
 
 	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
 	utilidades.Limpieza_rapida()
 
-	if markerr := utilidades.Imprimir_markdown("# LLM:\n" + strings.TrimSpace(cuerpo)); markerr != nil {
+	if markerr := utilidades.Imprimir_markdown(strings.TrimSpace(cuerpo)); markerr != nil {
 
 		return markerr
 	}
@@ -131,11 +130,13 @@ func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp f
 
 	if prompterr != nil {
 
+		carga.Detener(wg)
 		return prompterr
 	}
 
 	if recerr := recibir_prompt(resp, carga, wg); recerr != nil {
 
+		carga.Detener(wg)
 		return recerr
 	}
 

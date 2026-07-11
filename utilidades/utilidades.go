@@ -56,7 +56,7 @@ func Imprimir_markdown(txt string) error {
 		return termerr
 	}
 	separador()
-	md, err := render.Render(txt)
+	md, err := render.Render("# LLM:\n" + txt)
 
 	if err != nil {
 		return err

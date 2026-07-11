@@ -47,9 +47,10 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
 }
 
-func (p *Carga) Detener() {
+func (p *Carga) Detener(wg *sync.WaitGroup) {
 
 	p.cargando = false
+	wg.Wait()
 }
 
 func Crear_carga() Carga {
