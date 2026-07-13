@@ -128,15 +128,15 @@ func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp f
 
 	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type, ctx, temp)
 
+	defer carga.Detener(wg)
+
 	if prompterr != nil {
 
-		carga.Detener(wg)
 		return prompterr
 	}
 
 	if recerr := recibir_prompt(resp, carga, wg); recerr != nil {
 
-		carga.Detener(wg)
 		return recerr
 	}
 
