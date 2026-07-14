@@ -53,7 +53,7 @@ func input(input string) string {
 
 func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float64) {
 
-	opciones := []string{"Volver", "Salir", "Borrar contexto", "Ingresar prompt"}
+	opciones := []string{"Volver", "Borrar contexto", "Ingresar prompt"}
 
 	for {
 		// TODO : quiza modifique esto
@@ -69,20 +69,12 @@ func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float6
 			return
 
 		case opciones[1]:
-
-			print("\n\n")
-			rich.Info("saliendo ...")
-			print("\n\n")
-			time.Sleep(time.Second * 2)
-			os.Exit(0)
-
-		case opciones[2]:
 			utilidades.Limpieza_rapida()
 			prompts.Borrar_memoria()
 			fmt.Print("\n")
 			rich.Info("la memoria del LLM fue borrada")
 
-		case opciones[3]:
+		case opciones[2]:
 
 			prompt := input("Prompt")
 
@@ -180,11 +172,6 @@ func checkear_status(Host string, Puerto int) error {
 
 func menu_modelos(modelos_disponibles []string) (string, error) {
 
-	if len(modelos_disponibles) == 0 {
-
-		return "", errors.New(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
-	}
-
 	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
 
 	if menuerr != nil {
@@ -226,22 +213,45 @@ func main() {
 
 	modelos_disponibles := listar_modelos_disponibles(Host, Puerto)
 
+	if len(modelos_disponibles) == 0 {
+		fmt.Print("\n\n")
+		rich.Warning(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
+		fmt.Print("\n\n")
+		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
+		return
+	}
+
+	// flujo del programa
+	var opcion_salir string = "[Salir]"
+
+	opciones_modelos := []string{opcion_salir}
+
+	opciones_modelos = append(opciones_modelos, modelos_disponibles...)
+
 	for {
+
 		utilidades.Limpieza_rapida()
-		IA_MODELO, menuerr := menu_modelos(modelos_disponibles)
+		//TODO: si el usuario tiene muchos modelos se puede buguear visualmente, quiza deba corregir eso
+		Opcion_modelo, menuerr := menu_modelos(opciones_modelos)
 
 		if menuerr != nil {
 
 			rich.Error(menuerr)
-			fmt.Println("visitar https://ollama.com/search para mas info")
+			rich.Info("visitar https://ollama.com/search para mas info")
 			time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 			return
 
 		}
 
-		box_informacion(IA_MODELO, Host, Puerto, Temp, Ctx)
+		if Opcion_modelo == opcion_salir {
 
-		iniciar_prompts(IA_MODELO, Api_chat, Content_type, Ctx, Temp)
+			return
+
+		}
+
+		box_informacion(Opcion_modelo, Host, Puerto, Temp, Ctx)
+
+		iniciar_prompts(Opcion_modelo, Api_chat, Content_type, Ctx, Temp)
 
 	}
 }
