@@ -51,9 +51,11 @@ func input(input string) string {
 
 }
 
-func iniciar_prompts(modelo, api_chat, content_type string, ctx int, temp float64) {
+func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 	opciones := []string{"Volver", "Borrar contexto", "Ingresar prompt"}
+
+	api_chat := fmt.Sprintf("%s/chat", url)
 
 	for {
 		// TODO : quiza modifique esto
@@ -111,9 +113,9 @@ func box_informacion(IA_MODELO, Host string, Puerto int, temp float64, ctx int) 
 
 }
 
-func listar_modelos_disponibles(Host string, Puerto int) []string {
+func listar_modelos_disponibles(url string) []string {
 
-	tags := fmt.Sprintf("http://%s:%d/api/tags", Host, Puerto)
+	tags := fmt.Sprintf("%s/tags", url)
 
 	resp, resperr := http.Get(tags)
 
@@ -154,9 +156,9 @@ func listar_modelos_disponibles(Host string, Puerto int) []string {
 
 }
 
-func checkear_status(Host string, Puerto int) error {
+func checkear_status(url string) error {
 
-	status := fmt.Sprintf("http://%s:%d/api/status", Host, Puerto)
+	status := fmt.Sprintf("%s/status", url)
 
 	resp, err := http.Get(status)
 
@@ -194,7 +196,7 @@ func main() {
 	Ctx := *ctx // el nivel de memoria de trabajo que puede maneja el LLM
 	Temp := *temp
 
-	var Api_chat = fmt.Sprintf("http://%s:%d/api/chat", Host, Puerto)
+	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 
 	instalado := utilidades.Ollama_instalado()
 
@@ -204,14 +206,14 @@ func main() {
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 
-	if err := checkear_status(Host, Puerto); err != nil {
+	if err := checkear_status(url); err != nil {
 
 		utilidades.Logueo_simple(err)
 		return
 
 	}
 
-	modelos_disponibles := listar_modelos_disponibles(Host, Puerto)
+	modelos_disponibles := listar_modelos_disponibles(url)
 
 	if len(modelos_disponibles) == 0 {
 		fmt.Print("\n\n")
@@ -251,7 +253,7 @@ func main() {
 
 		box_informacion(Opcion_modelo, Host, Puerto, Temp, Ctx)
 
-		iniciar_prompts(Opcion_modelo, Api_chat, Content_type, Ctx, Temp)
+		iniciar_prompts(Opcion_modelo, url, Content_type, Ctx, Temp)
 
 	}
 }
