@@ -22,10 +22,6 @@ import (
 	"github.com/rvfet/rich-go"
 )
 
-const (
-	LIMITE_MEMORIA = 100
-)
-
 var Host_default = "localhost"
 var Puerto_default = 11434
 var ctx_default = 16_000
@@ -47,7 +43,7 @@ func input(input string) string {
 	fmt.Print(utilidades.RESET)
 	lector := bufio.NewReader(os.Stdin)
 	texto, _ := lector.ReadString('\t')
-	return strings.Trim(texto, "\t")
+	return strings.TrimSpace(strings.Trim(texto, "\t"))
 
 }
 
@@ -103,7 +99,6 @@ func box_informacion(IA_MODELO, Host string, Puerto int, temp float64, ctx int) 
 
 		"Modelo selecionado":  IA_MODELO,
 		"Host":                fmt.Sprintf("%s:%d", Host, Puerto),
-		"Limite de memoria":   strconv.Itoa(LIMITE_MEMORIA),
 		"Sistema operativo":   runtime.GOOS,
 		"Temperatura del LLM": fmt.Sprintf("%.2f", temp),
 		"Contexto del LLM":    strconv.Itoa(ctx),
