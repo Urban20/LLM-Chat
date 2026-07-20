@@ -1,11 +1,11 @@
 # LLM-Chat
 
-Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com). Ofrece un menú navegable, indicador de carga durante la generación, renderizado de Markdown en la respuesta y manejo de memoria conversacional por sesión.
+Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com).
 
 ## Requisitos
 
 - Go 1.25 o superior (definido en `go.mod`).
-- [Ollama](https://ollama.com/download) instalado y accesible en el `PATH` del sistema.
+- [Ollama](https://ollama.com/download) instalado y accesible en el `PATH` del sistema (dicho servidor tambien puede correr de forma remota).
 - Al menos un modelo descargado en Ollama.
 - Una terminal que soporte secuencias ANSI (en Windows el propio binario habilita el modo virtual terminal al iniciar).
 
