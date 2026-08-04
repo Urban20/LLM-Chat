@@ -122,7 +122,7 @@ func Archivo_a_prompt(rutas []string) string {
 		ruta = filepath.Clean(ruta)
 		nombre_archivo := filepath.Base(ruta)
 
-		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n", nombre_archivo) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
+		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n\n", nombre_archivo) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
 		// el ingles es el idioma base
 
 		archivo, archerr := os.Open(ruta)
@@ -143,7 +143,7 @@ func Archivo_a_prompt(rutas []string) string {
 			continue
 		}
 
-		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n", nombre_archivo, string(contenido))
+		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", nombre_archivo, strings.TrimSpace(string(contenido)))
 	}
 
 	return prompt
@@ -152,7 +152,7 @@ func Archivo_a_prompt(rutas []string) string {
 
 func Input(str string) string {
 
-	fmt.Print(str)
+	fmt.Print(AMARILLO + str + RESET)
 	sc := bufio.NewScanner(os.Stdin)
 
 	sc.Scan()

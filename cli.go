@@ -49,7 +49,7 @@ func input(input string) string {
 
 func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
-	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Ingresar prompt"}
+	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Ingresar prompt"}
 
 	api_chat := fmt.Sprintf("%s/chat", url)
 
@@ -69,22 +69,38 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 			return
 
 		case opciones[1]:
+
 			utilidades.Limpieza_rapida()
 			prompts.Borrar_memoria()
 			fmt.Print("\n")
 			rich.Info("la memoria del LLM fue borrada")
 
 		case opciones[2]:
-			fmt.Print("\n")
-			archivos := utilidades.Input("ruta de los archivos separados por ',' >> ")
 
-			arch_list := strings.Split(archivos, ",")
+			fmt.Print("\n")
+			archivos := utilidades.Input("ruta de los archivos >> ")
+
+			if archivos == "" {
+
+				continue
+			}
+
+			arch_list := strings.Split(archivos, " ")
 
 			archivo_prompt = utilidades.Archivo_a_prompt(arch_list)
 
 		case opciones[3]:
 
+			archivo_prompt = ""
+
+		case opciones[4]:
+
 			prompt := input("Prompt")
+
+			if prompt == "" {
+
+				continue
+			}
 
 			carga := menu.Crear_carga()
 
@@ -96,7 +112,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 				fmt.Print("\n")
 				rich.Warning(err)
 			}
-
+			archivo_prompt = ""
 		}
 	}
 }
