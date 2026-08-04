@@ -1,10 +1,13 @@
 package utilidades
 
 import (
+	"bufio"
 	_ "embed"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -101,6 +104,60 @@ func Formato_string_box(cuerpo map[string]string) []string {
 	}
 
 	return retorno
+
+}
+
+func Archivo_a_prompt(rutas []string) string {
+
+	/*
+		funcion que lee archivos de texto plano como .txt, .md y los transforma en un string
+		el cual se inyecta en el prompt para darle al modelo contexto de los archivos
+
+	*/
+
+	var prompt string
+
+	for _, ruta := range rutas {
+
+		ruta = filepath.Clean(ruta)
+		nombre_archivo := filepath.Base(ruta)
+
+		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n", nombre_archivo) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
+		// el ingles es el idioma base
+
+		archivo, archerr := os.Open(ruta)
+
+		if archerr != nil {
+
+			prompt += vacio
+			continue
+		}
+
+		defer archivo.Close()
+
+		contenido, conterr := io.ReadAll(archivo)
+
+		if conterr != nil {
+
+			prompt += vacio
+			continue
+		}
+
+		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n", nombre_archivo, string(contenido))
+	}
+
+	return prompt
+
+}
+
+func Input(str string) string {
+
+	fmt.Print(str)
+	sc := bufio.NewScanner(os.Stdin)
+
+	sc.Scan()
+
+	return sc.Text()
 
 }
 
