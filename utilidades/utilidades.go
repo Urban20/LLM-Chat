@@ -107,7 +107,35 @@ func Formato_string_box(cuerpo map[string]string) []string {
 
 }
 
-func Archivo_a_prompt(rutas []string) string {
+type Prompt_archivo struct { //struct para manejar el envio de informacion al llm
+	Prompt   string
+	Archivos []string
+}
+
+func (s Prompt_archivo) Mostrar_archivos() {
+
+	if len(s.Archivos) == 0 {
+
+		return
+	}
+
+	fmt.Print(AZUL_OSCURO + "\n\n(*) Archivos adjuntos:\n\n" + RESET)
+
+	for _, arch := range s.Archivos {
+
+		fmt.Println(arch)
+	}
+
+}
+
+func (s *Prompt_archivo) Borrar_informacion() {
+
+	s.Prompt = ""
+	s.Archivos = []string{}
+
+}
+
+func Archivo_a_prompt(rutas []string) Prompt_archivo {
 
 	/*
 		funcion que lee archivos de texto plano como .txt, .md y los transforma en un string
@@ -116,11 +144,14 @@ func Archivo_a_prompt(rutas []string) string {
 	*/
 
 	var prompt string
+	var archivos = []string{}
 
 	for _, ruta := range rutas {
 
 		ruta = filepath.Clean(ruta)
 		nombre_archivo := filepath.Base(ruta)
+
+		archivos = append(archivos, nombre_archivo)
 
 		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n\n", nombre_archivo) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
 		// el ingles es el idioma base
@@ -146,7 +177,7 @@ func Archivo_a_prompt(rutas []string) string {
 		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", nombre_archivo, strings.TrimSpace(string(contenido)))
 	}
 
-	return prompt
+	return Prompt_archivo{Prompt: prompt, Archivos: archivos}
 
 }
 

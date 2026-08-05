@@ -53,7 +53,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 	api_chat := fmt.Sprintf("%s/chat", url)
 
-	var archivo_prompt string
+	var archivo_prompt utilidades.Prompt_archivo
 
 	for {
 		// TODO : quiza modifique esto
@@ -91,9 +91,11 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 		case opciones[3]:
 
-			archivo_prompt = ""
+			archivo_prompt.Borrar_informacion()
 
 		case opciones[4]:
+
+			archivo_prompt.Mostrar_archivos()
 
 			prompt := input("Prompt")
 
@@ -108,11 +110,11 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 			go carga.Iniciar(&wg)
 
-			if err := prompts.Comunicacion(archivo_prompt+"\n[prompt]\n\n"+prompt, modelo, api_chat, content_type, ctx, temp, &carga, &wg); err != nil {
+			if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, api_chat, content_type, ctx, temp, &carga, &wg); err != nil {
 				fmt.Print("\n")
 				rich.Warning(err)
 			}
-			archivo_prompt = ""
+			archivo_prompt.Borrar_informacion()
 		}
 	}
 }
