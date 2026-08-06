@@ -148,6 +148,7 @@ func Menu(opciones ...string) (string, error) {
 
 	defer term.Restore(fd, st)
 
+	opciones = utilidades.Eliminar_repetidos(opciones)
 	return desplegar_opcion(opciones), nil
 
 }

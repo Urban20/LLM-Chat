@@ -68,11 +68,18 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 
 	}
 
+	cuerpo = strings.TrimSpace(cuerpo)
+
+	if cuerpo == "" {
+
+		return errors.New("la respuesta llego vacia")
+	}
+
 	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
 	utilidades.Limpieza_rapida()
 
-	if markerr := utilidades.Imprimir_markdown(strings.TrimSpace(cuerpo)); markerr != nil {
+	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
 
 		return markerr
 	}

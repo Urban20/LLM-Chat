@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -88,6 +89,24 @@ func Limpieza_rapida() {
 func Logueo_simple(mensaje any) {
 	rich.Error(mensaje)
 	time.Sleep(time.Second * TIEMPO_PAUSA)
+
+}
+
+func Eliminar_repetidos(elementos []string) []string {
+
+	copia := []string{}
+
+	for _, el := range elementos {
+
+		if slices.Contains(copia, el) {
+			continue
+		}
+
+		copia = append(copia, el)
+
+	}
+
+	return copia
 
 }
 
