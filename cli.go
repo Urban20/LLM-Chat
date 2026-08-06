@@ -5,14 +5,12 @@ import (
 	"LLM-Chat/menu"
 	"LLM-Chat/prompts"
 	"LLM-Chat/utilidades"
-	"bufio"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -33,19 +31,6 @@ var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
 var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
-
-func input(input string) string {
-
-	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", utilidades.AMARILLO, utilidades.RESET)
-
-	fmt.Print(utilidades.VIOLETA)
-	fmt.Printf("\n\n%s :\n", input)
-	fmt.Print(utilidades.RESET)
-	lector := bufio.NewReader(os.Stdin)
-	texto, _ := lector.ReadString('\t')
-	return strings.TrimSpace(strings.Trim(texto, "\t"))
-
-}
 
 func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
@@ -78,7 +63,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 		case opciones[2]:
 
 			fmt.Print("\n")
-			archivos := utilidades.Input("ruta de los archivos >> ")
+			archivos := utilidades.Input("ruta de los archivos")
 
 			if archivos == "" {
 
@@ -97,7 +82,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 			archivo_prompt.Mostrar_archivos()
 
-			prompt := input("Prompt")
+			prompt := utilidades.Input_multilinea("Prompt")
 
 			if prompt == "" {
 

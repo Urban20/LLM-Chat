@@ -183,12 +183,25 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 
 func Input(str string) string {
 
-	fmt.Print(AMARILLO + str + RESET)
+	fmt.Print(AMARILLO + str + ": " + RESET)
 	sc := bufio.NewScanner(os.Stdin)
 
 	sc.Scan()
 
 	return sc.Text()
+
+}
+
+func Input_multilinea(input string) string {
+
+	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", AMARILLO, RESET)
+
+	fmt.Print(VIOLETA)
+	fmt.Printf("\n\n%s :\n", input)
+	fmt.Print(RESET)
+	lector := bufio.NewReader(os.Stdin)
+	texto, _ := lector.ReadString('\t')
+	return strings.TrimSpace(strings.Trim(texto, "\t"))
 
 }
 
