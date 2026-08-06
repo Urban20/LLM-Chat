@@ -4,6 +4,7 @@ import (
 	"LLM-Chat/utilidades"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -51,6 +52,7 @@ func (p *Carga) Detener(wg *sync.WaitGroup) {
 
 	p.cargando = false
 	wg.Wait()
+	fmt.Print("\r" + strings.Repeat(" ", len(p.estado_1)))
 }
 
 func Crear_carga() Carga {
