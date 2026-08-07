@@ -3,11 +3,22 @@ package prompts
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
+	// para chat
 	Model       string       `json:"model"`
 	Created_at  string       `json:"created_at"`
 	Message     message_chat `json:"message"`
 	Done        bool         `json:"done"`
 	Done_reason string       `json:"done_reason"`
+
+	// para generate
+	Response string `json:"response"`
+	Thinking string `json:"thinking"`
+}
+
+type message_generate struct { // envio al server
+	Model  string
+	Prompt string
+	Images []string //base64
 }
 
 type message_chat struct {

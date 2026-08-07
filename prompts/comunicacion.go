@@ -30,8 +30,35 @@ func Guardar_en_memoria(prompt, rol string) {
 
 }
 
+// recibe una struct y la envia por POST al servidor
+func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response, error) {
+
+	msg_byte, jsonerr := json.Marshal(info)
+
+	if jsonerr != nil {
+		return &http.Response{}, jsonerr
+	}
+
+	data := bytes.NewReader(msg_byte)
+
+	resp, resperr := http.Post(endpoint, content_type, data)
+
+	if resperr != nil {
+
+		return resp, resperr
+	}
+
+	if resp.StatusCode != http.StatusOK {
+
+		return resp, fmt.Errorf("hubo un problema con la solicitud post, codigo de estado: %d", resp.StatusCode)
+	}
+
+	return resp, nil
+
+}
+
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) error {
+func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
 
 	var cuerpo string
 
@@ -50,8 +77,6 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 			return marsherr
 		}
 
-		cuerpo += json_respuesta.Message.Content
-
 		if json_respuesta.Done_reason == "length" {
 
 			return errors.New("se agoto el contexto disponible para la generacion de nuevas respuestas")
@@ -64,7 +89,16 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 
 		}
 
-		fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use
+		if chat { // para chat
+
+			cuerpo += json_respuesta.Message.Content
+			fmt.Print(json_respuesta.Message.Thinking) //depende del modelo que se use
+
+		} else { // para generate
+
+			cuerpo += json_respuesta.Response
+			fmt.Print(json_respuesta.Thinking)
+		}
 
 	}
 
@@ -75,7 +109,10 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 		return errors.New("la respuesta llego vacia")
 	}
 
-	Guardar_en_memoria(cuerpo, "LLM (IA)")
+	if chat {
+
+		Guardar_en_memoria(cuerpo, "LLM (IA)")
+	}
 
 	utilidades.Limpieza_rapida()
 
@@ -88,7 +125,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup) 
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp float64) (*http.Response, error) {
+func enviar_prompt_chat(prompt, Modelo, Api_chat, Content_type string, ctx int, temp float64) (*http.Response, error) {
 
 	Guardar_en_memoria(prompt, "user")
 
@@ -98,9 +135,6 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 		temperature: temp,
 	}
 
-	// TODO: agregar soporte para vision de imagenes
-	// Memoria es para chat, quiza puedo hacer un condicional que maneje generate
-
 	json_prompt_usuario := Mensaje_usuario{
 
 		Model:    Modelo,
@@ -109,34 +143,14 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 		Options:  opciones,
 	}
 
-	msg_byte, jsonerr := json.Marshal(&json_prompt_usuario)
-
-	if jsonerr != nil {
-		return &http.Response{}, jsonerr
-	}
-
-	data := bytes.NewReader(msg_byte)
-
-	resp, resperr := http.Post(Api_chat, Content_type, data)
-
-	if resperr != nil {
-
-		return resp, resperr
-	}
-
-	if resp.StatusCode != http.StatusOK {
-
-		return resp, fmt.Errorf("hubo un problema con la solicitud post, codigo de estado: %d", resp.StatusCode)
-	}
-
-	return resp, nil
+	return struct_a_respuesta(json_prompt_usuario, Api_chat, Content_type)
 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup) error {
+func Comunicacion(prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
 
-	resp, prompterr := enviar_prompt(prompt, modelo, api_chat, content_type, ctx, temp)
+	resp, prompterr := enviar_prompt_chat(prompt, modelo, endpoint, content_type, ctx, temp)
 
 	defer carga.Detener(wg)
 
@@ -145,7 +159,7 @@ func Comunicacion(prompt, modelo, api_chat, content_type string, ctx int, temp f
 		return prompterr
 	}
 
-	if recerr := recibir_prompt(resp, carga, wg); recerr != nil {
+	if recerr := recibir_prompt(resp, carga, wg, chat); recerr != nil {
 
 		return recerr
 	}
