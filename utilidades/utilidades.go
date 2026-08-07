@@ -3,6 +3,7 @@ package utilidades
 import (
 	"bufio"
 	_ "embed"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -247,5 +248,35 @@ func Formatear_input(msg string) ([]string, error) {
 	arch_list = strings.Split(archivos, " ")
 
 	return arch_list, nil
+
+}
+
+func Imagen_a_base64(rutas ...string) ([]string, error) {
+
+	var bases []string
+
+	for _, ruta := range rutas {
+
+		img, imgerr := os.Open(ruta)
+
+		if imgerr != nil {
+
+			return bases, imgerr
+		}
+
+		defer img.Close()
+
+		data, dataerr := io.ReadAll(img)
+
+		if dataerr != nil {
+			return bases, dataerr
+		}
+
+		base := base64.StdEncoding.EncodeToString(data)
+
+		bases = append(bases, base)
+	}
+
+	return bases, nil
 
 }

@@ -31,7 +31,7 @@ var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha e
 var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
 var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
 
-func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool) error {
+func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
 
 	prompt := utilidades.Input_multilinea("Prompt")
 
@@ -46,7 +46,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 	go carga.Iniciar(&wg)
 
-	if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat); err != nil {
+	if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		rich.Warning(err)
 	}
@@ -57,9 +57,10 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
-	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Ingresar prompt"}
+	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
 	api_chat := fmt.Sprintf("%s/chat", url)
+	api_generate := fmt.Sprintf("%s/generate", url)
 
 	var archivo_prompt utilidades.Prompt_archivo
 
@@ -100,9 +101,30 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 		case opciones[4]:
 
+			imgs, formaterr := utilidades.Formatear_input("ruta de las imagenes")
+
+			if formaterr != nil {
+
+				continue
+			}
+
+			imagenes, imgerr := utilidades.Imagen_a_base64(imgs...)
+
+			if imgerr != nil {
+
+				continue
+			}
+
+			if err := iniciar_conversacion(archivo_prompt, modelo, api_generate, content_type, ctx, temp, false, imagenes); err != nil {
+
+				continue
+			}
+
+		case opciones[5]:
+
 			archivo_prompt.Mostrar_archivos()
 
-			if err := iniciar_conversacion(archivo_prompt, modelo, api_chat, content_type, ctx, temp, true); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, modelo, api_chat, content_type, ctx, temp, true, []string{}); err != nil {
 
 				continue
 			}

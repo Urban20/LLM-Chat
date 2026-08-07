@@ -109,10 +109,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 		return errors.New("la respuesta llego vacia")
 	}
 
-	if chat {
-
-		Guardar_en_memoria(cuerpo, "LLM (IA)")
-	}
+	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
 	utilidades.Limpieza_rapida()
 
@@ -125,7 +122,9 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt_chat(prompt, Modelo, Api_chat, Content_type string, ctx int, temp float64) (*http.Response, error) {
+func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp float64, chat bool, imagenes []string) (*http.Response, error) {
+
+	var json_prompt_usuario any
 
 	Guardar_en_memoria(prompt, "user")
 
@@ -135,22 +134,35 @@ func enviar_prompt_chat(prompt, Modelo, Api_chat, Content_type string, ctx int, 
 		temperature: temp,
 	}
 
-	json_prompt_usuario := Mensaje_usuario{
+	if chat {
 
-		Model:    Modelo,
-		Messages: Memoria,
-		Stream:   true,
-		Options:  opciones,
+		json_prompt_usuario = Mensaje_usuario_chat{
+
+			Model:    Modelo,
+			Messages: Memoria,
+			Stream:   true,
+			Options:  opciones,
+		}
+
+	} else { //generate
+
+		json_prompt_usuario = Mensaje_usuario_generate{
+
+			Model:  Modelo,
+			Prompt: prompt,
+			Images: imagenes,
+		}
+
 	}
 
-	return struct_a_respuesta(json_prompt_usuario, Api_chat, Content_type)
+	return struct_a_respuesta(json_prompt_usuario, endpoint, Content_type)
 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
+func Comunicacion(prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
-	resp, prompterr := enviar_prompt_chat(prompt, modelo, endpoint, content_type, ctx, temp)
+	resp, prompterr := enviar_prompt(prompt, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
 
 	defer carga.Detener(wg)
 

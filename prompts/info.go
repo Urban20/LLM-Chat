@@ -15,7 +15,7 @@ type Info struct {
 	Thinking string `json:"thinking"`
 }
 
-type message_generate struct { // envio al server
+type Mensaje_usuario_generate struct { // envio al server
 	Model  string
 	Prompt string
 	Images []string //base64
@@ -41,7 +41,7 @@ type Modelos struct {
 	Models []modelo `json:"models"`
 }
 
-type Mensaje_usuario struct {
+type Mensaje_usuario_chat struct {
 	Model    string
 	Messages []message_chat
 	Stream   bool
