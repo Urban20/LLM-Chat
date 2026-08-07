@@ -144,13 +144,14 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 			Options:  opciones,
 		}
 
-	} else { //generate
+	} else { //generate, para el procesamiento de imagenes
 
 		json_prompt_usuario = Mensaje_usuario_generate{
 
-			Model:  Modelo,
-			Prompt: prompt,
-			Images: imagenes,
+			Model:   Modelo,
+			Prompt:  prompt,
+			Images:  imagenes,
+			Options: opciones,
 		}
 
 	}

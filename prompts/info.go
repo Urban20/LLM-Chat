@@ -16,9 +16,10 @@ type Info struct {
 }
 
 type Mensaje_usuario_generate struct { // envio al server
-	Model  string
-	Prompt string
-	Images []string //base64
+	Model   string
+	Prompt  string
+	Images  []string //base64
+	Options Opciones
 }
 
 type message_chat struct {
