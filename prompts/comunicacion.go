@@ -14,17 +14,17 @@ import (
 	"sync"
 )
 
-var Memoria = []message{}
+var Memoria []message_chat
 
 func Borrar_memoria() {
 
-	Memoria = []message{}
+	Memoria = []message_chat{}
 
 }
 
 func Guardar_en_memoria(prompt, rol string) {
 
-	mensaje_usuario := message{Role: rol, Content: prompt}
+	mensaje_usuario := message_chat{Role: rol, Content: prompt}
 
 	Memoria = append(Memoria, mensaje_usuario)
 
@@ -97,6 +97,9 @@ func enviar_prompt(prompt, Modelo, Api_chat, Content_type string, ctx int, temp 
 		num_predict: -1,
 		temperature: temp,
 	}
+
+	// TODO: agregar soporte para vision de imagenes
+	// Memoria es para chat, quiza puedo hacer un condicional que maneje generate
 
 	json_prompt_usuario := Mensaje_usuario{
 

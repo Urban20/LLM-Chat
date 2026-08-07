@@ -3,6 +3,7 @@ package utilidades
 import (
 	"bufio"
 	_ "embed"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -163,7 +164,7 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 	*/
 
 	var prompt string
-	var archivos = []string{}
+	var archivos []string
 
 	for _, ruta := range rutas {
 
@@ -226,3 +227,25 @@ func Input_multilinea(input string) string {
 
 //go:embed estilo.json
 var Estilos string
+
+func Formatear_input(msg string) ([]string, error) {
+
+	// espera un mensaje para el input y se devuelve la salida en formato de lista de strings
+	//para ser procesado por la ia (envio de archivos como texto plano , imagenes, etc)
+
+	var arch_list []string
+
+	fmt.Print("\n")
+	archivos := Input(AMARILLO + msg + ": " + RESET)
+
+	if archivos == "" {
+
+		return arch_list, errors.New("input vacio") // esto realmente no se usa, es para que evite ejecutando
+
+	}
+
+	arch_list = strings.Split(archivos, " ")
+
+	return arch_list, nil
+
+}

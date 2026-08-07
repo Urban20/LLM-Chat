@@ -3,14 +3,14 @@ package prompts
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
-	Model       string  `json:"model"`
-	Created_at  string  `json:"created_at"`
-	Message     message `json:"message"`
-	Done        bool    `json:"done"`
-	Done_reason string  `json:"done_reason"`
+	Model       string       `json:"model"`
+	Created_at  string       `json:"created_at"`
+	Message     message_chat `json:"message"`
+	Done        bool         `json:"done"`
+	Done_reason string       `json:"done_reason"`
 }
 
-type message struct {
+type message_chat struct {
 	Role     string `json:"role"`
 	Content  string `json:"content"`
 	Thinking string `json:"thinking"`
@@ -32,7 +32,7 @@ type Modelos struct {
 
 type Mensaje_usuario struct {
 	Model    string
-	Messages []message
+	Messages []message_chat
 	Stream   bool
 	Options  Opciones
 }

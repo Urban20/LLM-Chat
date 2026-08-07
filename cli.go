@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"runtime"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -31,6 +30,30 @@ var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
 var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
 var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
 var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
+
+func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64) error {
+
+	prompt := utilidades.Input_multilinea("Prompt")
+
+	if prompt == "" {
+
+		return errors.New("prompt vacio")
+	}
+
+	carga := menu.Crear_carga()
+
+	wg := sync.WaitGroup{}
+
+	go carga.Iniciar(&wg)
+
+	if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg); err != nil {
+		fmt.Print("\n")
+		rich.Warning(err)
+	}
+
+	return nil
+
+}
 
 func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
@@ -62,15 +85,12 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 		case opciones[2]:
 
-			fmt.Print("\n")
-			archivos := utilidades.Input("ruta de los archivos")
+			arch_list, formaterr := utilidades.Formatear_input("ruta de los archivos")
 
-			if archivos == "" {
+			if formaterr != nil {
 
 				continue
 			}
-
-			arch_list := strings.Split(archivos, " ")
 
 			archivo_prompt = utilidades.Archivo_a_prompt(arch_list)
 
@@ -82,23 +102,11 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 			archivo_prompt.Mostrar_archivos()
 
-			prompt := utilidades.Input_multilinea("Prompt")
-
-			if prompt == "" {
+			if err := iniciar_conversacion(archivo_prompt, modelo, api_chat, content_type, ctx, temp); err != nil {
 
 				continue
 			}
 
-			carga := menu.Crear_carga()
-
-			wg := sync.WaitGroup{}
-
-			go carga.Iniciar(&wg)
-
-			if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, api_chat, content_type, ctx, temp, &carga, &wg); err != nil {
-				fmt.Print("\n")
-				rich.Warning(err)
-			}
 			archivo_prompt.Borrar_informacion()
 		}
 	}
