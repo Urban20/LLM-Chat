@@ -129,9 +129,9 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 	Guardar_en_memoria(prompt, "user")
 
 	opciones := Opciones{
-		num_ctx:     ctx,
-		num_predict: -1,
-		temperature: temp,
+		Num_ctx:     ctx,
+		Num_predict: -1,
+		Temperature: temp,
 	}
 
 	if chat {

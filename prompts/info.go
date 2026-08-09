@@ -50,7 +50,7 @@ type Mensaje_usuario_chat struct {
 }
 
 type Opciones struct {
-	num_ctx     int //controla tokens totales (memoria de trabajo total)
-	num_predict int // sin limite de generacion de tokens (limite de tokens)
-	temperature float64
+	Num_ctx     int     `json:"num_ctx"`     //controla tokens totales (memoria de trabajo total)
+	Num_predict int     `json:"bum_predict"` // sin limite de generacion de tokens (limite de tokens)
+	Temperature float64 `json:"temperature"`
 }
