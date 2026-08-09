@@ -22,6 +22,24 @@ func Borrar_memoria() {
 
 }
 
+// quita el modelo de la carga (no tiene nada que ver con la instalacion de un nuevo modelo)
+func Descargar_modelo(modelo, content_type, endpoint string) {
+
+	type Payload struct {
+		Model      string `json:"model"`
+		Keep_alive int    `json:"keep_alive"`
+	}
+
+	payload := Payload{Model: modelo, Keep_alive: 0}
+
+	b, _ := json.Marshal(&payload)
+
+	data := bytes.NewReader(b)
+
+	http.Post(endpoint, content_type, data)
+
+}
+
 func Guardar_en_memoria(prompt, rol string) {
 
 	mensaje_usuario := message_chat{Role: rol, Content: prompt}

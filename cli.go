@@ -74,6 +74,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 		case opciones[0]:
 
 			prompts.Borrar_memoria()
+			prompts.Descargar_modelo(modelo, content_type, api_chat)
 
 			return
 
