@@ -31,7 +31,7 @@ var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha e
 var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
 var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
 
-func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
+func iniciar_conversacion(archivo_prompt utilidades.Prompt, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
 
 	prompt := utilidades.Input_multilinea("Prompt")
 
@@ -57,12 +57,12 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
-	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
+	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Adjuntar urls", "Eliminar elementos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
 	api_chat := fmt.Sprintf("%s/chat", url)
 	api_generate := fmt.Sprintf("%s/generate", url)
 
-	var archivo_prompt utilidades.Prompt_archivo
+	var archivo_prompt utilidades.Prompt
 
 	for {
 		// TODO : quiza modifique esto
@@ -98,9 +98,20 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 		case opciones[3]:
 
-			archivo_prompt.Borrar_informacion()
+			urls, formaterr := utilidades.Formatear_input("Urls a scrapear")
+
+			if formaterr != nil {
+
+				continue
+			}
+
+			archivo_prompt = utilidades.Scraping_web(urls...)
 
 		case opciones[4]:
+
+			archivo_prompt.Borrar_informacion()
+
+		case opciones[5]:
 
 			imgs, formaterr := utilidades.Formatear_input("ruta de las imagenes")
 
@@ -121,9 +132,9 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 				continue
 			}
 
-		case opciones[5]:
+		case opciones[6]:
 
-			archivo_prompt.Mostrar_archivos()
+			archivo_prompt.Mostrar_elementos()
 
 			if err := iniciar_conversacion(archivo_prompt, modelo, api_chat, content_type, ctx, temp, true, []string{}); err != nil {
 

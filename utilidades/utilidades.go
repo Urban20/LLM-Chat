@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,8 +15,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/charmbracelet/glamour"
 	"github.com/pterm/pterm"
+
 	"github.com/rvfet/rich-go"
 	"golang.org/x/term"
 )
@@ -128,35 +131,36 @@ func Formato_string_box(cuerpo map[string]string) []string {
 
 }
 
-type Prompt_archivo struct { //struct para manejar el envio de informacion al llm
-	Prompt   string
-	Archivos []string
+type Prompt struct { //struct para manejar el envio de informacion al llm
+	Prompt string
+	Data   []string // cualquier tipo de informacion extra (archivos planos o urls)
 }
 
-func (s Prompt_archivo) Mostrar_archivos() {
+func (s Prompt) Mostrar_elementos() {
 
-	if len(s.Archivos) == 0 {
+	if len(s.Data) == 0 {
 
 		return
 	}
 
-	fmt.Print(AZUL_OSCURO + "\n\n(*) Archivos adjuntos:\n\n" + RESET)
+	fmt.Print(AZUL_OSCURO + "\n\n(*) Elementos adjuntos:\n\n" + RESET)
 
-	for _, arch := range s.Archivos {
+	for _, arch := range s.Data {
 
-		fmt.Println(arch)
+		fmt.Printf("* %s\n", arch)
 	}
 
 }
 
-func (s *Prompt_archivo) Borrar_informacion() {
+// utilizado para contruir prompts los cuales adjuntan informacion extra de manera automatica
+func (s *Prompt) Borrar_informacion() {
 
 	s.Prompt = ""
-	s.Archivos = []string{}
+	s.Data = []string{}
 
 }
 
-func Archivo_a_prompt(rutas []string) Prompt_archivo {
+func Archivo_a_prompt(rutas []string) Prompt {
 
 	/*
 		funcion que lee archivos de texto plano como .txt, .md y los transforma en un string
@@ -198,7 +202,7 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", nombre_archivo, strings.TrimSpace(string(contenido)))
 	}
 
-	return Prompt_archivo{Prompt: prompt, Archivos: archivos}
+	return Prompt{Prompt: prompt, Data: archivos}
 
 }
 
@@ -278,5 +282,46 @@ func Imagen_a_base64(rutas ...string) ([]string, error) {
 	}
 
 	return bases, nil
+
+}
+
+func Scraping_web(urls ...string) Prompt {
+
+	var contenido string
+	var etiquetas []string
+
+	for _, url := range urls {
+
+		vacio := fmt.Sprintf("URL [%s]\n\n**empty**\n", url)
+
+		req, reqerr := http.Get(url)
+
+		if reqerr != nil || req.StatusCode != 200 {
+
+			contenido += vacio
+			continue
+		}
+
+		defer req.Body.Close()
+
+		doc, docerr := goquery.NewDocumentFromReader(req.Body)
+
+		if docerr != nil {
+
+			contenido += vacio
+			continue
+		}
+
+		etiqueta := doc.Find("title").Text()
+
+		etiquetas = append(etiquetas, etiqueta)
+
+		contenido += fmt.Sprintf("URL [%s]\nTITLE [%s]\n\nBODY:\n%s\n", url, etiqueta, doc.Find("body").Text())
+
+	}
+
+	contenido = strings.TrimSpace(contenido)
+
+	return Prompt{Prompt: contenido, Data: etiquetas}
 
 }
