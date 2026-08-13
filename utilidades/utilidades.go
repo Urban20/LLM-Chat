@@ -287,6 +287,17 @@ func Imagen_a_base64(rutas ...string) ([]string, error) {
 
 func Scraping_web(urls ...string) Prompt {
 
+	/*
+		esto es un scrapeo simple para que el LLM pueda tener informacion de urls
+
+		NO es una solucion elegante, pero funciona
+
+
+		NO A TODAS LAS WEBS SE LES PUEDE EFECTUAR UN SCRAPING
+
+
+	*/
+
 	var contenido string
 	var etiquetas []string
 
@@ -316,12 +327,45 @@ func Scraping_web(urls ...string) Prompt {
 
 		etiquetas = append(etiquetas, etiqueta)
 
-		contenido += fmt.Sprintf("URL [%s]\nTITLE [%s]\n\nBODY:\n%s\n", url, etiqueta, doc.Find("body").Text())
+		contenido += fmt.Sprintf("URL [%s]\nTITLE [%s]\n\nBODY:\n%s\n", url, etiqueta, Eliminar_espacios(doc.Find("body").Text()))
 
 	}
 
-	contenido = strings.TrimSpace(contenido)
-
 	return Prompt{Prompt: contenido, Data: etiquetas}
+
+}
+
+func Vacio(linea string) bool {
+
+	for _, c := range linea {
+
+		if c != ' ' {
+
+			return false
+
+		}
+
+	}
+
+	return true
+
+}
+
+func Eliminar_espacios(texto string) string {
+	// quito espacios en blanco, utilizado durante el scraping para evitar que el LLM procese mas info
+	// con caracteres irrelevantes (vacios)
+
+	var t []string
+
+	for _, linea := range strings.Split(texto, "\n") {
+
+		if !Vacio(linea) {
+
+			t = append(t, linea)
+		}
+
+	}
+
+	return strings.Join(t, "\n")
 
 }
