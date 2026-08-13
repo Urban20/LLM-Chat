@@ -241,7 +241,7 @@ func Formatear_input(msg string) ([]string, error) {
 	var arch_list []string
 
 	fmt.Print("\n")
-	archivos := Input(AMARILLO + msg + ": " + RESET)
+	archivos := Input(AMARILLO + msg + RESET)
 
 	if archivos == "" {
 
