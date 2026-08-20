@@ -3,6 +3,11 @@ package prompts
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
+	// ambos
+
+	Num_tokens_prompt int `json:"prompt_eval_count"`
+	Num_tokens_resp   int `json:"eval_count"`
+
 	// para chat
 	Model       string       `json:"model"`
 	Created_at  string       `json:"created_at"`

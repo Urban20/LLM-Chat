@@ -79,6 +79,7 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
 
 	var cuerpo string
+	var tokens int
 
 	escaner := bufio.NewScanner(resp.Body)
 	defer resp.Body.Close()
@@ -86,6 +87,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 	carga.Detener(wg)
 
 	fmt.Print("\n\n" + utilidades.GRIS_AZUL)
+
 	for escaner.Scan() {
 
 		json_respuesta := Info{}
@@ -94,6 +96,8 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 			return marsherr
 		}
+
+		tokens += json_respuesta.Num_tokens_prompt + json_respuesta.Num_tokens_resp
 
 		if json_respuesta.Done_reason == "length" {
 
@@ -121,6 +125,8 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 	}
 
 	cuerpo = strings.TrimSpace(cuerpo)
+
+	defer fmt.Printf("%stokens generados: %d%s\n", utilidades.FONDO_VERDE, tokens, utilidades.RESET)
 
 	if cuerpo == "" {
 
