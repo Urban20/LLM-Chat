@@ -285,7 +285,7 @@ func main() {
 		}
 
 		if Opcion_modelo == opcion_salir {
-
+			utilidades.Limpieza_rapida()
 			return
 
 		}
