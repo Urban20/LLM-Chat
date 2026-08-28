@@ -20,16 +20,15 @@ import (
 	"golang.org/x/term"
 )
 
-const TIEMPO_PAUSA = 4
-
 const (
-	AMARILLO    = "\033[0;33m"
-	RESET       = "\033[0m"
-	VIOLETA     = "\033[38;2;146;68;219m"
-	GRIS_AZUL   = "\033[38;2;90;112;176m"
-	BLANCO      = "\033[47m"
-	AZUL_OSCURO = "\033[38;2;116;116;247m"
-	FONDO_VERDE = "\033[48;2;13;219;88m"
+	TIEMPO_PAUSA = 4
+	AMARILLO     = "\033[0;33m"
+	RESET        = "\033[0m"
+	VIOLETA      = "\033[38;2;146;68;219m"
+	GRIS_AZUL    = "\033[38;2;90;112;176m"
+	BLANCO       = "\033[47m"
+	AZUL_OSCURO  = "\033[38;2;116;116;247m"
+	FONDO_VERDE  = "\033[48;2;13;219;88m"
 )
 
 func separador() {

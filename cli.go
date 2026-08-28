@@ -19,17 +19,21 @@ import (
 	"github.com/rvfet/rich-go"
 )
 
-var Host_default = "localhost"
-var Puerto_default = 11434
-var ctx_default = 16_000
-var temp_defalut = 0.5
-var Content_type = "aplication/json"
-var conserr = consola.Iniciar_ANSI()
+const (
+	HOST_DEFAULT   = "localhost"
+	PUERTO_DEFAULT = 11434
+	CTX_DEFAULT    = 16_000
+	TEMP_DEFAULT   = 0.5
+	CONTENT_TYPE   = "aplication/json"
+)
 
-var host_selec = flag.String("host", Host_default, "url al enpoint de Ollama")
-var puerto_selec = flag.Int("puerto", Puerto_default, "puerto donde se escucha el endpoint")
-var ctx = flag.Int("ctx", ctx_default, "cantidad contexto que usara el LLM")
-var temp = flag.Float64("temp", temp_defalut, "temperatura del LLM")
+var (
+	conserr      = consola.Iniciar_ANSI()
+	host_selec   = flag.String("host", HOST_DEFAULT, "url al enpoint de Ollama")
+	puerto_selec = flag.Int("puerto", PUERTO_DEFAULT, "puerto donde se escucha el endpoint")
+	ctx          = flag.Int("ctx", CTX_DEFAULT, "cantidad contexto que usara el LLM")
+	temp         = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
+)
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
 
@@ -292,7 +296,7 @@ func main() {
 
 		box_informacion(Opcion_modelo, Host, Puerto, Temp, Ctx)
 
-		iniciar_prompts(Opcion_modelo, url, Content_type, Ctx, Temp)
+		iniciar_prompts(Opcion_modelo, url, CONTENT_TYPE, Ctx, Temp)
 
 	}
 }
