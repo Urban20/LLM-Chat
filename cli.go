@@ -20,11 +20,12 @@ import (
 )
 
 const (
-	HOST_DEFAULT   = "localhost"
-	PUERTO_DEFAULT = 11434
-	CTX_DEFAULT    = 16_000
-	TEMP_DEFAULT   = 0.5
-	CONTENT_TYPE   = "aplication/json"
+	HOST_DEFAULT    = "localhost"
+	PUERTO_DEFAULT  = 11434
+	CTX_DEFAULT     = 16_000
+	TEMP_DEFAULT    = 0.5
+	CONTENT_TYPE    = "aplication/json"
+	TIMEOUT_DEFAULT = 5.0
 )
 
 var (
@@ -33,6 +34,7 @@ var (
 	puerto_selec = flag.Int("puerto", PUERTO_DEFAULT, "puerto donde se escucha el endpoint")
 	ctx          = flag.Int("ctx", CTX_DEFAULT, "cantidad contexto que usara el LLM")
 	temp         = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
+	timeout      = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion")
 )
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
@@ -199,11 +201,16 @@ func listar_modelos_disponibles(url string) []string {
 
 }
 
-func checkear_status(url string) error {
+func checkear_status(url string, tiempo time.Duration) error {
 
 	status := fmt.Sprintf("%s/status", url)
 
-	resp, err := http.Get(status)
+	c := http.Client{
+
+		Timeout: time.Second * tiempo,
+	}
+
+	resp, err := c.Get(status)
 
 	if err != nil || resp.StatusCode == 404 {
 
@@ -238,6 +245,7 @@ func main() {
 	Puerto := *puerto_selec
 	Ctx := *ctx // el nivel de memoria de trabajo que puede maneja el LLM
 	Temp := *temp
+	Timeout := time.Duration(*timeout)
 
 	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 
@@ -249,7 +257,7 @@ func main() {
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 
-	if err := checkear_status(url); err != nil {
+	if err := checkear_status(url, Timeout); err != nil {
 
 		utilidades.Logueo_simple(err)
 		return
@@ -297,6 +305,6 @@ func main() {
 		box_informacion(Opcion_modelo, Host, Puerto, Temp, Ctx)
 
 		iniciar_prompts(Opcion_modelo, url, CONTENT_TYPE, Ctx, Temp)
-
+		utilidades.Limpieza_rapida()
 	}
 }
