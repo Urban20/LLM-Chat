@@ -2,6 +2,8 @@
 
 Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com).
 
+[![logo.png](https://i.postimg.cc/pVSCFSNb/logo.png)](https://postimg.cc/s1p5FwDw)
+
 ## Requisitos
 
 - Go 1.25 o superior (definido en `go.mod`).
