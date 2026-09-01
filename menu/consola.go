@@ -21,7 +21,25 @@ type Carga struct {
 const (
 	OCULTAR_CURSOR = "\033[?25l"
 	MOSTRAR_CURSOR = "\033[?25h"
+	VERSION        = "V1.1"
 )
+
+func Logo() {
+
+	logo := ` ██╗     ██╗     ███╗   ███╗       ██████╗██╗  ██╗ █████╗ ████████╗
+ ██║     ██║     ████╗ ████║      ██╔════╝██║  ██║██╔══██╗╚══██╔══╝
+ ██║     ██║     ██╔████╔██║█████╗██║     ███████║███████║   ██║   
+ ██║     ██║     ██║╚██╔╝██║╚════╝██║     ██╔══██║██╔══██║   ██║   
+ ███████╗███████╗██║ ╚═╝ ██║      ╚██████╗██║  ██║██║  ██║   ██║   
+ ╚══════╝╚══════╝╚═╝     ╚═╝       ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝ %s`
+
+	fmt.Print(utilidades.NEGRO_BLANCO)
+
+	fmt.Printf("\n"+logo+"\n", VERSION)
+
+	fmt.Print(utilidades.RESET)
+
+}
 
 func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 

@@ -281,9 +281,11 @@ func main() {
 
 	opciones_modelos = append(opciones_modelos, modelos_disponibles...)
 
+	utilidades.Limpieza_rapida()
+	menu.Logo()
+
 	for {
 
-		utilidades.Limpieza_rapida()
 		//TODO: si el usuario tiene muchos modelos se puede buguear visualmente, quiza deba corregir eso
 		Opcion_modelo, menuerr := menu_modelos(opciones_modelos)
 

@@ -28,7 +28,8 @@ const (
 	GRIS_AZUL    = "\033[38;2;90;112;176m"
 	BLANCO       = "\033[47m"
 	AZUL_OSCURO  = "\033[38;2;116;116;247m"
-	FONDO_VERDE  = "\033[48;2;13;219;88m"
+	FONDO_VERDE  = "\033[48;2;46;166;66m"
+	NEGRO_BLANCO = "\033[107;30m"
 )
 
 func separador() {
