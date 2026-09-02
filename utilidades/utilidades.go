@@ -216,7 +216,7 @@ func Input(str string) string {
 
 func Input_multilinea(input string) string {
 
-	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", AMARILLO, RESET)
+	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", NEGRO_BLANCO, RESET)
 
 	fmt.Print(VIOLETA)
 	fmt.Printf("\n\n%s :\n", input)

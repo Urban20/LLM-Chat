@@ -102,10 +102,10 @@ func leer_tecla(i *int, tecla []byte) bool {
 
 		return true
 
-	} else if flechas == 65 {
+	} else if flechas == 65 || tecla[0] == 'w' { //arriba
 
 		*i--
-	} else if flechas == 66 {
+	} else if flechas == 66 || tecla[0] == 's' { //abajo
 
 		*i++
 	}
@@ -132,7 +132,7 @@ func desplegar_opcion(opciones []string) string {
 			}
 
 			if op == opciones[i] { // opcion seleccionada
-				fmt.Println(utilidades.VIOLETA + "> " + op + utilidades.RESET + "\r")
+				fmt.Println(utilidades.NEGRO_BLANCO + "> " + op + utilidades.RESET + "\r")
 			} else {
 				fmt.Println("  " + op + "\r")
 			}
