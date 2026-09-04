@@ -24,6 +24,13 @@ const (
 	VERSION        = "V1.1"
 )
 
+const (
+	KEY_ARRIBA   = 65
+	KEY_ABAJO    = 66
+	ENTER        = 13
+	TIEMPO_CARGA = 0.85
+)
+
 func Logo() {
 
 	logo := ` ██╗     ██╗     ███╗   ███╗       ██████╗██╗  ██╗ █████╗ ████████╗
@@ -78,7 +85,7 @@ func Crear_carga() Carga {
 	c := Carga{estado_1: "◌◌◌",
 		estado_2: "●●●",
 		cargando: true,
-		tiempo:   0.85}
+		tiempo:   TIEMPO_CARGA}
 
 	return c
 
@@ -98,14 +105,14 @@ func leer_tecla(i *int, tecla []byte) bool {
 	os.Stdin.Read(tecla)
 	flechas := tecla[2]
 
-	if tecla[0] == 13 { // enter
+	if tecla[0] == ENTER {
 
 		return true
 
-	} else if flechas == 65 || tecla[0] == 'w' { //arriba
+	} else if flechas == KEY_ARRIBA || tecla[0] == 'w' {
 
 		*i--
-	} else if flechas == 66 || tecla[0] == 's' { //abajo
+	} else if flechas == KEY_ABAJO || tecla[0] == 's' {
 
 		*i++
 	}
