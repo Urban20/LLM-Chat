@@ -79,7 +79,7 @@ func historial(cuerpo, prompt string) error {
 
 	fmt.Print(utilidades.ALTERNATE_RESET)
 	utilidades.Limpieza_rapida()
-	fmt.Printf("usuario:\n%s\n", prompt)
+	fmt.Printf("\n\n%sUSUARIO:%s\n%s\n", utilidades.NEGRO_BLANCO, utilidades.RESET, prompt)
 	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
 
 		return markerr

@@ -12,7 +12,6 @@ import (
 	"io"
 	"net/http"
 	"runtime"
-	"strconv"
 	"sync"
 	"time"
 
@@ -61,7 +60,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 }
 
-func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
+func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
@@ -72,6 +71,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 	for {
 		// TODO : quiza modifique esto
+		box.Box_informacion()
 
 		seleccion, _ := menu.Menu(opciones...)
 
@@ -80,7 +80,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 		case opciones[0]:
 
 			prompts.Borrar_memoria()
-			prompts.Descargar_modelo(modelo, content_type, api_chat)
+			prompts.Descargar_modelo(box.Modelo, content_type, api_chat)
 
 			return
 
@@ -122,7 +122,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 				continue
 			}
 
-			if err := iniciar_conversacion(archivo_prompt, modelo, api_generate, content_type, ctx, temp, false, imagenes); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_generate, content_type, box.Ctx, box.Temperatura, false, imagenes); err != nil {
 
 				continue
 			}
@@ -131,7 +131,7 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 
 			archivo_prompt.Mostrar_archivos()
 
-			if err := iniciar_conversacion(archivo_prompt, modelo, api_chat, content_type, ctx, temp, true, []string{}); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_chat, content_type, box.Ctx, box.Temperatura, true, []string{}); err != nil {
 
 				continue
 			}
@@ -139,23 +139,6 @@ func iniciar_prompts(modelo, url, content_type string, ctx int, temp float64) {
 			archivo_prompt.Borrar_informacion()
 		}
 	}
-}
-
-func box_informacion(IA_MODELO, Host string, Puerto int, temp float64, ctx int) {
-
-	utilidades.Limpieza_rapida()
-
-	contenido_box := map[string]string{
-
-		"Modelo selecionado":  IA_MODELO,
-		"Host":                fmt.Sprintf("%s:%d", Host, Puerto),
-		"Sistema operativo":   runtime.GOOS,
-		"Temperatura del LLM": fmt.Sprintf("%.2f", temp),
-		"Contexto del LLM":    strconv.Itoa(ctx),
-	}
-	contenidos := utilidades.Formato_string_box(contenido_box)
-	utilidades.Box(contenidos...)
-
 }
 
 func listar_modelos_disponibles(url string) []string {
@@ -307,9 +290,16 @@ func main() {
 
 		}
 
-		box_informacion(Opcion_modelo, Host, Puerto, Temp, Ctx)
+		box := utilidades.Box_info{
+			Modelo:      Opcion_modelo,
+			Sistema_op:  runtime.GOOS,
+			Temperatura: Temp,
+			Ctx:         Ctx,
+			Host:        Host,
+			Puerto:      Puerto,
+		}
 
-		iniciar_prompts(Opcion_modelo, url, CONTENT_TYPE, Ctx, Temp)
+		iniciar_prompts(url, CONTENT_TYPE, box)
 		utilidades.Limpieza_rapida()
 	}
 }

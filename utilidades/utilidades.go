@@ -10,7 +10,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -35,6 +37,15 @@ const (
 	ALTERNATE       = "\033[?1049h"
 	ALTERNATE_RESET = "\033[?1049l"
 )
+
+type Box_info struct {
+	Modelo      string
+	Sistema_op  string
+	Temperatura float64
+	Ctx         int
+	Host        string
+	Puerto      int
+}
 
 func separador() {
 
@@ -165,6 +176,22 @@ func (s *Prompt_archivo) Borrar_informacion() {
 	s.Prompt = ""
 	s.Archivos = []string{}
 
+}
+
+func (b Box_info) Box_informacion() {
+
+	Limpieza_rapida()
+
+	contenido_box := map[string]string{
+
+		"Modelo selecionado":  b.Modelo,
+		"Host":                fmt.Sprintf("%s:%d", b.Host, b.Puerto),
+		"Sistema operativo":   runtime.GOOS,
+		"Temperatura del LLM": fmt.Sprintf("%.2f", b.Temperatura),
+		"Contexto del LLM":    strconv.Itoa(b.Ctx),
+	}
+	contenidos := Formato_string_box(contenido_box)
+	Box(contenidos...)
 }
 
 func Archivo_a_prompt(rutas []string) Prompt_archivo {
