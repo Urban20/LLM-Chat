@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pterm/pterm"
 	"golang.org/x/term"
 )
 
@@ -38,11 +39,17 @@ func Logo() {
  ██║     ██║     ██╔████╔██║█████╗██║     ███████║███████║   ██║   
  ██║     ██║     ██║╚██╔╝██║╚════╝██║     ██╔══██║██╔══██║   ██║   
  ███████╗███████╗██║ ╚═╝ ██║      ╚██████╗██║  ██║██║  ██║   ██║   
- ╚══════╝╚══════╝╚═╝     ╚═╝       ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝ %s`
+ ╚══════╝╚══════╝╚═╝     ╚═╝       ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   `
 
-	fmt.Print(utilidades.NEGRO_BLANCO)
+	lineas := strings.Split(logo, "\n")
 
-	fmt.Printf("\n"+logo+"\n", VERSION)
+	fmt.Print("\n\n")
+
+	for _, l := range lineas {
+
+		pterm.DefaultCenter.Printf(" %s %s %s", utilidades.NEGRO_BLANCO, l, utilidades.RESET)
+	}
+	utilidades.Centrar(VERSION)
 
 	fmt.Print(utilidades.RESET)
 

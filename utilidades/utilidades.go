@@ -41,6 +41,12 @@ func separador() {
 
 }
 
+func Centrar(texto string) {
+
+	pterm.DefaultCenter.Println(texto)
+
+}
+
 func Ollama_instalado() bool {
 
 	/*
@@ -78,7 +84,7 @@ func Box(msgs ...string) {
 
 	superficie := pterm.DefaultBox.WithHorizontalPadding(5).WithBottomPadding(1)
 
-	superficie.Println(strings.Join(msgs, "\n"))
+	Centrar(superficie.Sprintln(strings.Join(msgs, "\n")))
 
 }
 
