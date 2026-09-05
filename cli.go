@@ -281,7 +281,9 @@ func main() {
 
 	opciones_modelos = append(opciones_modelos, modelos_disponibles...)
 
-	utilidades.Limpieza_rapida()
+	fmt.Print(utilidades.ALTERNATE)
+
+	fmt.Print(utilidades.HOME)
 	menu.Logo()
 
 	for {
@@ -299,7 +301,8 @@ func main() {
 		}
 
 		if Opcion_modelo == opcion_salir {
-			utilidades.Limpieza_rapida()
+			fmt.Print(utilidades.ALTERNATE_RESET)
+
 			return
 
 		}

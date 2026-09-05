@@ -75,6 +75,21 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 }
 
+func historial(cuerpo string) error {
+
+	fmt.Print(utilidades.ALTERNATE_RESET)
+	utilidades.Limpieza_rapida()
+	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
+
+		return markerr
+	}
+
+	fmt.Scanln()
+
+	return nil
+
+}
+
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
 
@@ -82,6 +97,8 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 	var tokens int
 
 	escaner := bufio.NewScanner(resp.Body)
+
+	defer fmt.Print(utilidades.ALTERNATE)
 	defer resp.Body.Close()
 
 	carga.Detener(wg)
@@ -135,11 +152,9 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
-	utilidades.Limpieza_rapida()
+	if err := historial(cuerpo); err != nil {
 
-	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
-
-		return markerr
+		return err
 	}
 
 	return nil
