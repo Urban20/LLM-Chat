@@ -75,10 +75,11 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 }
 
-func historial(cuerpo string) error {
+func historial(cuerpo, prompt string) error {
 
 	fmt.Print(utilidades.ALTERNATE_RESET)
 	utilidades.Limpieza_rapida()
+	fmt.Printf("usuario:\n%s\n", prompt)
 	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
 
 		return markerr
@@ -91,7 +92,7 @@ func historial(cuerpo string) error {
 }
 
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool) error {
+func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string) error {
 
 	var cuerpo string
 	var tokens int
@@ -152,7 +153,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 	Guardar_en_memoria(cuerpo, "LLM (IA)")
 
-	if err := historial(cuerpo); err != nil {
+	if err := historial(cuerpo, prompt); err != nil { //impresion de las respuestas del llm en modo canonico
 
 		return err
 	}
@@ -200,9 +201,11 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
+func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
-	resp, prompterr := enviar_prompt(prompt, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
+	prompt_total := fmt.Sprintf("%s\n\n[prompt]\n\n%s", prompt_archivo, prompt) // prompt con archivos, si no se sube nada esta vacio (el apartado de archivos)
+
+	resp, prompterr := enviar_prompt(prompt_total, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
 
 	defer carga.Detener(wg)
 
@@ -211,7 +214,7 @@ func Comunicacion(prompt, modelo, endpoint, content_type string, ctx int, temp f
 		return prompterr
 	}
 
-	if recerr := recibir_prompt(resp, carga, wg, chat); recerr != nil {
+	if recerr := recibir_prompt(resp, carga, wg, chat, prompt); recerr != nil {
 
 		return recerr
 	}

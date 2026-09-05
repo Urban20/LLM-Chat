@@ -39,7 +39,7 @@ var (
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
 
-	prompt := utilidades.Input_multilinea("Prompt")
+	prompt := utilidades.Input_multilinea("Prompt") //prompt del usuario
 
 	if prompt == "" {
 
@@ -52,7 +52,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 	go carga.Iniciar(&wg)
 
-	if err := prompts.Comunicacion(archivo_prompt.Prompt+"\n[prompt]\n\n"+prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat, imagenes); err != nil {
+	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		rich.Warning(err)
 	}
