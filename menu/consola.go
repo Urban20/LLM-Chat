@@ -80,6 +80,36 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
 }
 
+// el programa queda esperando que se pulse q
+func Esperar_tecla() {
+
+	fmt.Print(OCULTAR_CURSOR)
+	defer fmt.Print(MOSTRAR_CURSOR)
+
+	utilidades.Centrar("\nQ para salir\n")
+	ejecutando := true
+	fd := int(os.Stdin.Fd())
+
+	st, _ := term.MakeRaw(fd)
+
+	defer term.Restore(fd, st)
+
+	for ejecutando {
+
+		b := make([]byte, 3)
+
+		os.Stdin.Read(b)
+
+		if b[0] == 'q' {
+
+			ejecutando = false
+
+		}
+
+	}
+
+}
+
 func (p *Carga) Detener(wg *sync.WaitGroup) {
 
 	p.cargando = false

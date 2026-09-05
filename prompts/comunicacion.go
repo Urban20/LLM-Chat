@@ -85,7 +85,7 @@ func historial(cuerpo, prompt string) error {
 		return markerr
 	}
 
-	fmt.Scanln()
+	menu.Esperar_tecla()
 
 	return nil
 
