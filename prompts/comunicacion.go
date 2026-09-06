@@ -203,7 +203,13 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 // esta funcion se ocupa del envio y recepcion de los mensajes
 func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
-	prompt_total := fmt.Sprintf("%s\n\n[datetime]:%s\n\n[prompt]\n\n%s", prompt_archivo, utilidades.Fecha_hora(), prompt) // prompt con archivos, si no se sube nada esta vacio (el apartado de archivos)
+	p := utilidades.Estructura_prompt{
+		// prompt archivo se formatea por
+		Fecha:  utilidades.Fecha_hora(),
+		Prompt: prompt,
+	}
+
+	prompt_total := prompt_archivo + p.Formatear_prompt()
 
 	resp, prompterr := enviar_prompt(prompt_total, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
 

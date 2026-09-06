@@ -47,6 +47,34 @@ type Box_info struct {
 	Puerto      int
 }
 
+type Estructura_prompt struct {
+	// da la informacion que se le envian automaticamente al LLM
+
+	Fecha  string
+	Prompt string
+}
+
+func (e Estructura_prompt) Formatear_prompt() string {
+
+	data := map[string]string{
+		// la info la pongo en ingles como lenguaje neutro para el LLM
+
+		"[CURRENT DATETIME]": e.Fecha,
+		"[PROMPT]":           e.Prompt,
+	}
+
+	var instruccion string
+
+	for c, v := range data {
+
+		instruccion += fmt.Sprintf("%s\n\n%s\n\n", c, v)
+
+	}
+
+	return instruccion
+
+}
+
 func separador() {
 
 	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
@@ -333,7 +361,8 @@ func Fecha_hora() string {
 	t := time.Now()
 	a, m, d := t.Date()
 	tiempo := Tiempo_actual()
+	dia := t.Weekday().String()
 
-	return fmt.Sprintf("%d %s %d\t%s", d, m, a, tiempo)
+	return fmt.Sprintf("%s %d %s %d\t%s", dia, d, m, a, tiempo)
 
 }
