@@ -101,6 +101,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 	defer fmt.Print(utilidades.ALTERNATE)
 	defer resp.Body.Close()
+	defer menu.Esperar_tecla()
 
 	carga.Detener(wg)
 
