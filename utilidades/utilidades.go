@@ -318,3 +318,22 @@ func Imagen_a_base64(rutas ...string) ([]string, error) {
 	return bases, nil
 
 }
+
+func Tiempo_actual() string {
+
+	t := time.Now()
+	hora, min, seg := t.Clock()
+
+	return fmt.Sprintf("[%d:%d:%d]", hora, min, seg)
+
+}
+
+func Fecha_hora() string {
+
+	t := time.Now()
+	a, m, d := t.Date()
+	tiempo := Tiempo_actual()
+
+	return fmt.Sprintf("%d %s %d\t%s", d, m, a, tiempo)
+
+}

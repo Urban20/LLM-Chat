@@ -79,13 +79,12 @@ func historial(cuerpo, prompt string) error {
 
 	fmt.Print(utilidades.ALTERNATE_RESET)
 	utilidades.Limpieza_rapida()
-	fmt.Printf("\n\n%sUSUARIO:%s\n%s\n", utilidades.NEGRO_BLANCO, utilidades.RESET, prompt)
+	fmt.Print("\n\n")
+	fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), prompt)
 	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
 
 		return markerr
 	}
-
-	menu.Esperar_tecla()
 
 	return nil
 
@@ -204,7 +203,7 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 // esta funcion se ocupa del envio y recepcion de los mensajes
 func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
-	prompt_total := fmt.Sprintf("%s\n\n[prompt]\n\n%s", prompt_archivo, prompt) // prompt con archivos, si no se sube nada esta vacio (el apartado de archivos)
+	prompt_total := fmt.Sprintf("%s\n\n[datetime]:%s\n\n[prompt]\n\n%s", prompt_archivo, utilidades.Fecha_hora(), prompt) // prompt con archivos, si no se sube nada esta vacio (el apartado de archivos)
 
 	resp, prompterr := enviar_prompt(prompt_total, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
 
