@@ -85,8 +85,11 @@ func Esperar_tecla() {
 
 	fmt.Print(OCULTAR_CURSOR)
 	defer fmt.Print(MOSTRAR_CURSOR)
+	info := "[Q para volver al menu]"
 
-	utilidades.Centrar("\nQ para salir\n")
+	fmt.Print("\n")
+	fmt.Print(info)
+
 	ejecutando := true
 	fd := int(os.Stdin.Fd())
 
@@ -107,6 +110,10 @@ func Esperar_tecla() {
 		}
 
 	}
+
+	fmt.Print("\r")
+	fmt.Print(strings.Repeat(" ", len(info)))
+	fmt.Print("\n")
 
 }
 

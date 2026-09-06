@@ -88,8 +88,6 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Limpieza_rapida()
 			prompts.Borrar_memoria()
-			fmt.Print("\n")
-			rich.Info("la memoria del LLM fue borrada")
 
 		case opciones[2]:
 
@@ -267,10 +265,9 @@ func main() {
 	fmt.Print(utilidades.ALTERNATE)
 
 	fmt.Print(utilidades.HOME)
-	menu.Logo()
 
 	for {
-
+		menu.Logo()
 		//TODO: si el usuario tiene muchos modelos se puede buguear visualmente, quiza deba corregir eso
 		Opcion_modelo, menuerr := menu_modelos(opciones_modelos)
 
