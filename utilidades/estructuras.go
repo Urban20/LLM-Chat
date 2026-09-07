@@ -86,3 +86,9 @@ func (s *Prompt_archivo) Borrar_informacion() {
 	s.Archivos = []string{}
 
 }
+
+type Respuesta_LLM struct {
+	Respuesta_raw string
+	Tokens        int
+	Prompt        string // prompt del usuario
+}

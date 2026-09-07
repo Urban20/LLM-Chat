@@ -1,2 +1,2 @@
-manejar codigos de estado 500 para no romper el programa
-agregar sistema de carga
+arreglar advertencia de falta de contexto la cual se imprime luego de esper la tecla
+poner el nombre del modelo en la respuesta

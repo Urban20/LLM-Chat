@@ -91,16 +91,14 @@ func historial(cuerpo, prompt string) error {
 }
 
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string) error {
+func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string) (utilidades.Respuesta_LLM, error) {
 
 	var cuerpo string
-	var tokens int
+	respuesta := utilidades.Respuesta_LLM{}
 
 	escaner := bufio.NewScanner(resp.Body)
 
-	defer fmt.Print(utilidades.ALTERNATE)
 	defer resp.Body.Close()
-	defer menu.Esperar_tecla()
 
 	carga.Detener(wg)
 
@@ -112,20 +110,20 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 		if marsherr := json.Unmarshal(escaner.Bytes(), &json_respuesta); marsherr != nil {
 
-			return marsherr
+			return respuesta, marsherr
 		}
 
-		tokens += json_respuesta.Num_tokens_prompt + json_respuesta.Num_tokens_resp
+		respuesta.Tokens += json_respuesta.Num_tokens_prompt + json_respuesta.Num_tokens_resp
 
 		if json_respuesta.Done_reason == "length" {
 
-			return errors.New("se agoto el contexto disponible para la generacion de nuevas respuestas")
+			return respuesta, errors.New("se agoto el contexto disponible para la generacion de nuevas respuestas")
 
 		}
 
 		if !slices.Contains([]string{"", "stop"}, json_respuesta.Done_reason) {
 
-			return fmt.Errorf("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason)
+			return respuesta, fmt.Errorf("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason)
 
 		}
 
@@ -142,23 +140,33 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 	}
 
-	cuerpo = strings.TrimSpace(cuerpo)
+	respuesta.Respuesta_raw = strings.TrimSpace(cuerpo)
+	respuesta.Prompt = prompt
 
-	defer fmt.Printf("%stokens generados: %d%s\n", utilidades.FONDO_VERDE, tokens, utilidades.RESET)
+	return respuesta, nil
 
-	if cuerpo == "" {
+}
+
+func procesar_respuesta(r utilidades.Respuesta_LLM) error {
+
+	defer fmt.Print(utilidades.ALTERNATE)
+	defer menu.Esperar_tecla()
+	defer fmt.Printf("%stokens generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
+
+	if r.Respuesta_raw == "" {
 
 		return errors.New("la respuesta llego vacia")
 	}
 
-	Guardar_en_memoria(cuerpo, "LLM (IA)")
+	Guardar_en_memoria(r.Respuesta_raw, "LLM (IA)")
 
-	if err := historial(cuerpo, prompt); err != nil { //impresion de las respuestas del llm en modo canonico
+	if err := historial(r.Respuesta_raw, r.Prompt); err != nil { //impresion de las respuestas del llm en modo canonico
 
 		return err
 	}
 
 	return nil
+
 }
 
 // envio el prompt desde el usuario al LLM
@@ -220,9 +228,16 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 		return prompterr
 	}
 
-	if recerr := recibir_prompt(resp, carga, wg, chat, prompt); recerr != nil {
+	respuesta, recerr := recibir_prompt(resp, carga, wg, chat, prompt)
+
+	if recerr != nil {
 
 		return recerr
+	}
+
+	if err := procesar_respuesta(respuesta); err != nil {
+
+		return err
 	}
 
 	return nil
