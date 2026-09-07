@@ -151,7 +151,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) error {
 
 	defer fmt.Print(utilidades.ALTERNATE)
 	defer menu.Esperar_tecla()
-	defer fmt.Printf("%stokens generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
+	defer fmt.Printf("%stokens totales generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
 
 	if r.Respuesta_raw == "" {
 
