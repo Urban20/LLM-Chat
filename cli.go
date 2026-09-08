@@ -232,7 +232,7 @@ func main() {
 
 	if !instalado {
 
-		utilidades.Advertencia("ollama no fue encontrado en las variables de entorno")
+		utilidades.Advertencia("Ollama no fue encontrado en las variables de entorno")
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 

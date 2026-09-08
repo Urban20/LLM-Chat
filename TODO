@@ -1,2 +1,2 @@
-arreglar advertencia de falta de contexto la cual se imprime luego de esper la tecla
 poner el nombre del modelo en la respuesta
+agregar funcionalidad para guardar la respuesta en un archivo (ver enfoque)
