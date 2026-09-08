@@ -16,7 +16,6 @@ import (
 
 	"github.com/charmbracelet/glamour"
 	"github.com/pterm/pterm"
-	"github.com/rvfet/rich-go"
 	"golang.org/x/term"
 )
 
@@ -26,7 +25,7 @@ const (
 	RESET           = "\033[0m"
 	VIOLETA         = "\033[38;2;146;68;219m"
 	GRIS_AZUL       = "\033[38;2;90;112;176m"
-	BLANCO          = "\033[47m"
+	FONDO_BLANCO    = "\033[47m"
 	AZUL_OSCURO     = "\033[38;2;116;116;247m"
 	FONDO_VERDE     = "\033[48;2;46;166;66m"
 	NEGRO_BLANCO    = "\033[107;30m"
@@ -34,12 +33,14 @@ const (
 	BORRADO         = "\033[2J"
 	ALTERNATE       = "\033[?1049h"
 	ALTERNATE_RESET = "\033[?1049l"
+	ROJO_BRILLANTE  = "\033[91m"
+	VERDE_BRILLANTE = "\033[92m"
 )
 
 func separador() {
 
 	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
-	fmt.Println(BLANCO)
+	fmt.Println(FONDO_BLANCO)
 	fmt.Println(strings.Repeat(" ", x))
 	fmt.Println(RESET)
 
@@ -100,7 +101,7 @@ func Limpieza_rapida() {
 }
 
 func Logueo_simple(mensaje any) {
-	rich.Error(mensaje)
+	Error(mensaje)
 	time.Sleep(time.Second * TIEMPO_PAUSA)
 
 }

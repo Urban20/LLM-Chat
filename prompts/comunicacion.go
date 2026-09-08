@@ -11,8 +11,6 @@ import (
 	"slices"
 	"strings"
 	"sync"
-
-	"github.com/rvfet/rich-go"
 )
 
 var Memoria []message_chat
@@ -112,7 +110,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 		if marsherr := json.Unmarshal(escaner.Bytes(), &json_respuesta); marsherr != nil {
 
 			fmt.Print("\n\n")
-			rich.Error(marsherr)
+			utilidades.Error(marsherr)
 
 			return respuesta
 		}
@@ -123,7 +121,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 			fmt.Print("\n\n")
 
-			rich.Warning("se agoto el contexto disponible para la generacion de nuevas respuestas")
+			utilidades.Advertencia("se agoto el contexto disponible para la generacion de nuevas respuestas")
 			return respuesta
 
 		}
@@ -131,7 +129,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 		if !slices.Contains([]string{"", "stop"}, json_respuesta.Done_reason) {
 
 			fmt.Print("\n\n")
-			rich.Warning("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason)
+			utilidades.Advertencia(fmt.Sprintf("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason))
 			return respuesta
 
 		}
@@ -163,7 +161,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 	if r.Respuesta_raw == "" {
 
 		fmt.Print("\n\n")
-		rich.Error("la respuesta llego vacia")
+		utilidades.Error("la respuesta llego vacia")
 		return
 	}
 
@@ -172,7 +170,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 	if err := historial(r.Respuesta_raw, r.Prompt); err != nil { //impresion de las respuestas del llm en modo canonico
 
 		fmt.Print("\n\n")
-		rich.Error(err)
+		utilidades.Error(err)
 		return
 	}
 

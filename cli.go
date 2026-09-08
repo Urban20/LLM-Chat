@@ -14,8 +14,6 @@ import (
 	"runtime"
 	"sync"
 	"time"
-
-	"github.com/rvfet/rich-go"
 )
 
 const (
@@ -53,7 +51,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
-		rich.Warning(err)
+		utilidades.Advertencia(err)
 	}
 
 	return nil
@@ -216,7 +214,7 @@ func menu_modelos(modelos_disponibles []string) (string, error) {
 func main() {
 
 	if conserr != nil {
-		rich.Error(fmt.Sprintf("Problema al habilitar ansi: %v\n", conserr))
+		utilidades.Error(fmt.Sprintf("Problema al habilitar ansi: %v\n", conserr))
 		return
 	}
 
@@ -234,7 +232,7 @@ func main() {
 
 	if !instalado {
 
-		rich.Warning("ollama no fue encontrado en las variables de entorno")
+		utilidades.Advertencia("ollama no fue encontrado en las variables de entorno")
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 
@@ -249,7 +247,7 @@ func main() {
 
 	if len(modelos_disponibles) == 0 {
 		fmt.Print("\n\n")
-		rich.Warning(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
+		utilidades.Advertencia(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
 		fmt.Print("\n\n")
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 		return
@@ -273,8 +271,8 @@ func main() {
 
 		if menuerr != nil {
 
-			rich.Error(menuerr)
-			rich.Info("visitar https://ollama.com/search para mas info")
+			utilidades.Error(menuerr)
+			utilidades.Info("visitar https://ollama.com/search para mas info")
 			time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 			return
 

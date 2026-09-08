@@ -5,7 +5,6 @@ go 1.25.0
 require (
 	github.com/charmbracelet/glamour v1.0.0
 	github.com/pterm/pterm v0.12.83
-	github.com/rvfet/rich-go v0.0.0-20240930071213-51f43e596c0d
 	golang.org/x/sys v0.46.0
 	golang.org/x/term v0.44.0
 )
