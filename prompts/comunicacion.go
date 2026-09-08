@@ -74,13 +74,13 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 }
 
-func historial(cuerpo, prompt string) error {
+func historial(r utilidades.Respuesta_LLM) error {
 
 	fmt.Print(utilidades.ALTERNATE_RESET)
 	utilidades.Limpieza_rapida()
 	fmt.Print("\n\n")
-	fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), prompt)
-	if markerr := utilidades.Imprimir_markdown(cuerpo); markerr != nil {
+	fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), r.Prompt)
+	if markerr := utilidades.Imprimir_markdown(r); markerr != nil {
 
 		return markerr
 	}
@@ -90,10 +90,10 @@ func historial(cuerpo, prompt string) error {
 }
 
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string) utilidades.Respuesta_LLM {
+func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt, modelo string) utilidades.Respuesta_LLM {
 
 	var cuerpo string
-	respuesta := utilidades.Respuesta_LLM{}
+	respuesta := utilidades.Respuesta_LLM{Modelo: modelo}
 
 	escaner := bufio.NewScanner(resp.Body)
 
@@ -167,7 +167,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
 	Guardar_en_memoria(r.Respuesta_raw, "LLM (IA)")
 
-	if err := historial(r.Respuesta_raw, r.Prompt); err != nil { //impresion de las respuestas del llm en modo canonico
+	if err := historial(r); err != nil { //impresion de las respuestas del llm en modo canonico
 
 		fmt.Print("\n\n")
 		utilidades.Error(err)
@@ -225,7 +225,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 	}
 
 	prompt_total := prompt_archivo + p.Formatear_prompt()
-
+	// ver de reorganizar esto (quiza crear una struct para encapsular algunas cosas)
 	resp, prompterr := enviar_prompt(prompt_total, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
 
 	defer carga.Detener(wg)
@@ -243,7 +243,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 	//  esperar que el usuario presione la tecla para
 	// continuar
 
-	respuesta := recibir_prompt(resp, carga, wg, chat, prompt)
+	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, modelo)
 
 	procesar_respuesta(respuesta)
 

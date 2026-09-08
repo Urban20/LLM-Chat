@@ -65,7 +65,7 @@ func Ollama_instalado() bool {
 
 }
 
-func Imprimir_markdown(txt string) error {
+func Imprimir_markdown(r Respuesta_LLM) error {
 
 	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(Estilos)))
 
@@ -74,7 +74,7 @@ func Imprimir_markdown(txt string) error {
 		return termerr
 	}
 	separador()
-	md, err := render.Render("# LLM:\n" + txt)
+	md, err := render.Render(fmt.Sprintf("# LLM (%s):\n %s", r.Modelo, r.Respuesta_raw))
 
 	if err != nil {
 		return err

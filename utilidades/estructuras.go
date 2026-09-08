@@ -91,4 +91,5 @@ type Respuesta_LLM struct {
 	Respuesta_raw string
 	Tokens        int
 	Prompt        string // prompt del usuario
+	Modelo        string
 }
