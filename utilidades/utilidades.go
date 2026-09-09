@@ -37,6 +37,7 @@ const (
 	ALTERNATE_RESET = "\033[?1049l"
 	ROJO_BRILLANTE  = "\033[91m"
 	VERDE_BRILLANTE = "\033[92m"
+	ANIL            = "\033[48;2;43;43;69m"
 )
 
 func separador() {
@@ -222,15 +223,23 @@ func Input_multilinea(input string) string {
 	// se adapta al color de la terminal
 	oscuros := lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
 	claros := lipgloss.AdaptiveColor{Light: "#b9b9b9", Dark: "#ffffff"}
+	violetas := lipgloss.AdaptiveColor{Light: "#8d4dc2", Dark: "#b66cdb"}
+	azules := lipgloss.AdaptiveColor{Light: "#58669b", Dark: "#58669b"}
+	verdes := lipgloss.AdaptiveColor{Light: "#1dcb5a", Dark: "#1dcb5a"}
 
 	base.Focused.Title = base.Focused.Title.Foreground(oscuros).Background(claros)
+	base.Focused.TextInput.Cursor = base.Focused.Title.Foreground(violetas)
+	base.Focused.Description = base.Focused.Description.Foreground(azules)
+	base.Focused.Base = base.Focused.Base.BorderForeground(verdes)
 
 	i := huh.NewText().Title(input)
 	i.WithTheme(base)
+	i.Description("[ctrl + j/ alt + ENTER] : nueva linea ● [ctrl + e] : expandir editor (si esta disponible)")
 	i.Value(&valor)
+
 	i.Run()
 
-	return valor
+	return strings.TrimSpace(valor)
 
 }
 

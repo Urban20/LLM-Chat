@@ -47,7 +47,7 @@ func Logo() {
 
 	for _, l := range lineas {
 
-		pterm.DefaultCenter.Printf(" %s %s %s", utilidades.NEGRO_BLANCO, l, utilidades.RESET)
+		pterm.DefaultCenter.Printf(" %s %s %s", utilidades.ANIL, l, utilidades.RESET)
 	}
 	utilidades.Centrar(VERSION)
 
