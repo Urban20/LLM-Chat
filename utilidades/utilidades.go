@@ -188,6 +188,21 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 
 }
 
+func String_vacio(str string) bool {
+
+	for _, c := range str {
+
+		if c != ' ' && c != '\n' && c != '\t' {
+
+			return false
+		}
+
+	}
+
+	return true
+
+}
+
 func Input(str string) string {
 
 	fmt.Print(AMARILLO + str + ": " + RESET)
@@ -232,7 +247,7 @@ func Formatear_input(msg string) ([]string, error) {
 	fmt.Print("\n")
 	archivos := Input(AMARILLO + msg + RESET)
 
-	if archivos == "" {
+	if String_vacio(archivos) {
 
 		return arch_list, errors.New("input vacio") // esto realmente no se usa, es para que evite ejecutando
 

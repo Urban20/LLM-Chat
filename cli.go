@@ -38,9 +38,11 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 	prompt := utilidades.Input_multilinea("Prompt") //prompt del usuario
 
-	if prompt == "" {
+	if utilidades.String_vacio(prompt) {
 
 		return errors.New("prompt vacio")
+		// esta pensado para salir del input
+
 	}
 
 	carga := menu.Crear_carga()

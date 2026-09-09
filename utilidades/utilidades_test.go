@@ -27,3 +27,29 @@ func TestEliminar_repetidos(t *testing.T) {
 		})
 	}
 }
+
+func TestString_vacio(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		str  string
+		want bool
+	}{
+
+		{str: "", want: true},
+		{str: "    ", want: true},
+		{str: "   test", want: false},
+		{str: "  \n", want: true},
+		{str: "\t \n", want: true},
+		{str: "test", want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := utilidades.String_vacio(tt.str)
+
+			if got != tt.want {
+				t.Errorf("String_vacio() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
