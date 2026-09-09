@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -219,6 +220,15 @@ func Input_multilinea(input string) string {
 	fmt.Print("\n")
 	var valor string
 
+	ejemplos := []string{
+		"¿como era la vida en los 90s?",
+		"comenzar a escribir ...",
+		"¿hasta donde llega la inteligencia humana?",
+		"¿por que programar es genial?",
+	}
+
+	seleccion := ejemplos[rand.Intn(len(ejemplos))]
+
 	base := huh.ThemeBase()
 	// se adapta al color de la terminal
 	oscuros := lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
@@ -234,7 +244,8 @@ func Input_multilinea(input string) string {
 
 	i := huh.NewText().Title(input)
 	i.WithTheme(base)
-	i.Description("[ctrl + j/ alt + ENTER] : nueva linea ● [ctrl + e] : expandir editor (si esta disponible)")
+	i.Description("[ctrl + j/ alt + ENTER] : nueva linea ● [ctrl + e] : expandir editor (si esta disponible)\n")
+	i.Placeholder(seleccion)
 	i.Value(&valor)
 
 	i.Run()
