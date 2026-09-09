@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/pterm/pterm"
 	"golang.org/x/term"
 )
@@ -198,15 +200,22 @@ func Input(str string) string {
 }
 
 func Input_multilinea(input string) string {
+	fmt.Print("\n")
+	var valor string
 
-	fmt.Printf("\n\n%s[presionar TAB + ENTER para enviar]%s", NEGRO_BLANCO, RESET)
+	base := huh.ThemeBase()
+	// se adapta al color de la terminal
+	oscuros := lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
+	claros := lipgloss.AdaptiveColor{Light: "#b9b9b9", Dark: "#ffffff"}
 
-	fmt.Print(VIOLETA)
-	fmt.Printf("\n\n%s :\n", input)
-	fmt.Print(RESET)
-	lector := bufio.NewReader(os.Stdin)
-	texto, _ := lector.ReadString('\t')
-	return strings.TrimSpace(strings.Trim(texto, "\t"))
+	base.Focused.Title = base.Focused.Title.Foreground(oscuros).Background(claros)
+
+	i := huh.NewText().Title(input)
+	i.WithTheme(base)
+	i.Value(&valor)
+	i.Run()
+
+	return valor
 
 }
 
