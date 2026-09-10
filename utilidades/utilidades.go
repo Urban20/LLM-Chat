@@ -335,12 +335,21 @@ func Separar_lista(lista []string, limite int) [][]string {
 	var elementos [][]string
 
 	var inicio int
+	incremento := limite
 
-	for len(lista) > limite {
+	if limite <= 0 { // sin esto, si el limite es cero o negativo puede saturar la memoria
+
+		return elementos
+
+	}
+
+	largo := len(lista)
+
+	for largo > limite {
 
 		elementos = append(elementos, lista[inicio:limite])
 		inicio = limite
-		limite += 5
+		limite += incremento
 
 	}
 

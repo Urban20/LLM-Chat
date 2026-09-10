@@ -90,8 +90,11 @@ func TestSeparar_lista(t *testing.T) {
 		{name: "caso normal", lista: []string{"1", "2", "3", "4", "5", "6"}, limite: 5, want: [][]string{{"1", "2", "3", "4", "5"}, {"6"}}},
 		{name: "vacia", lista: []string{}, limite: 5, want: [][]string{{}}},
 		{name: "caso iguales", lista: []string{"1", "2", "3"}, limite: 5, want: [][]string{{"1", "2", "3"}}},
+		{name: "caso invalido", lista: []string{"1", "2", "3"}, limite: -1, want: [][]string{}},
 		{name: "caso iguales", lista: []string{"1", "2", "3"}, limite: 2, want: [][]string{{"1", "2"}, {"3"}}},
-		{name: "caso cero", lista: []string{}, limite: 0, want: [][]string{{}}},
+		{name: "caso cero", lista: []string{}, limite: 0, want: [][]string{}},
+		{name: "limite cero", lista: []string{"1", "2", "3"}, limite: 0, want: [][]string{}},
+		{name: "varias paginas", lista: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}, limite: 2, want: [][]string{{"1", "2"}, {"3", "4"}, {"5", "6"}, {"7", "8"}, {"9", "10"}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
