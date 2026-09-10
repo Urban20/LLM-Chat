@@ -187,6 +187,43 @@ func leer_tecla(i, pag *int, tecla []byte) bool {
 
 }
 
+func paginado(pag, max_len int) int {
+
+	if pag > max_len-1 {
+
+		pag = max_len - 1
+
+	} else if pag < 0 {
+
+		pag = 0
+	}
+
+	return pag
+
+}
+
+func imprimir_opciones(op string, actual []string, i int) {
+
+	if op == actual[i] { // opcion seleccionada
+		fmt.Println(utilidades.NEGRO_BLANCO + "> " + op + utilidades.RESET + "\r")
+	} else {
+		fmt.Println("  " + op + "\r")
+	}
+
+}
+
+func limitar_indice(i, largo_op int) int {
+
+	if i > largo_op-1 {
+		i = 0
+
+	} else if i < 0 {
+		i = largo_op - 1
+	}
+
+	return i
+}
+
 func desplegar_opcion(opciones []string) string {
 
 	var i int
@@ -198,32 +235,16 @@ func desplegar_opcion(opciones []string) string {
 	for {
 		tecla := make([]byte, 3)
 
-		if pag > max_len-1 {
-
-			pag = max_len - 1
-
-		} else if pag < 0 {
-
-			pag = 0
-		}
+		pag = paginado(pag, max_len)
 
 		actual := fraccionado[pag]
 		largo_op := len(actual)
 
 		for _, op := range actual {
 
-			if i > largo_op-1 {
-				i = 0
+			i = limitar_indice(i, largo_op)
 
-			} else if i < 0 {
-				i = largo_op - 1
-			}
-
-			if op == actual[i] { // opcion seleccionada
-				fmt.Println(utilidades.NEGRO_BLANCO + "> " + op + utilidades.RESET + "\r")
-			} else {
-				fmt.Println("  " + op + "\r")
-			}
+			imprimir_opciones(op, actual, i)
 		}
 
 		if leer_tecla(&i, &pag, tecla) {
