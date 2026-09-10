@@ -374,3 +374,22 @@ func Slices_Iguales(sl1, sl2 [][]string) bool {
 	return true
 
 }
+
+func Max(l []string) int {
+
+	var maximo int
+
+	for _, el := range l {
+
+		largo := len(el)
+
+		if largo > maximo {
+
+			maximo = largo
+
+		}
+	}
+
+	return maximo
+
+}

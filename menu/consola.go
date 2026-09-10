@@ -28,6 +28,8 @@ const (
 const (
 	KEY_ARRIBA   = 65
 	KEY_ABAJO    = 66
+	KEY_DER      = 67
+	KEY_IZQ      = 68
 	ENTER        = 13
 	TIEMPO_CARGA = 0.85
 )
@@ -135,7 +137,18 @@ func Crear_carga() Carga {
 
 }
 
-func actualizar_seccion(n int) {
+func actualizar_seccion(n, rep int) {
+
+	for x := 0; x < n; x++ {
+
+		fmt.Print("\033[F")
+
+	}
+	for x := 0; x < n; x++ {
+
+		fmt.Println(strings.Repeat(" ", rep))
+
+	}
 
 	for x := 0; x < n; x++ {
 
@@ -145,9 +158,18 @@ func actualizar_seccion(n int) {
 
 }
 
-func leer_tecla(i *int, tecla []byte) bool {
+func leer_tecla(i, pag *int, tecla []byte) bool {
 	os.Stdin.Read(tecla)
 	flechas := tecla[2]
+
+	if flechas == KEY_DER {
+
+		*pag++
+	}
+	if flechas == KEY_IZQ {
+
+		*pag--
+	}
 
 	if tecla[0] == ENTER {
 
@@ -168,33 +190,48 @@ func leer_tecla(i *int, tecla []byte) bool {
 func desplegar_opcion(opciones []string) string {
 
 	var i int
-	var op_largo = len(opciones)
+	var pag int
+
+	fraccionado := utilidades.Separar_lista(opciones)
+	max_len := len(fraccionado)
 
 	for {
 		tecla := make([]byte, 3)
 
-		for _, op := range opciones {
+		if pag > max_len-1 {
 
-			if i > op_largo-1 {
+			pag = max_len - 1
+
+		} else if pag < 0 {
+
+			pag = 0
+		}
+
+		actual := fraccionado[pag]
+		largo_op := len(actual)
+
+		for _, op := range actual {
+
+			if i > largo_op-1 {
 				i = 0
 
 			} else if i < 0 {
-				i = op_largo - 1
+				i = largo_op - 1
 			}
 
-			if op == opciones[i] { // opcion seleccionada
+			if op == actual[i] { // opcion seleccionada
 				fmt.Println(utilidades.NEGRO_BLANCO + "> " + op + utilidades.RESET + "\r")
 			} else {
 				fmt.Println("  " + op + "\r")
 			}
 		}
 
-		if leer_tecla(&i, tecla) {
+		if leer_tecla(&i, &pag, tecla) {
 
-			return opciones[i]
+			return actual[i]
 		}
 
-		actualizar_seccion(op_largo)
+		actualizar_seccion(largo_op, utilidades.Max(actual)+2) // le sumo el margen
 
 	}
 }
