@@ -225,6 +225,7 @@ func Input_multilinea(input string) string {
 		"comenzar a escribir ...",
 		"¿hasta donde llega la inteligencia humana?",
 		"¿por que programar es genial?",
+		"¿como nacio internet?",
 	}
 
 	seleccion := ejemplos[rand.Intn(len(ejemplos))]
@@ -326,5 +327,50 @@ func Fecha_hora() string {
 	dia := t.Weekday().String()
 
 	return fmt.Sprintf("%s %d %s %d\t%s", dia, d, m, a, tiempo)
+
+}
+
+func Separar_lista(lista []string) [][]string {
+
+	var elementos [][]string
+	limite := 5
+	var inicio int
+
+	for len(lista) > limite {
+
+		elementos = append(elementos, lista[inicio:limite])
+		inicio = limite
+		limite += 5
+
+	}
+
+	elementos = append(elementos, lista[inicio:])
+
+	return elementos
+
+}
+
+// para testing: compara dos listas de listas de string
+func Slices_Iguales(sl1, sl2 [][]string) bool {
+
+	var i int
+	tam1 := len(sl1)
+	tam2 := len(sl2)
+
+	if tam1 != tam2 {
+		return false
+	}
+
+	for i < tam1 {
+
+		if !slices.Equal(sl1[i], sl2[i]) {
+
+			return false
+		}
+
+		i++
+	}
+
+	return true
 
 }

@@ -1,2 +1,5 @@
 
 agregar funcionalidad para guardar la respuesta en un archivo (ver enfoque)
+mejorar la logica del selector para evitar bugs visuales cuando hay muchos modelos
+modificar el input de los archivos
+ver si puedo mejorar el box y quiza alinear los menus haga que quede mejor
