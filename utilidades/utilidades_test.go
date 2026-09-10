@@ -104,3 +104,25 @@ func TestSeparar_lista(t *testing.T) {
 		})
 	}
 }
+
+func TestMax(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		l    []string
+		want int
+	}{
+
+		{name: "vacio", l: []string{}, want: 0},
+		{name: "caso normal", l: []string{"test", "otorrinolaringologo", "testeando"}, want: len("otorrinolaringologo")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := utilidades.Max(tt.l)
+
+			if got != tt.want {
+				t.Errorf("Max() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
