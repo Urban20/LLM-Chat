@@ -24,7 +24,7 @@ const (
 	MOSTRAR_CURSOR = "\033[?25h"
 	RETROCESO      = "\033[F"
 
-	VERSION = "V1.1"
+	VERSION = "V1.1.0"
 )
 
 const (
