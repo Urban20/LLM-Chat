@@ -330,10 +330,10 @@ func Fecha_hora() string {
 
 }
 
-func Separar_lista(lista []string) [][]string {
+func Separar_lista(lista []string, limite int) [][]string {
 
 	var elementos [][]string
-	limite := 5
+
 	var inicio int
 
 	for len(lista) > limite {

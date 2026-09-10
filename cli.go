@@ -62,7 +62,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
-	opciones := []string{"Volver", "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
+	opciones := []string{fmt.Sprintf("%sVolver%s", utilidades.ANIL, utilidades.RESET), "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
 	api_chat := fmt.Sprintf("%s/chat", url)
 	api_generate := fmt.Sprintf("%s/generate", url)
@@ -73,7 +73,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 		// TODO : quiza modifique esto
 		box.Box_informacion()
 
-		seleccion, _ := menu.Menu(opciones...)
+		seleccion, _ := menu.Menu(len(opciones), opciones...)
 
 		switch seleccion {
 
@@ -205,7 +205,9 @@ func checkear_status(url string, tiempo time.Duration) error {
 
 func menu_modelos(modelos_disponibles []string) (string, error) {
 
-	IA_MODELO, menuerr := menu.Menu(modelos_disponibles...)
+	limite_muestreo := 5
+
+	IA_MODELO, menuerr := menu.Menu(limite_muestreo, modelos_disponibles...)
 
 	if menuerr != nil {
 		return "", menuerr
@@ -256,7 +258,7 @@ func main() {
 	}
 
 	// flujo del programa
-	var opcion_salir string = "[Salir]"
+	var opcion_salir string = fmt.Sprintf("%s[Salir]%s", utilidades.ANIL, utilidades.RESET)
 
 	opciones_modelos := []string{opcion_salir}
 

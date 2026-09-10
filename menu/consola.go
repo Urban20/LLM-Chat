@@ -224,12 +224,12 @@ func limitar_indice(i, largo_op int) int {
 	return i
 }
 
-func desplegar_opcion(opciones []string) string {
+func desplegar_opcion(opciones []string, limite int) string {
 
 	var i int
 	var pag int
 
-	fraccionado := utilidades.Separar_lista(opciones)
+	fraccionado := utilidades.Separar_lista(opciones, limite)
 	max_len := len(fraccionado)
 
 	for {
@@ -257,13 +257,13 @@ func desplegar_opcion(opciones []string) string {
 	}
 }
 
-func Menu(opciones ...string) (string, error) {
+func Menu(limite int, opciones ...string) (string, error) {
 
 	fmt.Print(OCULTAR_CURSOR)
 	defer fmt.Print(MOSTRAR_CURSOR)
 
 	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n")
-	fmt.Print(utilidades.AZUL_OSCURO + "navegar con ↑↓\n\n" + utilidades.RESET)
+	fmt.Print(utilidades.AZUL_OSCURO + "navegar con ↑↓ | ← → cambiar pagina\n\n" + utilidades.RESET)
 
 	fd := int(os.Stdin.Fd())
 
@@ -276,6 +276,6 @@ func Menu(opciones ...string) (string, error) {
 	defer term.Restore(fd, st)
 
 	opciones = utilidades.Eliminar_repetidos(opciones)
-	return desplegar_opcion(opciones), nil
+	return desplegar_opcion(opciones, limite), nil
 
 }

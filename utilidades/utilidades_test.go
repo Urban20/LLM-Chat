@@ -82,17 +82,20 @@ func TestSeparar_lista(t *testing.T) {
 	tests := []struct {
 		name string // description of this test case
 		// Named input parameters for target function.
-		lista []string
-		want  [][]string
+		lista  []string
+		limite int
+		want   [][]string
 	}{
 
-		{name: "caso normal", lista: []string{"1", "2", "3", "4", "5", "6"}, want: [][]string{{"1", "2", "3", "4", "5"}, {"6"}}},
-		{name: "vacia", lista: []string{}, want: [][]string{{}}},
-		{name: "caso iguales", lista: []string{"1", "2", "3"}, want: [][]string{{"1", "2", "3"}}},
+		{name: "caso normal", lista: []string{"1", "2", "3", "4", "5", "6"}, limite: 5, want: [][]string{{"1", "2", "3", "4", "5"}, {"6"}}},
+		{name: "vacia", lista: []string{}, limite: 5, want: [][]string{{}}},
+		{name: "caso iguales", lista: []string{"1", "2", "3"}, limite: 5, want: [][]string{{"1", "2", "3"}}},
+		{name: "caso iguales", lista: []string{"1", "2", "3"}, limite: 2, want: [][]string{{"1", "2"}, {"3"}}},
+		{name: "caso cero", lista: []string{}, limite: 0, want: [][]string{{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := utilidades.Separar_lista(tt.lista)
+			got := utilidades.Separar_lista(tt.lista, tt.limite)
 
 			if !utilidades.Slices_Iguales(got, tt.want) {
 
