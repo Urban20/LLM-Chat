@@ -22,7 +22,9 @@ type Carga struct {
 const (
 	OCULTAR_CURSOR = "\033[?25l"
 	MOSTRAR_CURSOR = "\033[?25h"
-	VERSION        = "V1.1"
+	RETROCESO      = "\033[F"
+
+	VERSION = "V1.1"
 )
 
 const (
@@ -137,24 +139,27 @@ func Crear_carga() Carga {
 
 }
 
-func actualizar_seccion(n, rep int) {
+func retroceder(n int) {
 
 	for x := 0; x < n; x++ {
 
-		fmt.Print("\033[F")
+		fmt.Print(RETROCESO)
 
 	}
+
+}
+
+func actualizar_seccion(n, rep int) {
+
+	retroceder(n)
+
 	for x := 0; x < n; x++ {
 
 		fmt.Println(strings.Repeat(" ", rep))
 
 	}
 
-	for x := 0; x < n; x++ {
-
-		fmt.Print("\033[F")
-
-	}
+	retroceder(n)
 
 }
 
