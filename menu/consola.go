@@ -245,6 +245,7 @@ func desplegar_opcion(opciones []string, limite int) string {
 		actual := fraccionado[pag]
 		largo_op := len(actual)
 
+		fmt.Printf("%spagina %d/%d%s\n\n", utilidades.NEGRO_BLANCO, pag+1, len(fraccionado), utilidades.RESET)
 		for _, op := range actual {
 
 			i = limitar_indice(i, largo_op)
@@ -257,7 +258,8 @@ func desplegar_opcion(opciones []string, limite int) string {
 			return actual[i]
 		}
 
-		actualizar_seccion(largo_op, utilidades.Max(actual)+2) // le sumo el margen
+		actualizar_seccion(largo_op+2, // le sumo los margenes de pagina
+			utilidades.Max(actual)+2) // le sumo el margen
 
 	}
 }
