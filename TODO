@@ -1,5 +1,7 @@
 
-agregar funcionalidad para guardar la respuesta en un archivo (ver enfoque)
-mejorar la logica del selector para evitar bugs visuales cuando hay muchos modelos
-modificar el input de los archivos
-ver si puedo mejorar el box y quiza alinear los menus haga que quede mejor
+1. agregar funcionalidad para guardar la respuesta en un archivo (ver enfoque)
+2. mejorar la logica del selector para evitar bugs visuales cuando hay muchos modelos
+3. modificar el input de los archivos
+4. ver si puedo mejorar el box y quiza alinear los menus haga que quede mejor
+5. deberia diseñar un algoritmo para evitar que se filtren strings vacios en las listas
+6. crear tests para Max()
