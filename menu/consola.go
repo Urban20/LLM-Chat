@@ -236,8 +236,10 @@ func desplegar_opcion(opciones []string, limite int) string {
 
 	fraccionado := utilidades.Separar_lista(opciones, limite)
 	max_len := len(fraccionado)
+	var margen int
 
 	for {
+
 		tecla := make([]byte, 3)
 
 		pag = paginado(pag, max_len)
@@ -245,7 +247,12 @@ func desplegar_opcion(opciones []string, limite int) string {
 		actual := fraccionado[pag]
 		largo_op := len(actual)
 
-		fmt.Printf("%spagina %d/%d%s\n\n", utilidades.NEGRO_BLANCO, pag+1, len(fraccionado), utilidades.RESET)
+		if max_len > 1 {
+
+			fmt.Printf("%spagina %d/%d%s\n\n", utilidades.NEGRO_BLANCO, pag+1, max_len, utilidades.RESET)
+			margen = 2
+		}
+
 		for _, op := range actual {
 
 			i = limitar_indice(i, largo_op)
@@ -258,7 +265,7 @@ func desplegar_opcion(opciones []string, limite int) string {
 			return actual[i]
 		}
 
-		actualizar_seccion(largo_op+2, // le sumo los margenes de pagina
+		actualizar_seccion(largo_op+margen, // le sumo los margenes de pagina
 			utilidades.Max(actual)+2) // le sumo el margen
 
 	}
