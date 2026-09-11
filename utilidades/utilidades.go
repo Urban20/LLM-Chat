@@ -245,10 +245,12 @@ func Input_multilinea(input string) string {
 
 	i := huh.NewText().Title(input)
 	i.WithTheme(base)
-	i.Description("[ctrl + j/ alt + ENTER] : nueva linea ● [ctrl + e] : expandir editor (si esta disponible)\n")
+	i.Description("[ctrl + j/ alt + ENTER] : nueva linea\n")
 	i.Placeholder(seleccion)
 	i.Value(&valor)
-
+	i.Editor("") //dado que no pude deshabilitar el editor externo (da problemas con el alternate screen)
+	// se me ocurrio esta idea hacky (no es perfecta, mete un bug visual)
+	// TODO: ver si se puede corregir definitivamente
 	i.Run()
 
 	return strings.TrimSpace(valor)

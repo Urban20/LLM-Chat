@@ -117,6 +117,7 @@ func Esperar_tecla() {
 
 	fmt.Print("\r")
 	fmt.Print(strings.Repeat(" ", len(info)))
+	fmt.Print("\r")
 	fmt.Print("\n")
 
 }
@@ -155,7 +156,7 @@ func actualizar_seccion(n, rep int) {
 
 	for x := 0; x < n; x++ {
 
-		fmt.Println(strings.Repeat(" ", rep))
+		fmt.Println(strings.Repeat(" ", rep), "\r")
 
 	}
 
@@ -249,7 +250,7 @@ func desplegar_opcion(opciones []string, limite int) string {
 
 		if max_len > 1 {
 
-			fmt.Printf("%spagina %d/%d%s\n\n", utilidades.NEGRO_BLANCO, pag+1, max_len, utilidades.RESET)
+			fmt.Printf("%spagina %d/%d%s\n\n\r", utilidades.NEGRO_BLANCO, pag+1, max_len, utilidades.RESET)
 			margen = 2
 		}
 
