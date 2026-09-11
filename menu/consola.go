@@ -291,6 +291,8 @@ func Menu(limite int, opciones ...string) (string, error) {
 	defer term.Restore(fd, st)
 
 	opciones = utilidades.Eliminar_repetidos(opciones)
+	opciones = utilidades.Limpiar_listas(opciones)
+
 	return desplegar_opcion(opciones, limite), nil
 
 }

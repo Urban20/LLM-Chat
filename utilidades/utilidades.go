@@ -404,3 +404,22 @@ func Max(l []string) int {
 	return maximo
 
 }
+
+// evitamos que la lista contenga elementos mal formateados, como strings vacios
+func Limpiar_listas(l []string) []string {
+
+	var copia []string
+
+	for _, v := range l {
+
+		if !String_vacio(v) {
+
+			copia = append(copia, v)
+
+		}
+
+	}
+
+	return copia
+
+}

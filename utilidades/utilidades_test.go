@@ -129,3 +129,26 @@ func TestMax(t *testing.T) {
 		})
 	}
 }
+
+func TestLimpiar_listas(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		l    []string
+		want []string
+	}{
+
+		{l: []string{"", "test", "\n", " ", "   "}, want: []string{"test"}},
+		{l: []string{}, want: []string{}},
+		{l: []string{"test", "testing"}, want: []string{"test", "testing"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := utilidades.Limpiar_listas(tt.l)
+
+			if !slices.Equal(got, tt.want) {
+				t.Errorf("Limpiar_listas() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
