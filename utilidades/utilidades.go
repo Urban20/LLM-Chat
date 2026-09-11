@@ -4,13 +4,13 @@ import (
 	"bufio"
 	_ "embed"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"io"
 	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"time"
@@ -260,25 +260,51 @@ func Input_multilinea(input string) string {
 //go:embed estilo.json
 var Estilos string
 
-func Formatear_input(msg string) ([]string, error) {
+func Formatear_input() []string {
 
 	// espera un mensaje para el input y se devuelve la salida en formato de lista de strings
 	//para ser procesado por la ia (envio de archivos como texto plano , imagenes, etc)
 
 	var arch_list []string
-
 	fmt.Print("\n")
-	archivos := Input(AMARILLO + msg + RESET)
+	arch_actual := " "
+	var env string
 
-	if String_vacio(archivos) {
+	switch runtime.GOOS {
 
-		return arch_list, errors.New("input vacio") // esto realmente no se usa, es para que evite ejecutando
+	case "windows":
+
+		env = "USERPROFILE"
+
+	default: // pensado para linux y mac
+
+		env = "HOME"
 
 	}
 
-	arch_list = strings.Split(archivos, " ")
+	dir_actual := os.Getenv(env)
 
-	return arch_list, nil
+	for arch_actual != "" {
+
+		dir := huh.NewFilePicker()
+		dir.Picking(true)
+		dir.ShowSize(false)
+		dir.ShowSize(true)
+		dir.ShowHidden(true)
+		dir.ShowPermissions(false)
+		dir.DirAllowed(true)
+		dir.CurrentDirectory(dir_actual)
+		dir.Height(10)
+		dir.Run()
+
+		arch_actual = fmt.Sprintf("%v", dir.GetValue())
+		dir_actual = filepath.Dir(arch_actual)
+
+		arch_list = append(arch_list, arch_actual)
+
+	}
+
+	return arch_list
 
 }
 
