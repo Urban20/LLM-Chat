@@ -21,7 +21,7 @@ const (
 	PUERTO_DEFAULT  = 11434
 	CTX_DEFAULT     = 16_000
 	TEMP_DEFAULT    = 0.5
-	CONTENT_TYPE    = "aplication/json"
+	CONTENT_TYPE    = "application/json"
 	TIMEOUT_DEFAULT = 5.0
 )
 
