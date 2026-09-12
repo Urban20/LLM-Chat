@@ -259,7 +259,7 @@ func Input_multilinea(input string) string {
 //go:embed estilo.json
 var Estilos string
 
-func Formatear_input() []string {
+func Abrir_selector_archivos() []string {
 
 	// espera un mensaje para el input y se devuelve la salida en formato de lista de strings
 	//para ser procesado por la ia (envio de archivos como texto plano , imagenes, etc)

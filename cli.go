@@ -91,7 +91,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 		case opciones[2]:
 
-			arch_list := utilidades.Formatear_input()
+			arch_list := utilidades.Abrir_selector_archivos()
 
 			arch_list = utilidades.Eliminar_repetidos(arch_list)
 
@@ -103,7 +103,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 		case opciones[4]:
 
-			imgs := utilidades.Formatear_input()
+			imgs := utilidades.Abrir_selector_archivos()
 
 			imagenes, imgerr := utilidades.Imagen_a_base64(imgs...)
 
