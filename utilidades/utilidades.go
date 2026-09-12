@@ -41,6 +41,15 @@ const (
 	ANIL            = "\033[48;2;43;43;69m"
 )
 
+var (
+	// se adapta al color de la terminal
+	oscuros  = lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
+	claros   = lipgloss.AdaptiveColor{Light: "#b9b9b9", Dark: "#ffffff"}
+	violetas = lipgloss.AdaptiveColor{Light: "#2B2B45", Dark: "#434368"}
+	azules   = lipgloss.AdaptiveColor{Light: "#404f7f", Dark: "#6f80bc"}
+	verdes   = lipgloss.AdaptiveColor{Light: "#1dcb5a", Dark: "#1dcb5a"}
+)
+
 func separador() {
 
 	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
@@ -230,12 +239,6 @@ func Input_multilinea(input string) string {
 	seleccion := ejemplos[rand.Intn(len(ejemplos))]
 
 	base := huh.ThemeBase()
-	// se adapta al color de la terminal
-	oscuros := lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
-	claros := lipgloss.AdaptiveColor{Light: "#b9b9b9", Dark: "#ffffff"}
-	violetas := lipgloss.AdaptiveColor{Light: "#8d4dc2", Dark: "#b66cdb"}
-	azules := lipgloss.AdaptiveColor{Light: "#58669b", Dark: "#58669b"}
-	verdes := lipgloss.AdaptiveColor{Light: "#1dcb5a", Dark: "#1dcb5a"}
 
 	base.Focused.Title = base.Focused.Title.Foreground(oscuros).Background(claros)
 	base.Focused.TextInput.Cursor = base.Focused.Title.Foreground(violetas)
@@ -258,6 +261,29 @@ func Input_multilinea(input string) string {
 
 //go:embed estilo.json
 var Estilos string
+
+func crear_selector(dir_actual string) *huh.FilePicker {
+
+	dir := huh.NewFilePicker()
+	dir.Picking(true)
+	dir.ShowSize(false)
+	dir.ShowSize(true)
+	dir.ShowHidden(true)
+	dir.ShowPermissions(false)
+	dir.DirAllowed(true)
+	dir.CurrentDirectory(dir_actual)
+	dir.Height(10)
+
+	tema := huh.ThemeBase()
+
+	tema.Focused.File = tema.Focused.File.Foreground(claros)
+	tema.Focused.File = tema.Focused.File.Background(violetas)
+	tema.Focused.Base = tema.Focused.Base.BorderForeground(verdes)
+
+	dir.WithTheme(tema)
+
+	return dir
+}
 
 func Abrir_selector_archivos() []string {
 
@@ -285,15 +311,7 @@ func Abrir_selector_archivos() []string {
 
 	for {
 
-		dir := huh.NewFilePicker()
-		dir.Picking(true)
-		dir.ShowSize(false)
-		dir.ShowSize(true)
-		dir.ShowHidden(true)
-		dir.ShowPermissions(false)
-		dir.DirAllowed(true)
-		dir.CurrentDirectory(dir_actual)
-		dir.Height(10)
+		dir := crear_selector(dir_actual)
 
 		if err := dir.Run(); err != nil {
 
