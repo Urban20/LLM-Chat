@@ -64,22 +64,6 @@ type Prompt_archivo struct { //struct para manejar el envio de informacion al ll
 	Archivos []string
 }
 
-func (s Prompt_archivo) Mostrar_archivos() {
-
-	if len(s.Archivos) == 0 {
-
-		return
-	}
-
-	fmt.Print(AZUL_OSCURO + "\n\n(*) Archivos adjuntos:\n\n" + RESET)
-
-	for _, arch := range s.Archivos {
-
-		fmt.Println(arch)
-	}
-
-}
-
 func (s *Prompt_archivo) Borrar_informacion() {
 
 	s.Prompt = ""

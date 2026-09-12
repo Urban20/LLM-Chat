@@ -107,19 +107,23 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			imagenes, imgerr := utilidades.Imagen_a_base64(imgs...)
 
-			if imgerr != nil {
+			if imgerr != nil && len(imagenes) == 0 {
 
+				utilidades.Logueo_simple(imgerr)
 				continue
 			}
 
+			utilidades.Mostrar_archivos(imgs)
+
 			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_generate, content_type, box.Ctx, box.Temperatura, false, imagenes); err != nil {
 
+				utilidades.Logueo_simple(err)
 				continue
 			}
 
 		case opciones[5]:
 
-			archivo_prompt.Mostrar_archivos()
+			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
 			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_chat, content_type, box.Ctx, box.Temperatura, true, []string{}); err != nil {
 

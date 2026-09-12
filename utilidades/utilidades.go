@@ -158,11 +158,10 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 	for _, ruta := range rutas {
 
 		ruta = filepath.Clean(ruta)
-		nombre_archivo := filepath.Base(ruta)
 
-		archivos = append(archivos, nombre_archivo)
+		archivos = append(archivos, ruta)
 
-		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n\n", nombre_archivo) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
+		vacio := fmt.Sprintf("file: [ %s ]\n\n**empty**\n\n", ruta) //lo escribo en ingles para que la ia lo tome como prompt independientemente del idioma
 		// el ingles es el idioma base
 
 		archivo, archerr := os.Open(ruta)
@@ -183,7 +182,7 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 			continue
 		}
 
-		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", nombre_archivo, strings.TrimSpace(string(contenido)))
+		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", ruta, strings.TrimSpace(string(contenido)))
 	}
 
 	return Prompt_archivo{Prompt: prompt, Archivos: archivos}
@@ -265,9 +264,9 @@ func Formatear_input() []string {
 	// espera un mensaje para el input y se devuelve la salida en formato de lista de strings
 	//para ser procesado por la ia (envio de archivos como texto plano , imagenes, etc)
 
-	var arch_list []string
+	var arch_list = []string{}
 	fmt.Print("\n")
-	arch_actual := " "
+
 	var env string
 
 	switch runtime.GOOS {
@@ -284,7 +283,7 @@ func Formatear_input() []string {
 
 	dir_actual := os.Getenv(env)
 
-	for arch_actual != "" {
+	for {
 
 		dir := huh.NewFilePicker()
 		dir.Picking(true)
@@ -295,9 +294,20 @@ func Formatear_input() []string {
 		dir.DirAllowed(true)
 		dir.CurrentDirectory(dir_actual)
 		dir.Height(10)
-		dir.Run()
 
-		arch_actual = fmt.Sprintf("%v", dir.GetValue())
+		if err := dir.Run(); err != nil {
+
+			break
+
+		}
+
+		arch_actual := fmt.Sprintf("%v", dir.GetValue())
+
+		if arch_actual == "" {
+
+			break
+		}
+
 		dir_actual = filepath.Dir(arch_actual)
 
 		arch_list = append(arch_list, arch_actual)
@@ -447,5 +457,23 @@ func Limpiar_listas(l []string) []string {
 	}
 
 	return copia
+
+}
+
+func Mostrar_archivos(l []string) {
+
+	if len(l) == 0 {
+
+		return
+	}
+
+	fmt.Print(AZUL_OSCURO + "\n\n(*) Archivos adjuntos:\n\n" + RESET)
+
+	for _, ruta := range l {
+
+		arch := filepath.Base(ruta)
+
+		fmt.Println(arch)
+	}
 
 }
