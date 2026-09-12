@@ -202,7 +202,7 @@ func String_vacio(str string) bool {
 
 	for _, c := range str {
 
-		if c != ' ' && c != '\n' && c != '\t' {
+		if !slices.Contains([]rune{' ', '\n', '\t'}, c) {
 
 			return false
 		}

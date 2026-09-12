@@ -66,6 +66,7 @@ func TestSlices_Iguales(t *testing.T) {
 		{name: "caso normal", sl1: [][]string{{"1", "2", "3"}, {"4"}}, sl2: [][]string{{"1", "2", "3"}, {"4"}}, want: true},
 		{name: "caso vacia", sl1: [][]string{}, sl2: [][]string{}, want: true},
 		{name: "caso falso", sl1: [][]string{{"1", "2", "3"}, {"4"}}, sl2: [][]string{{"1", "2"}}, want: false},
+		{name: "caso falso mismo largo", sl1: [][]string{{"1", "2", "3"}}, sl2: [][]string{{"1", "2", "4"}}, want: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
