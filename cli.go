@@ -93,6 +93,11 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			arch_list := utilidades.Abrir_selector_archivos()
 
+			if len(arch_list) == 0 {
+
+				continue
+			}
+
 			arch_list = utilidades.Eliminar_repetidos(arch_list)
 
 			archivo_prompt = utilidades.Archivo_a_prompt(arch_list)
@@ -107,7 +112,12 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			imagenes, imgerr := utilidades.Imagen_a_base64(imgs...)
 
-			if imgerr != nil && len(imagenes) == 0 {
+			if len(imagenes) == 0 {
+
+				continue
+			}
+
+			if imgerr != nil {
 
 				utilidades.Logueo_simple(imgerr)
 				continue
