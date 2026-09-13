@@ -100,7 +100,7 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 
 func Box(msgs ...string) {
 
-	superficie := pterm.DefaultBox.WithHorizontalPadding(5).WithBottomPadding(1)
+	superficie := pterm.DefaultBox.WithHorizontalPadding(15).WithBottomPadding(1)
 
 	Centrar(superficie.Sprintln(strings.Join(msgs, "\n")))
 
