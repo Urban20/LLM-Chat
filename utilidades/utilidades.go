@@ -41,6 +41,23 @@ const (
 	ANIL            = "\033[48;2;43;43;69m"
 )
 
+const (
+	OCULTAR_CURSOR = "\033[?25l"
+	MOSTRAR_CURSOR = "\033[?25h"
+	RETROCESO      = "\033[F"
+
+	VERSION = "V1.1.0"
+)
+
+const (
+	KEY_ARRIBA   = 65
+	KEY_ABAJO    = 66
+	KEY_DER      = 67
+	KEY_IZQ      = 68
+	ENTER        = 13
+	TIEMPO_CARGA = 0.85
+)
+
 var (
 	// se adapta al color de la terminal
 	oscuros  = lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
@@ -86,14 +103,17 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 
 		return termerr
 	}
-	separador()
+	//separador()
 	md, err := render.Render(fmt.Sprintf("# LLM (%s):\n %s", r.Modelo, r.Respuesta_raw))
 
 	if err != nil {
 		return err
 	}
-	fmt.Print(md)
-	separador()
+	scroll := Crear_scroll()
+	scroll.Renderizar(md)
+	scroll.Iniciar()
+
+	//separador()
 
 	return nil
 }

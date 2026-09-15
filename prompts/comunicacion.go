@@ -76,10 +76,10 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 func historial(r utilidades.Respuesta_LLM) error {
 
-	fmt.Print(utilidades.ALTERNATE_RESET)
-	utilidades.Limpieza_rapida()
-	fmt.Print("\n\n")
-	fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), r.Prompt)
+	//fmt.Print(utilidades.ALTERNATE_RESET)
+	//utilidades.Limpieza_rapida()
+	//fmt.Print("\n\n")
+	//fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), r.Prompt)
 	if markerr := utilidades.Imprimir_markdown(r); markerr != nil {
 
 		return markerr
@@ -235,7 +235,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 		return prompterr
 	}
 
-	defer fmt.Print(utilidades.ALTERNATE)
+	//defer fmt.Print(utilidades.ALTERNATE)
 	defer menu.Esperar_tecla()
 
 	// estas ultimas funciones no retornan errores

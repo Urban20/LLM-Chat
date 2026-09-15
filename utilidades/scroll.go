@@ -1,0 +1,119 @@
+package utilidades
+
+import (
+	"fmt"
+	"os"
+	"strings"
+
+	"golang.org/x/term"
+)
+
+type Scroll struct {
+	delta         int
+	inicio        int
+	fin           int
+	renglones     []string
+	fd            int
+	habilitar     bool
+	tam_renglones int
+}
+
+func (s *Scroll) Renderizar(texto string) {
+
+	s.renglones = strings.Split(texto, "\n")
+
+	s.tam_renglones = len(s.renglones)
+
+}
+
+func (s *Scroll) imprimir_scroll(renglon []string) {
+
+	Limpieza_rapida()
+
+	for _, l := range renglon {
+
+		fmt.Println(l)
+	}
+
+	fmt.Printf("\n\n%s↑ ↓ navegar%s\n\n", NEGRO_BLANCO, RESET)
+
+}
+
+func teclas_scroll(s *Scroll, tecla byte) {
+
+	if tecla == KEY_ABAJO || tecla == 's' {
+
+		s.fin++
+		s.inicio++
+
+	} else if tecla == KEY_ARRIBA || tecla == 'w' {
+
+		s.inicio--
+		s.fin--
+
+	}
+}
+
+func detectar_tecla() byte {
+
+	buffer := make([]byte, 3)
+
+	os.Stdin.Read(buffer)
+	tecla := buffer[2]
+
+	return tecla
+
+}
+
+func (s Scroll) Iniciar() {
+
+	Limpieza_rapida()
+
+	st, _ := term.MakeRaw(s.fd)
+	defer term.Restore(s.fd, st)
+
+	if s.fin >= s.tam_renglones {
+
+		s.imprimir_scroll(s.renglones)
+
+		return
+
+	}
+
+	for s.habilitar { //TODO: verificar que no haya errores y refaccionar
+
+		tecla := detectar_tecla()
+
+		teclas_scroll(&s, tecla)
+
+		if s.fin > s.tam_renglones { //si se llega al final del scroll corta el bucle
+
+			s.habilitar = false
+			return
+		}
+
+		if s.inicio < 0 {
+			s.inicio = 0
+			s.fin = s.inicio + s.delta
+		}
+
+		s.imprimir_scroll(s.renglones[s.inicio:s.fin])
+
+	}
+
+}
+
+func Crear_scroll() *Scroll {
+
+	n_delta := 30
+
+	s := Scroll{delta: n_delta,
+		inicio:    0,
+		fin:       n_delta,
+		fd:        int(os.Stdin.Fd()),
+		habilitar: true,
+	}
+
+	return &s
+
+}

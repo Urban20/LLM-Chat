@@ -19,23 +19,6 @@ type Carga struct {
 	tiempo   float32
 }
 
-const (
-	OCULTAR_CURSOR = "\033[?25l"
-	MOSTRAR_CURSOR = "\033[?25h"
-	RETROCESO      = "\033[F"
-
-	VERSION = "V1.1.0"
-)
-
-const (
-	KEY_ARRIBA   = 65
-	KEY_ABAJO    = 66
-	KEY_DER      = 67
-	KEY_IZQ      = 68
-	ENTER        = 13
-	TIEMPO_CARGA = 0.85
-)
-
 func Logo() {
 
 	logo := ` ██╗     ██╗     ███╗   ███╗       ██████╗██╗  ██╗ █████╗ ████████╗
@@ -53,7 +36,7 @@ func Logo() {
 
 		pterm.DefaultCenter.Printf(" %s %s %s", utilidades.ANIL, l, utilidades.RESET)
 	}
-	utilidades.Centrar(VERSION)
+	utilidades.Centrar(utilidades.VERSION)
 
 	fmt.Print(utilidades.RESET)
 
@@ -61,8 +44,8 @@ func Logo() {
 
 func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
-	fmt.Print("\n\n" + OCULTAR_CURSOR)
-	defer fmt.Print(MOSTRAR_CURSOR)
+	fmt.Print("\n\n" + utilidades.OCULTAR_CURSOR)
+	defer fmt.Print(utilidades.MOSTRAR_CURSOR)
 
 	wg.Add(1)
 	defer wg.Done()
@@ -87,9 +70,9 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 // el programa queda esperando que se pulse q
 func Esperar_tecla() {
 
-	fmt.Print(OCULTAR_CURSOR)
-	defer fmt.Print(MOSTRAR_CURSOR)
-	info := "[Q para volver al menu]"
+	fmt.Print(utilidades.OCULTAR_CURSOR)
+	defer fmt.Print(utilidades.MOSTRAR_CURSOR)
+	info := "[Tab para volver al menu]"
 
 	fmt.Print("\n")
 	fmt.Print(info)
@@ -107,7 +90,7 @@ func Esperar_tecla() {
 
 		os.Stdin.Read(b)
 
-		if b[0] == 'q' {
+		if b[0] == '\t' {
 
 			ejecutando = false
 
@@ -134,7 +117,7 @@ func Crear_carga() Carga {
 	c := Carga{estado_1: "◌◌◌",
 		estado_2: "●●●",
 		cargando: true,
-		tiempo:   TIEMPO_CARGA}
+		tiempo:   utilidades.TIEMPO_CARGA}
 
 	return c
 
@@ -144,7 +127,7 @@ func retroceder(n int) {
 
 	for x := 0; x < n; x++ {
 
-		fmt.Print(RETROCESO)
+		fmt.Print(utilidades.RETROCESO)
 
 	}
 
@@ -168,23 +151,23 @@ func leer_tecla(i, pag *int, tecla []byte) bool {
 	os.Stdin.Read(tecla)
 	flechas := tecla[2]
 
-	if flechas == KEY_DER {
+	if flechas == utilidades.KEY_DER {
 
 		*pag++
 	}
-	if flechas == KEY_IZQ {
+	if flechas == utilidades.KEY_IZQ {
 
 		*pag--
 	}
 
-	if tecla[0] == ENTER {
+	if tecla[0] == utilidades.ENTER {
 
 		return true
 
-	} else if flechas == KEY_ARRIBA || tecla[0] == 'w' {
+	} else if flechas == utilidades.KEY_ARRIBA || tecla[0] == 'w' {
 
 		*i--
-	} else if flechas == KEY_ABAJO || tecla[0] == 's' {
+	} else if flechas == utilidades.KEY_ABAJO || tecla[0] == 's' {
 
 		*i++
 	}
@@ -274,8 +257,8 @@ func desplegar_opcion(opciones []string, limite int) string {
 
 func Menu(limite int, opciones ...string) (string, error) {
 
-	fmt.Print(OCULTAR_CURSOR)
-	defer fmt.Print(MOSTRAR_CURSOR)
+	fmt.Print(utilidades.OCULTAR_CURSOR)
+	defer fmt.Print(utilidades.MOSTRAR_CURSOR)
 
 	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n")
 	fmt.Print(utilidades.AZUL_OSCURO + "navegar con ↑↓ | ← → cambiar pagina\n\n" + utilidades.RESET)
