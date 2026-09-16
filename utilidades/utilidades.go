@@ -87,7 +87,8 @@ func Ollama_instalado() bool {
 
 func Imprimir_markdown(r Respuesta_LLM) error {
 
-	render, termerr := glamour.NewTermRenderer(glamour.WithStylesFromJSONBytes([]byte(Estilos)))
+	render, termerr := glamour.NewTermRenderer(
+		glamour.WithWordWrap(90), glamour.WithStylesFromJSONBytes([]byte(Estilos)))
 
 	if termerr != nil {
 
