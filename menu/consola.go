@@ -98,11 +98,6 @@ func Esperar_tecla() {
 
 	}
 
-	fmt.Print("\r")
-	fmt.Print(strings.Repeat(" ", len(info)))
-	fmt.Print("\r")
-	fmt.Print("\n")
-
 }
 
 func (p *Carga) Detener(wg *sync.WaitGroup) {

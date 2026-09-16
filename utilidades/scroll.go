@@ -26,7 +26,7 @@ func (s *Scroll) Renderizar(texto string) {
 
 }
 
-func (s *Scroll) imprimir_scroll(renglon []string) {
+func imprimir_scroll(renglon []string, scroll bool) {
 
 	Limpieza_rapida()
 
@@ -35,18 +35,21 @@ func (s *Scroll) imprimir_scroll(renglon []string) {
 		fmt.Println(l)
 	}
 
-	fmt.Printf("\n\n%s↑ ↓ navegar%s\n\n", NEGRO_BLANCO, RESET)
-
+	if scroll {
+		Centrar(fmt.Sprintf("\n\n%s↑ ↓ navegar%s\n", ANIL, RESET))
+	}
 }
 
-func teclas_scroll(s *Scroll, tecla byte) {
+func teclas_scroll(s *Scroll, tecla []byte) {
 
-	if tecla == KEY_ABAJO || tecla == 's' {
+	flechas := tecla[2]
+
+	if flechas == KEY_ABAJO || tecla[0] == 's' {
 
 		s.fin++
 		s.inicio++
 
-	} else if tecla == KEY_ARRIBA || tecla == 'w' {
+	} else if flechas == KEY_ARRIBA || tecla[0] == 'w' {
 
 		s.inicio--
 		s.fin--
@@ -54,31 +57,33 @@ func teclas_scroll(s *Scroll, tecla byte) {
 	}
 }
 
-func detectar_tecla() byte {
+func detectar_tecla() []byte {
 
 	buffer := make([]byte, 3)
 
 	os.Stdin.Read(buffer)
-	tecla := buffer[2]
 
-	return tecla
+	return buffer
 
 }
 
 func (s Scroll) Iniciar() {
 
 	Limpieza_rapida()
+	fmt.Print(OCULTAR_CURSOR)
 
 	st, _ := term.MakeRaw(s.fd)
 	defer term.Restore(s.fd, st)
 
 	if s.fin >= s.tam_renglones {
 
-		s.imprimir_scroll(s.renglones)
+		imprimir_scroll(s.renglones, false)
 
 		return
 
 	}
+
+	imprimir_scroll(s.renglones[s.inicio:s.fin], true)
 
 	for s.habilitar { //TODO: verificar que no haya errores y refaccionar
 
@@ -97,7 +102,7 @@ func (s Scroll) Iniciar() {
 			s.fin = s.inicio + s.delta
 		}
 
-		s.imprimir_scroll(s.renglones[s.inicio:s.fin])
+		imprimir_scroll(s.renglones[s.inicio:s.fin], true)
 
 	}
 
@@ -105,7 +110,7 @@ func (s Scroll) Iniciar() {
 
 func Crear_scroll() *Scroll {
 
-	n_delta := 30
+	n_delta := 25 //TODO : ajustar para evitar bugs visuales
 
 	s := Scroll{delta: n_delta,
 		inicio:    0,

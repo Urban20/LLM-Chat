@@ -19,7 +19,6 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/pterm/pterm"
-	"golang.org/x/term"
 )
 
 const (
@@ -66,15 +65,6 @@ var (
 	azules   = lipgloss.AdaptiveColor{Light: "#404f7f", Dark: "#6f80bc"}
 	verdes   = lipgloss.AdaptiveColor{Light: "#1dcb5a", Dark: "#1dcb5a"}
 )
-
-func separador() {
-
-	x, _, _ := term.GetSize(int(os.Stdout.Fd()))
-	fmt.Println(FONDO_BLANCO)
-	fmt.Println(strings.Repeat(" ", x))
-	fmt.Println(RESET)
-
-}
 
 func Centrar(texto string) {
 
