@@ -103,8 +103,6 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 	scroll.Renderizar(md)
 	scroll.Iniciar()
 
-	//separador()
-
 	return nil
 }
 

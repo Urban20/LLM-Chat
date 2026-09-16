@@ -74,21 +74,6 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 }
 
-func historial(r utilidades.Respuesta_LLM) error {
-
-	//fmt.Print(utilidades.ALTERNATE_RESET)
-	//utilidades.Limpieza_rapida()
-	//fmt.Print("\n\n")
-	//fmt.Printf("%sUSUARIO:%s\n%s\t%s\n\n", utilidades.NEGRO_BLANCO, utilidades.RESET, utilidades.Tiempo_actual(), r.Prompt)
-	if markerr := utilidades.Imprimir_markdown(r); markerr != nil {
-
-		return markerr
-	}
-
-	return nil
-
-}
-
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt, modelo string) utilidades.Respuesta_LLM {
 
@@ -167,7 +152,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
 	Guardar_en_memoria(r.Respuesta_raw, "LLM (IA)")
 
-	if err := historial(r); err != nil { //impresion de las respuestas del llm en modo canonico
+	if err := utilidades.Imprimir_markdown(r); err != nil {
 
 		fmt.Print("\n\n")
 		utilidades.Error(err)
@@ -178,6 +163,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
 // envio el prompt desde el usuario al LLM
 func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp float64, chat bool, imagenes []string) (*http.Response, error) {
+	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
 	var json_prompt_usuario any
 
@@ -235,13 +221,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 		return prompterr
 	}
 
-	//defer fmt.Print(utilidades.ALTERNATE)
 	defer menu.Esperar_tecla()
-
-	// estas ultimas funciones no retornan errores
-	//  la razon es que deben notificarse los errores y
-	//  esperar que el usuario presione la tecla para
-	// continuar
 
 	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, modelo)
 
