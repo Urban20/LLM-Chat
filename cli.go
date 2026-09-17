@@ -34,7 +34,7 @@ var (
 	timeout      = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion")
 )
 
-func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endpoint, content_type string, ctx int, temp float64, chat bool, imagenes []string) error {
+func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint, content_type string, chat bool, imagenes []string) error {
 
 	prompt := utilidades.Input_multilinea("Prompt") //prompt del usuario
 
@@ -51,7 +51,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, modelo, endp
 
 	go carga.Iniciar(&wg)
 
-	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, modelo, endpoint, content_type, ctx, temp, &carga, &wg, chat, imagenes); err != nil {
+	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, box, endpoint, content_type, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		utilidades.Advertencia(err)
 	}
@@ -125,7 +125,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(imgs)
 
-			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_generate, content_type, box.Ctx, box.Temperatura, false, imagenes); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box, api_generate, content_type, false, imagenes); err != nil {
 
 				utilidades.Logueo_simple(err)
 				continue
@@ -135,7 +135,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
-			if err := iniciar_conversacion(archivo_prompt, box.Modelo, api_chat, content_type, box.Ctx, box.Temperatura, true, []string{}); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
 
 				continue
 			}

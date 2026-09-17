@@ -75,10 +75,10 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 }
 
 // recibo el prompt desde el LLM al usuario
-func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt, modelo string) utilidades.Respuesta_LLM {
+func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string, box utilidades.Box_info) utilidades.Respuesta_LLM {
 
 	var cuerpo string
-	respuesta := utilidades.Respuesta_LLM{Modelo: modelo}
+	respuesta := utilidades.Respuesta_LLM{Modelo: box.Modelo}
 
 	escaner := bufio.NewScanner(resp.Body)
 
@@ -162,7 +162,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp float64, chat bool, imagenes []string) (*http.Response, error) {
+func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
 	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
 	var json_prompt_usuario any
@@ -170,16 +170,16 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 	Guardar_en_memoria(prompt, "user")
 
 	opciones := Opciones{
-		Num_ctx:     ctx,
+		Num_ctx:     box.Ctx,
 		Num_predict: -1,
-		Temperature: temp,
+		Temperature: box.Temperatura,
 	}
 
 	if chat {
 
 		json_prompt_usuario = Mensaje_usuario_chat{
 
-			Model:    Modelo,
+			Model:    box.Modelo,
 			Messages: Memoria,
 			Stream:   true,
 			Options:  opciones,
@@ -189,7 +189,7 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 
 		json_prompt_usuario = Mensaje_usuario_generate{
 
-			Model:   Modelo,
+			Model:   box.Modelo,
 			Prompt:  prompt,
 			Images:  imagenes,
 			Options: opciones,
@@ -202,7 +202,7 @@ func enviar_prompt(prompt, Modelo, endpoint, Content_type string, ctx int, temp 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string, ctx int, temp float64, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
+func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoint, content_type string, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
 	p := utilidades.Estructura_prompt{
 		// prompt archivo se formatea por
@@ -212,7 +212,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 
 	prompt_total := prompt_archivo + p.Formatear_prompt()
 	// ver de reorganizar esto (quiza crear una struct para encapsular algunas cosas)
-	resp, prompterr := enviar_prompt(prompt_total, modelo, endpoint, content_type, ctx, temp, chat, imagenes)
+	resp, prompterr := enviar_prompt(prompt_total, box, endpoint, content_type, chat, imagenes)
 
 	defer carga.Detener(wg)
 
@@ -223,7 +223,7 @@ func Comunicacion(prompt_archivo, prompt, modelo, endpoint, content_type string,
 
 	defer menu.Esperar_tecla()
 
-	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, modelo)
+	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, box)
 
 	procesar_respuesta(respuesta)
 
