@@ -1,14 +1,14 @@
 # LLM-Chat
 
-Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com).
+Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com). Un cliente simple en terminal que soporta entradas multimodales y gestión de contexto.
 
-[![logo.png](https://i.postimg.cc/pVSCFSNb/logo.png)](https://postimg.cc/s1p5FwDw)
+[![llmchat.gif](https://i.postimg.cc/fLjF5PW7/llmchat.gif)](https://postimg.cc/tZJ242x7)
 
 ## Requisitos
 
 - Go 1.25 o superior (definido en `go.mod`).
-- [Ollama](https://ollama.com/download) instalado y accesible en el `PATH` del sistema (dicho servidor tambien puede correr de forma remota).
-- Al menos un modelo descargado en Ollama.
+- [Ollama](https://ollama.com/download) instalado y accesible en el `PATH` del sistema (dicho servidor también puede correr de forma remota).
+- Al menos un modelo descargado en Ollama que soporte la modalidad deseada (texto, imágenes, etc.).
 - Una terminal que soporte secuencias ANSI (en Windows el propio binario habilita el modo virtual terminal al iniciar).
 
 ## 1. Levantar el servidor de Ollama
@@ -64,47 +64,25 @@ Ejecución básica, asumiendo que Ollama corre en `localhost:11434`:
 
 | Flag       | Valor por defecto | Descripción                                              |
 |------------|--------------------|-----------------------------------------------------------|
+|`-h`        |          *vacio*         |despliega la ayuda                                         |
 | `-host`    | `localhost`        | Host/URL donde escucha el endpoint de Ollama              |
 | `-puerto`  | `11434`             | Puerto del endpoint de Ollama                             |
-| `-ctx`     | `16000`             | Cantidad de contexto (tokens) que usará el LLM             |
-| `-temp`    | `0.5`               | Temperatura del modelo (creatividad de las respuestas)     |
+| `-ctx`     | `16000`             | Cantidad de contexto (tokens) que usará el LLM. **Nota:** Este límite ahora incluye los tokens generados por documentos adjuntos.|
+| `-temp`    | `0.5`               | Temperatura del modelo (creatividad de las respuestas). |
+| `-o`       | `false`            | Guarda las respuestas en un archivo Markdown (`.md`) al finalizar la sesión. |
 
-Ejemplo apuntando a un servidor remoto con más contexto y menor temperatura:
+**Ejemplo avanzado:** Apuntando a un servidor remoto con gran contexto, temperatura baja y guardando resultados:
 
 ```bash
-./llm-chat -host 192.168.1.50 -puerto 11434 -ctx 32000 -temp 0.2
+./llm-chat -host 192.168.1.50 -puerto 11434 -ctx 32000 -temp 0.2 -o
 ```
 
 ## 4. Uso del cliente
 
-Al iniciar, el programa hace lo siguiente automáticamente:
+Al iniciar, el programa realiza las siguientes verificaciones:
 
-1. Verifica si Ollama está en las variables de entorno del sistema (advierte si no lo encuentra, pero continúa).
-2. Verifica que el servidor responda en la URL configurada.
-3. Lista los modelos ya descargados en el servidor. Si no hay ninguno, te va a pedir que corras `ollama pull (modelo)` y termina la ejecución.
-
-### Navegación del menú
-
-- Se despliega un menú con las opciones disponibles (modelos instalados, o acciones dentro de una conversación).
-- Navegación con las flechas `↑` `↓`.
-- `Enter` confirma la selección.
-
-### Selección de modelo
-
-Se muestra la lista de modelos disponibles más la opción `[Salir]`. Al elegir un modelo se muestra un panel con:
-
-- Modelo seleccionado
-- Host y puerto
-- Límite de memoria configurado
-- Sistema operativo
-- Temperatura y contexto del LLM
-
-### Dentro de una conversación
-
-Una vez elegido el modelo, el menú ofrece tres opciones:
-
-- **Ingresar prompt**: abre el modo de escritura. Se escribe el mensaje y se envía con `TAB` seguido de `ENTER`. La respuesta se muestra en streaming y luego se renderiza como Markdown.
-- **Borrar contexto**: limpia la memoria de la conversación actual (el historial que se envía al modelo en cada request), sin salir del modelo seleccionado.
-- **Volver**: sale de la conversación actual, borra la memoria y regresa al selector de modelos.
-
-
+1.  Verifica si Ollama está en las variables de entorno del sistema (advierte si no lo encuentra, pero continúa).
+2.  Verifica que el servidor responda en la URL configurada.
+3.  Lista los modelos ya descargados en el servidor. Si no hay ninguno, te pedirá ejecutar `ollama pull (modelo)` y terminará la ejecución.
+---
+*Este readme fue generado parcialmente con **gemma4:e4b** utilizando esta herramienta*
