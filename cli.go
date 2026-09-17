@@ -137,8 +137,6 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
-			defer archivo_prompt.Borrar_informacion()
-
 			if err := iniciar_conversacion(archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
 
 				continue
