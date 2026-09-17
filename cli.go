@@ -289,10 +289,7 @@ func main() {
 		}
 
 		if Opcion_modelo == opcion_salir {
-			fmt.Print(utilidades.ALTERNATE_RESET)
-
-			return
-
+			utilidades.Salir()
 		}
 
 		box := utilidades.Box_info{

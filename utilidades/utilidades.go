@@ -85,6 +85,15 @@ func Ollama_instalado() bool {
 
 }
 
+func Salir() {
+
+	fmt.Print(ALTERNATE_RESET)
+	fmt.Print(MOSTRAR_CURSOR)
+
+	os.Exit(0)
+
+}
+
 func Imprimir_markdown(r Respuesta_LLM) error {
 
 	render, termerr := glamour.NewTermRenderer(
