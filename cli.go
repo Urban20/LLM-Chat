@@ -29,9 +29,10 @@ var (
 	conserr      = consola.Iniciar_ANSI()
 	host_selec   = flag.String("host", HOST_DEFAULT, "url al enpoint de Ollama")
 	puerto_selec = flag.Int("puerto", PUERTO_DEFAULT, "puerto donde se escucha el endpoint")
-	ctx          = flag.Int("ctx", CTX_DEFAULT, "cantidad contexto que usara el LLM")
+	ctx          = flag.Int("ctx", CTX_DEFAULT, "cantidad de contexto que usa el LLM")
 	temp         = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
-	timeout      = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion")
+	timeout      = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion inicial")
+	Output       = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
 )
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint, content_type string, chat bool, imagenes []string) error {
@@ -54,6 +55,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidad
 	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, box, endpoint, content_type, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		utilidades.Advertencia(err)
+		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 	}
 
 	return nil
@@ -135,12 +137,13 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
+			defer archivo_prompt.Borrar_informacion()
+
 			if err := iniciar_conversacion(archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
 
 				continue
 			}
 
-			archivo_prompt.Borrar_informacion()
 		}
 	}
 }
@@ -235,6 +238,7 @@ func main() {
 	Ctx := *ctx // el nivel de memoria de trabajo que puede maneja el LLM
 	Temp := *temp
 	Timeout := time.Duration(*timeout)
+	Out := *Output
 
 	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 
@@ -299,6 +303,7 @@ func main() {
 			Ctx:         Ctx,
 			Host:        Host,
 			Puerto:      Puerto,
+			Archivo:     Out,
 		}
 
 		iniciar_prompts(url, CONTENT_TYPE, box)

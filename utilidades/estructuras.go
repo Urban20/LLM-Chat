@@ -2,6 +2,8 @@ package utilidades
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 )
@@ -13,6 +15,7 @@ type Box_info struct {
 	Ctx         int
 	Host        string
 	Puerto      int
+	Archivo     bool
 }
 
 func (b Box_info) Box_informacion() {
@@ -76,4 +79,34 @@ type Respuesta_LLM struct {
 	Tokens        int
 	Prompt        string // prompt del usuario
 	Modelo        string
+}
+
+func (r Respuesta_LLM) Exportar() error {
+	// exportar en formato markdown (.md)
+
+	ejecutable, ejecerr := os.Executable()
+
+	if ejecerr != nil {
+		return ejecerr
+	}
+
+	dir := filepath.Dir(ejecutable)
+
+	arch, err := os.Create(filepath.Join(dir, "Output.md"))
+
+	if err != nil {
+
+		return err
+	}
+	defer arch.Close()
+
+	_, erro := fmt.Fprintln(arch, r.Respuesta_raw)
+
+	if erro != nil {
+
+		return erro
+	}
+
+	return nil
+
 }

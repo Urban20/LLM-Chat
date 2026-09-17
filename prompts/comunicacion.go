@@ -227,6 +227,18 @@ func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoi
 
 	procesar_respuesta(respuesta)
 
+	if !box.Archivo {
+
+		return nil
+	}
+
+	err := respuesta.Exportar()
+
+	if err != nil {
+
+		return err
+	}
+
 	return nil
 
 }
