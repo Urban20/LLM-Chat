@@ -66,6 +66,11 @@ var (
 	verdes   = lipgloss.AdaptiveColor{Light: "#1dcb5a", Dark: "#1dcb5a"}
 )
 
+var (
+	Stdin_fd  = int(os.Stdin.Fd())
+	Stdout_fd = int(os.Stdout.Fd())
+)
+
 func Centrar(texto string) {
 
 	pterm.DefaultCenter.Println(texto)

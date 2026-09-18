@@ -1,7 +1,7 @@
 package consola
 
 import (
-	"os"
+	"LLM-Chat/utilidades"
 
 	"golang.org/x/sys/windows"
 )
@@ -11,7 +11,7 @@ func Iniciar_ANSI() error {
 
 	var modo_original uint32
 
-	stdout := windows.Handle(os.Stdout.Fd())
+	stdout := windows.Handle(utilidades.Stdout_fd)
 	// guardo el estado de consola actual
 	if conserr := windows.GetConsoleMode(stdout, &modo_original); conserr != nil {
 		return conserr

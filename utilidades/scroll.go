@@ -115,7 +115,7 @@ func Crear_scroll() *Scroll {
 	s := Scroll{delta: n_delta,
 		inicio:    0,
 		fin:       n_delta,
-		fd:        int(os.Stdin.Fd()),
+		fd:        Stdin_fd,
 		habilitar: true,
 	}
 

@@ -78,11 +78,10 @@ func Esperar_tecla() {
 	fmt.Print(info)
 
 	ejecutando := true
-	fd := int(os.Stdin.Fd())
 
-	st, _ := term.MakeRaw(fd)
+	st, _ := term.MakeRaw(utilidades.Stdin_fd)
 
-	defer term.Restore(fd, st)
+	defer term.Restore(utilidades.Stdin_fd, st)
 
 	for ejecutando {
 
@@ -258,15 +257,13 @@ func Menu(limite int, opciones ...string) (string, error) {
 	fmt.Print(utilidades.GRIS_AZUL + "\nOpciones disponibles:\n\n")
 	fmt.Print(utilidades.AZUL_OSCURO + "navegar con ↑↓ | ← → cambiar pagina\n\n" + utilidades.RESET)
 
-	fd := int(os.Stdin.Fd())
-
-	st, rawerr := term.MakeRaw(fd)
+	st, rawerr := term.MakeRaw(utilidades.Stdin_fd)
 
 	if rawerr != nil {
 		return "", rawerr
 	}
 
-	defer term.Restore(fd, st)
+	defer term.Restore(utilidades.Stdin_fd, st)
 
 	opciones = utilidades.Eliminar_repetidos(opciones)
 	opciones = utilidades.Limpiar_listas(opciones)
