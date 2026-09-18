@@ -16,6 +16,7 @@ type Scroll struct {
 	fd            int
 	habilitar     bool
 	tam_renglones int
+	eje_y         int
 }
 
 func (s *Scroll) Renderizar(texto string) {
@@ -26,18 +27,15 @@ func (s *Scroll) Renderizar(texto string) {
 
 }
 
-func imprimir_scroll(renglon []string, scroll bool) {
+func imprimir_scroll(renglon []string) {
 
-	Limpieza_rapida()
+	fmt.Print(HOME)
 
 	for _, l := range renglon {
 
 		fmt.Println(l)
 	}
 
-	if scroll {
-		Centrar(fmt.Sprintf("\n\n%s↑ ↓ navegar%s\n", ANIL, RESET))
-	}
 }
 
 func teclas_scroll(s *Scroll, tecla []byte) {
@@ -77,13 +75,13 @@ func (s Scroll) Iniciar() {
 
 	if s.fin >= s.tam_renglones {
 
-		imprimir_scroll(s.renglones, false)
+		imprimir_scroll(s.renglones)
 
 		return
 
 	}
 
-	imprimir_scroll(s.renglones[s.inicio:s.fin], true)
+	imprimir_scroll(s.renglones[s.inicio:s.fin])
 
 	for s.habilitar { //TODO: verificar que no haya errores y refaccionar
 
@@ -91,18 +89,20 @@ func (s Scroll) Iniciar() {
 
 		teclas_scroll(&s, tecla)
 
-		if s.fin > s.tam_renglones { //si se llega al final del scroll corta el bucle
+		if s.fin >= s.tam_renglones-1 { //si se llega al final del scroll corta el bucle
 
 			s.habilitar = false
 			return
 		}
 
 		if s.inicio < 0 {
+
+			Limpieza_rapida() //borra cualquier residuo no deseado, evita que se deforme el texto
 			s.inicio = 0
 			s.fin = s.inicio + s.delta
 		}
 
-		imprimir_scroll(s.renglones[s.inicio:s.fin], true)
+		imprimir_scroll(s.renglones[s.inicio:s.fin])
 
 	}
 
@@ -110,13 +110,16 @@ func (s Scroll) Iniciar() {
 
 func Crear_scroll() *Scroll {
 
-	n_delta := 25 //TODO : ajustar para evitar bugs visuales
+	_, y, _ := term.GetSize(Stdout_fd)
+
+	n_delta := y - 5 //TODO : ajustar para evitar bugs visuales
 
 	s := Scroll{delta: n_delta,
 		inicio:    0,
 		fin:       n_delta,
 		fd:        Stdin_fd,
 		habilitar: true,
+		eje_y:     y,
 	}
 
 	return &s

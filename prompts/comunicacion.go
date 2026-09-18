@@ -141,7 +141,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
-	defer fmt.Printf("%stokens totales generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
+	defer fmt.Printf("\n\n%stokens totales generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
 
 	if r.Respuesta_raw == "" {
 
