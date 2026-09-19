@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"slices"
 	"strings"
@@ -147,6 +148,44 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 }
 
+func obtener_peticion_tool(resp http.Response, box utilidades.Box_info, opciones Opciones, endpoint, content_type string) (*http.Response, error) {
+
+	respuesta := Info{}
+	var respuesta_llm http.Response
+
+	b, ioerr := io.ReadAll(resp.Body)
+
+	if ioerr != nil {
+
+		return &respuesta_llm, ioerr
+	}
+
+	if err := json.Unmarshal(b, &respuesta); err != nil {
+
+		return &respuesta_llm, err
+	}
+
+	if len(respuesta.Message.Tools_calls) == 0 {
+
+		return &respuesta_llm, nil //si no hay nada que leer ignora
+	}
+
+	json_prompt_usuario := Mensaje_usuario_chat{
+
+		Model:    box.Modelo,
+		Messages: Memoria,
+		Stream:   true,
+		Options:  opciones,
+	} //faltaria pasarle el retorno de la funcion
+
+	r, _ := struct_a_respuesta(json_prompt_usuario, endpoint, content_type)
+
+	respuesta_llm = *r
+
+	return &respuesta_llm, nil
+
+}
+
 // recibo el prompt desde el LLM al usuario
 func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, chat bool, prompt string, box utilidades.Box_info) utilidades.Respuesta_LLM {
 
@@ -235,7 +274,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(modelos_totales Modelos, prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
+func enviar_prompt(opciones Opciones, modelos_totales Modelos, prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
 	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
 	var json_prompt_usuario any
@@ -244,12 +283,6 @@ func enviar_prompt(modelos_totales Modelos, prompt string, box utilidades.Box_in
 	herramientas_llm := verificar_tooling(box, modelos_totales)
 
 	Guardar_en_memoria(prompt, "user")
-
-	opciones := Opciones{
-		Num_ctx:     box.Ctx,
-		Num_predict: -1,
-		Temperature: box.Temperatura,
-	}
 
 	if chat {
 
@@ -287,9 +320,15 @@ func Comunicacion(modelos_totales Modelos, prompt_archivo, prompt string, box ut
 		Prompt: prompt,
 	}
 
+	opciones := Opciones{
+		Num_ctx:     box.Ctx,
+		Num_predict: -1,
+		Temperature: box.Temperatura,
+	}
+
 	prompt_total := prompt_archivo + p.Formatear_prompt()
 	// ver de reorganizar esto (quiza crear una struct para encapsular algunas cosas)
-	resp, prompterr := enviar_prompt(modelos_totales, prompt_total, box, endpoint, content_type, chat, imagenes)
+	resp, prompterr := enviar_prompt(opciones, modelos_totales, prompt_total, box, endpoint, content_type, chat, imagenes)
 
 	defer carga.Detener(wg)
 
@@ -299,6 +338,16 @@ func Comunicacion(modelos_totales Modelos, prompt_archivo, prompt string, box ut
 	}
 
 	defer menu.Esperar_tecla()
+
+	// pondria x aca el tool call
+
+	r, tool_err := obtener_peticion_tool(*resp, box, opciones, endpoint, content_type)
+
+	if tool_err != nil {
+		return tool_err
+	}
+
+	resp = r
 
 	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, box)
 
