@@ -52,7 +52,7 @@ type Mensaje_usuario_chat struct {
 	Messages []message_chat `json:"messages"`
 	Stream   bool           `json:"stream"`
 	Options  Opciones       `json:"options"`
-	Tools    Herramienta    `json:"tools"`
+	Tools    []Herramienta  `json:"tools"`
 }
 
 type Opciones struct {

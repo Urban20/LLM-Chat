@@ -21,6 +21,22 @@ func Borrar_memoria() {
 
 }
 
+func Crear_tool_scraping() Herramienta {
+
+	prop_scraping := map[string]Prop_parametro{ // en ingles porque es leido por el llm (lenguaje base del llm)
+
+		"url": {Tipo: "string", Descripcion: "URL of the website to scrape"},
+	}
+
+	scraping := Crear_tool([]string{"url"},
+		"function to extract data from a website",
+		"Scraping_web",
+		prop_scraping)
+
+	return *scraping
+
+}
+
 func Crear_tool(requerido []string, descripcion, nombre_tool string, props map[string]Prop_parametro) *Herramienta {
 
 	/*
@@ -207,6 +223,9 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 		Temperature: box.Temperatura,
 	}
 
+	//herramientas
+	scraping := Crear_tool_scraping()
+
 	if chat {
 
 		json_prompt_usuario = Mensaje_usuario_chat{
@@ -215,6 +234,7 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 			Messages: Memoria,
 			Stream:   true,
 			Options:  opciones,
+			Tools:    []Herramienta{scraping},
 		}
 
 	} else { //generate, para el procesamiento de imagenes
