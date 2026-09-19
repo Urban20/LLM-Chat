@@ -48,14 +48,57 @@ type Modelos struct {
 }
 
 type Mensaje_usuario_chat struct {
-	Model    string
-	Messages []message_chat
-	Stream   bool
-	Options  Opciones
+	Model    string         `json:"model"`
+	Messages []message_chat `json:"messages"`
+	Stream   bool           `json:"stream"`
+	Options  Opciones       `json:"options"`
+	Tools    Herramienta    `json:"tools"`
 }
 
 type Opciones struct {
 	Num_ctx     int     `json:"num_ctx"`     //controla tokens totales (memoria de trabajo total)
 	Num_predict int     `json:"bum_predict"` // sin limite de generacion de tokens (limite de tokens)
 	Temperature float64 `json:"temperature"`
+}
+
+/*
+
+"tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_temperature",
+        "description": "Get the current temperature for a city",
+        "parameters": {
+          "type": "object",
+          "required": ["city"],
+          "properties": {
+            "city": {"type": "string", "description": "The name of the city"}
+          }
+        }
+      }
+    }
+  ]
+
+*/
+
+type Prop_parametro struct {
+	Tipo        string `json:"type"`
+	Descripcion string `json:"description"`
+}
+
+type parametros struct {
+	Tipo        string                    `json:"type"`
+	Requerido   []string                  `json:"required"`
+	Propiedades map[string]Prop_parametro `json:"properties"`
+}
+type funcion struct {
+	Nombre      string     `json:"name"`
+	Descripcion string     `json:"description"`
+	Parametros  parametros `json:"parameters"`
+}
+
+type Herramienta struct {
+	Tipo    string  `json:"type"`
+	Funcion funcion `json:"function"`
 }

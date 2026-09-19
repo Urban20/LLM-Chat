@@ -21,6 +21,38 @@ func Borrar_memoria() {
 
 }
 
+func Crear_tool(requerido []string, descripcion, nombre_tool string, props map[string]Prop_parametro) *Herramienta {
+
+	/*
+	   requerido: parametros de la funcion requeridos
+	   descripcion: descripcion breve de lo que hace la funcion
+	   props: propiedades de los parametros que se les provee
+
+	*/
+
+	param := parametros{
+
+		Tipo:        "object",
+		Requerido:   requerido,
+		Propiedades: props,
+	}
+
+	f := funcion{
+		Nombre:      nombre_tool,
+		Descripcion: descripcion,
+		Parametros:  param,
+	}
+
+	tool := Herramienta{
+
+		Tipo:    "function",
+		Funcion: f,
+	}
+
+	return &tool
+
+}
+
 // quita el modelo de la carga (no tiene nada que ver con la instalacion de un nuevo modelo)
 func Descargar_modelo(modelo, content_type, endpoint string) {
 
