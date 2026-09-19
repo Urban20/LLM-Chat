@@ -2,6 +2,37 @@ package prompts
 
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
+/*
+"tool_calls": [
+
+	{
+	  "function": {
+	    "name": "calculate_average",
+	    "arguments": {"numbers": [10, 20, 30, 40]}
+	  }
+*/
+/*
+  "role": "tool",
+      "tool_name": "calculate_average",
+      "content": "25.0"	  */
+
+type Datos_tool_call struct {
+	Nombre_herramienta string `json:"tool_name"`
+	Retorno            string `json:"content"`
+}
+
+type funcion_respuesta struct {
+
+	//corresponde a la respuesta del LLM , no confundir
+	Nombre     string         `json:"name"`
+	Argumentos map[string]any `json:"arguments"`
+}
+
+type Tool_call struct {
+	//corresponde a la respuesta del LLM , no confundir
+	Funcion funcion_respuesta `json:"function"`
+}
+
 type Info struct {
 	// ambos
 
@@ -14,6 +45,7 @@ type Info struct {
 	Message     message_chat `json:"message"`
 	Done        bool         `json:"done"`
 	Done_reason string       `json:"done_reason"`
+	Tools_calls []Tool_call  `json:"tools_calls"`
 
 	// para generate
 	Response string `json:"response"`
@@ -28,9 +60,10 @@ type Mensaje_usuario_generate struct { // envio al server
 }
 
 type message_chat struct {
-	Role     string `json:"role"`
-	Content  string `json:"content"`
-	Thinking string `json:"thinking"`
+	Role        string      `json:"role"`
+	Content     string      `json:"content"`
+	Thinking    string      `json:"thinking"`
+	Tools_calls []Tool_call `json:"tools_calls"` //se usa para obtener la tool necesaria para el llm
 }
 
 // estas structs se usan unicamente para parsear el json
@@ -52,7 +85,8 @@ type Mensaje_usuario_chat struct {
 	Messages []message_chat `json:"messages"`
 	Stream   bool           `json:"stream"`
 	Options  Opciones       `json:"options"`
-	Tools    []Herramienta  `json:"tools"`
+	Tools    []Herramienta  `json:"tools"` //se envia para mostrarle al llm las tools disponibles
+
 }
 
 type Opciones struct {
