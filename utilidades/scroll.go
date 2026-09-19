@@ -95,7 +95,7 @@ func (s Scroll) Iniciar() {
 			return
 		}
 
-		if s.inicio < 0 {
+		if s.inicio <= 0 {
 
 			Limpieza_rapida() //borra cualquier residuo no deseado, evita que se deforme el texto
 			s.inicio = 0
