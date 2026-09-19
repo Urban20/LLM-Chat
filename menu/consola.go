@@ -13,8 +13,7 @@ import (
 )
 
 type Carga struct {
-	estado_1 string
-	estado_2 string
+	estados  []string
 	cargando bool
 	tiempo   float32
 }
@@ -50,16 +49,15 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 
-	estados := []string{p.estado_1, p.estado_2}
 	var i int
 
 	for p.cargando {
 
-		if i > len(estados)-1 {
+		if i > len(p.estados)-1 {
 			i = 0
 		}
 
-		fmt.Printf("\r%s", estados[i])
+		fmt.Printf("\r%s", p.estados[i])
 		i++
 		time.Sleep(time.Second * time.Duration(p.tiempo))
 
@@ -67,7 +65,6 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
 }
 
-// el programa queda esperando que se pulse q
 func Esperar_tecla() {
 
 	fmt.Print(utilidades.OCULTAR_CURSOR)
@@ -103,13 +100,15 @@ func (p *Carga) Detener(wg *sync.WaitGroup) {
 
 	p.cargando = false
 	wg.Wait()
-	fmt.Print("\r" + strings.Repeat(" ", len(p.estado_1)))
+	fmt.Print("\r" + strings.Repeat(" ", len(p.estados[0])))
 }
 
 func Crear_carga() Carga {
 
-	c := Carga{estado_1: "◌◌◌",
-		estado_2: "●●●",
+	c := Carga{
+
+		estados: []string{"|", "/", "─", "\\"},
+
 		cargando: true,
 		tiempo:   utilidades.TIEMPO_CARGA}
 
