@@ -21,6 +21,29 @@ func Borrar_memoria() {
 
 }
 
+func verificar_tooling(box utilidades.Box_info, modelos_totales Modelos) []Herramienta {
+
+	// verifica si el modelo seleccionado soporta tolling y devuelve una lista con las herramientas
+	//en caso afirmativo, de lo contrario devuelve una lista vacia
+
+	var herramientas_llm []Herramienta
+
+	for _, modelo := range modelos_totales.Models {
+
+		if box.Modelo == modelo.Name && slices.Contains(modelo.Capabilities, "tools") {
+
+			scraping := Crear_tool_scraping()
+			herramientas_llm = []Herramienta{scraping}
+			break
+
+		}
+
+	}
+
+	return herramientas_llm
+
+}
+
 func Crear_tool_scraping() Herramienta {
 
 	prop_scraping := map[string]Prop_parametro{ // en ingles porque es leido por el llm (lenguaje base del llm)
@@ -43,6 +66,8 @@ func Crear_tool(requerido []string, descripcion, nombre_tool string, props map[s
 	   requerido: parametros de la funcion requeridos
 	   descripcion: descripcion breve de lo que hace la funcion
 	   props: propiedades de los parametros que se les provee
+
+	   la informacion debe estar en ingles porque es leido por el llm (lo tomo como lenguaje por defecto)
 
 	*/
 
@@ -210,10 +235,13 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
+func enviar_prompt(modelos_totales Modelos, prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
 	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
 	var json_prompt_usuario any
+
+	//verifico si el modelo seleccionado tiene capacidad para tools
+	herramientas_llm := verificar_tooling(box, modelos_totales)
 
 	Guardar_en_memoria(prompt, "user")
 
@@ -223,9 +251,6 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 		Temperature: box.Temperatura,
 	}
 
-	//herramientas
-	scraping := Crear_tool_scraping()
-
 	if chat {
 
 		json_prompt_usuario = Mensaje_usuario_chat{
@@ -234,7 +259,7 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 			Messages: Memoria,
 			Stream:   true,
 			Options:  opciones,
-			Tools:    []Herramienta{scraping},
+			Tools:    herramientas_llm,
 		}
 
 	} else { //generate, para el procesamiento de imagenes
@@ -254,7 +279,7 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoint, content_type string, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
+func Comunicacion(modelos_totales Modelos, prompt_archivo, prompt string, box utilidades.Box_info, endpoint, content_type string, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
 	p := utilidades.Estructura_prompt{
 		// prompt archivo se formatea por
@@ -264,7 +289,7 @@ func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoi
 
 	prompt_total := prompt_archivo + p.Formatear_prompt()
 	// ver de reorganizar esto (quiza crear una struct para encapsular algunas cosas)
-	resp, prompterr := enviar_prompt(prompt_total, box, endpoint, content_type, chat, imagenes)
+	resp, prompterr := enviar_prompt(modelos_totales, prompt_total, box, endpoint, content_type, chat, imagenes)
 
 	defer carga.Detener(wg)
 

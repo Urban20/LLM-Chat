@@ -35,7 +35,7 @@ var (
 	Output       = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
 )
 
-func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint, content_type string, chat bool, imagenes []string) error {
+func iniciar_conversacion(modelos_totales prompts.Modelos, archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint, content_type string, chat bool, imagenes []string) error {
 
 	prompt := utilidades.Input_multilinea("Prompt") //prompt del usuario
 
@@ -52,7 +52,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidad
 
 	go carga.Iniciar(&wg)
 
-	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, box, endpoint, content_type, &carga, &wg, chat, imagenes); err != nil {
+	if err := prompts.Comunicacion(modelos_totales, archivo_prompt.Prompt, prompt, box, endpoint, content_type, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		utilidades.Advertencia(err)
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
@@ -62,7 +62,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidad
 
 }
 
-func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
+func iniciar_prompts(url, content_type string, box utilidades.Box_info, total_modelos prompts.Modelos) {
 
 	opciones := []string{fmt.Sprintf("%sVolver%s", utilidades.ANIL, utilidades.RESET), "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
@@ -127,7 +127,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(imgs)
 
-			if err := iniciar_conversacion(archivo_prompt, box, api_generate, content_type, false, imagenes); err != nil {
+			if err := iniciar_conversacion(total_modelos, archivo_prompt, box, api_generate, content_type, false, imagenes); err != nil {
 
 				utilidades.Logueo_simple(err)
 				continue
@@ -137,7 +137,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
-			if err := iniciar_conversacion(archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
+			if err := iniciar_conversacion(total_modelos, archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
 
 				continue
 			}
@@ -146,7 +146,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 	}
 }
 
-func listar_modelos_disponibles(url string) []string {
+func listar_modelos_disponibles(url string) ([]string, prompts.Modelos) {
 
 	tags := fmt.Sprintf("%s/tags", url)
 
@@ -158,26 +158,26 @@ func listar_modelos_disponibles(url string) []string {
 
 	if resperr != nil {
 
-		return modelos_disponibles
+		return modelos_disponibles, modelos
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 
-		return modelos_disponibles
+		return modelos_disponibles, modelos
 	}
 
 	data, rderr := io.ReadAll(resp.Body)
 
 	if rderr != nil {
 
-		return modelos_disponibles
+		return modelos_disponibles, modelos
 	}
 
 	if jsonerr := json.Unmarshal(data, &modelos); jsonerr != nil {
 
-		return modelos_disponibles
+		return modelos_disponibles, modelos
 	}
 
 	for _, modelo := range modelos.Models {
@@ -185,7 +185,7 @@ func listar_modelos_disponibles(url string) []string {
 		modelos_disponibles = append(modelos_disponibles, modelo.Model)
 	}
 
-	return modelos_disponibles
+	return modelos_disponibles, modelos
 
 }
 
@@ -255,7 +255,7 @@ func main() {
 
 	}
 
-	modelos_disponibles := listar_modelos_disponibles(url)
+	modelos_disponibles, modelos_totales := listar_modelos_disponibles(url)
 
 	if len(modelos_disponibles) == 0 {
 		fmt.Print("\n\n")
@@ -304,7 +304,7 @@ func main() {
 			Archivo:     Out,
 		}
 
-		iniciar_prompts(url, CONTENT_TYPE, box)
+		iniciar_prompts(url, CONTENT_TYPE, box, modelos_totales)
 		utilidades.Limpieza_rapida()
 	}
 }
