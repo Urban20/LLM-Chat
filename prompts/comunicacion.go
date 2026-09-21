@@ -22,7 +22,7 @@ func Borrar_memoria() {
 }
 
 // quita el modelo de la carga (no tiene nada que ver con la instalacion de un nuevo modelo)
-func Descargar_modelo(modelo, content_type, endpoint string) {
+func Descargar_modelo(modelo, endpoint string) {
 
 	type Payload struct {
 		Model      string `json:"model"`
@@ -35,7 +35,7 @@ func Descargar_modelo(modelo, content_type, endpoint string) {
 
 	data := bytes.NewReader(b)
 
-	http.Post(endpoint, content_type, data)
+	http.Post(endpoint, utilidades.CONTENT_TYPE, data)
 
 }
 
@@ -48,7 +48,7 @@ func Guardar_en_memoria(prompt, rol string) {
 }
 
 // recibe una struct y la envia por POST al servidor
-func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response, error) {
+func struct_a_respuesta(info any, endpoint string) (*http.Response, error) {
 
 	msg_byte, jsonerr := json.Marshal(info)
 
@@ -58,7 +58,7 @@ func struct_a_respuesta(info any, endpoint, content_type string) (*http.Response
 
 	data := bytes.NewReader(msg_byte)
 
-	resp, resperr := http.Post(endpoint, content_type, data)
+	resp, resperr := http.Post(endpoint, utilidades.CONTENT_TYPE, data)
 
 	if resperr != nil {
 
@@ -162,7 +162,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 }
 
 // envio el prompt desde el usuario al LLM
-func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_type string, chat bool, imagenes []string) (*http.Response, error) {
+func enviar_prompt(prompt string, box utilidades.Box_info, endpoint string, chat bool, imagenes []string) (*http.Response, error) {
 	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
 	var json_prompt_usuario any
@@ -197,12 +197,12 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint, Content_typ
 
 	}
 
-	return struct_a_respuesta(json_prompt_usuario, endpoint, Content_type)
+	return struct_a_respuesta(json_prompt_usuario, endpoint)
 
 }
 
 // esta funcion se ocupa del envio y recepcion de los mensajes
-func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoint, content_type string, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
+func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoint string, carga *menu.Carga, wg *sync.WaitGroup, chat bool, imagenes []string) error {
 
 	p := utilidades.Estructura_prompt{
 		// prompt archivo se formatea por
@@ -212,7 +212,7 @@ func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoi
 
 	prompt_total := prompt_archivo + p.Formatear_prompt()
 	// ver de reorganizar esto (quiza crear una struct para encapsular algunas cosas)
-	resp, prompterr := enviar_prompt(prompt_total, box, endpoint, content_type, chat, imagenes)
+	resp, prompterr := enviar_prompt(prompt_total, box, endpoint, chat, imagenes)
 
 	defer carga.Detener(wg)
 

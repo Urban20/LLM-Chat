@@ -21,7 +21,6 @@ const (
 	PUERTO_DEFAULT  = 11434
 	CTX_DEFAULT     = 16_000
 	TEMP_DEFAULT    = 0.5
-	CONTENT_TYPE    = "application/json"
 	TIMEOUT_DEFAULT = 5.0
 )
 
@@ -35,7 +34,7 @@ var (
 	Output       = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
 )
 
-func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint, content_type string, chat bool, imagenes []string) error {
+func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint string, chat bool, imagenes []string) error {
 
 	prompt := utilidades.Input_multilinea("Prompt") //prompt del usuario
 
@@ -52,7 +51,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidad
 
 	go carga.Iniciar(&wg)
 
-	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, box, endpoint, content_type, &carga, &wg, chat, imagenes); err != nil {
+	if err := prompts.Comunicacion(archivo_prompt.Prompt, prompt, box, endpoint, &carga, &wg, chat, imagenes); err != nil {
 		fmt.Print("\n")
 		utilidades.Advertencia(err)
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
@@ -62,7 +61,7 @@ func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidad
 
 }
 
-func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
+func iniciar_prompts(url string, box utilidades.Box_info) {
 
 	opciones := []string{fmt.Sprintf("%sVolver%s", utilidades.ANIL, utilidades.RESET), "Borrar contexto", "Adjuntar archivos de texto plano", "Eliminar archivos adjuntos", "Adjuntar imagen", "Ingresar prompt"}
 
@@ -82,7 +81,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 		case opciones[0]:
 
 			prompts.Borrar_memoria()
-			prompts.Descargar_modelo(box.Modelo, content_type, api_chat)
+			prompts.Descargar_modelo(box.Modelo, api_chat)
 
 			return
 
@@ -127,7 +126,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(imgs)
 
-			if err := iniciar_conversacion(archivo_prompt, box, api_generate, content_type, false, imagenes); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box, api_generate, false, imagenes); err != nil {
 
 				utilidades.Logueo_simple(err)
 				continue
@@ -137,7 +136,7 @@ func iniciar_prompts(url, content_type string, box utilidades.Box_info) {
 
 			utilidades.Mostrar_archivos(archivo_prompt.Archivos)
 
-			if err := iniciar_conversacion(archivo_prompt, box, api_chat, content_type, true, []string{}); err != nil {
+			if err := iniciar_conversacion(archivo_prompt, box, api_chat, true, []string{}); err != nil {
 
 				continue
 			}
@@ -304,7 +303,7 @@ func main() {
 			Archivo:     Out,
 		}
 
-		iniciar_prompts(url, CONTENT_TYPE, box)
+		iniciar_prompts(url, box)
 		utilidades.Limpieza_rapida()
 	}
 }

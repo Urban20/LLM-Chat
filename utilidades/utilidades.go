@@ -57,6 +57,8 @@ const (
 	TIEMPO_CARGA = 0.85
 )
 
+const CONTENT_TYPE = "application/json"
+
 var (
 	// se adapta al color de la terminal
 	oscuros  = lipgloss.AdaptiveColor{Light: "#000000", Dark: "#383838"}
