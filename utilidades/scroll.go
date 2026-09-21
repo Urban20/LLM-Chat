@@ -14,7 +14,6 @@ type Scroll struct {
 	fin           int
 	renglones     []string
 	fd            int
-	habilitar     bool
 	tam_renglones int
 	eje_y         int
 }
@@ -83,7 +82,7 @@ func (s Scroll) Iniciar() {
 
 	imprimir_scroll(s.renglones[s.inicio:s.fin])
 
-	for s.habilitar { //TODO: verificar que no haya errores y refaccionar
+	for {
 
 		tecla := detectar_tecla()
 
@@ -91,8 +90,7 @@ func (s Scroll) Iniciar() {
 
 		if s.fin >= s.tam_renglones-1 { //si se llega al final del scroll corta el bucle
 
-			s.habilitar = false
-			return
+			break
 		}
 
 		if s.inicio <= 0 {
@@ -108,18 +106,15 @@ func (s Scroll) Iniciar() {
 
 }
 
-func Crear_scroll() *Scroll {
+func Crear_scroll(alto int) *Scroll {
 
-	_, y, _ := term.GetSize(Stdout_fd)
-
-	n_delta := y - 5 //TODO : ajustar para evitar bugs visuales
+	n_delta := alto - 5
 
 	s := Scroll{delta: n_delta,
-		inicio:    0,
-		fin:       n_delta,
-		fd:        Stdin_fd,
-		habilitar: true,
-		eje_y:     y,
+		inicio: 0,
+		fin:    n_delta,
+		fd:     Stdin_fd,
+		eje_y:  alto,
 	}
 
 	return &s

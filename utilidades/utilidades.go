@@ -19,6 +19,7 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/pterm/pterm"
+	"golang.org/x/term"
 )
 
 const (
@@ -103,20 +104,27 @@ func Salir() {
 
 func Imprimir_markdown(r Respuesta_LLM) error {
 
-	render, termerr := glamour.NewTermRenderer(
-		glamour.WithWordWrap(90), glamour.WithStylesFromJSONBytes([]byte(Estilos)))
+	x, y, termerr := term.GetSize(Stdout_fd)
 
 	if termerr != nil {
 
 		return termerr
 	}
-	//separador()
+
+	render, termerr := glamour.NewTermRenderer(
+		glamour.WithWordWrap(x-5), glamour.WithStylesFromJSONBytes([]byte(Estilos)))
+
+	if termerr != nil {
+
+		return termerr
+	}
+
 	md, err := render.Render(fmt.Sprintf("# LLM (%s):\n %s", r.Modelo, r.Respuesta_raw))
 
 	if err != nil {
 		return err
 	}
-	scroll := Crear_scroll()
+	scroll := Crear_scroll(y)
 	scroll.Renderizar(md)
 	scroll.Iniciar()
 
