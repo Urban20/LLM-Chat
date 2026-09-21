@@ -1,4 +1,4 @@
 
 1. agregar funcionalidad para guardar la respuesta en un archivo (ver enfoque)
 2. ver de agregar un historial de mensajes y renderizarlos con el algoritmo de scroll
-
+3. ver de ser posible agregar tool calling (si es que puedo lograr algo robusto y mantenible)
