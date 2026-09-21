@@ -21,10 +21,10 @@ type Info struct {
 }
 
 type Mensaje_usuario_generate struct { // envio al server
-	Model   string
-	Prompt  string
-	Images  []string //base64
-	Options Opciones
+	Model   string   `json:"model"`
+	Prompt  string   `json:"prompt"`
+	Images  []string `json:"images"` //base64
+	Options Opciones `json:"options"`
 }
 
 type message_chat struct {
@@ -48,14 +48,14 @@ type Modelos struct {
 }
 
 type Mensaje_usuario_chat struct {
-	Model    string
-	Messages []message_chat
-	Stream   bool
-	Options  Opciones
+	Model    string         `json:"model"`
+	Messages []message_chat `json:"messages"`
+	Stream   bool           `json:"stream"`
+	Options  Opciones       `json:"options"`
 }
 
 type Opciones struct {
 	Num_ctx     int     `json:"num_ctx"`     //controla tokens totales (memoria de trabajo total)
-	Num_predict int     `json:"bum_predict"` // sin limite de generacion de tokens (limite de tokens)
+	Num_predict int     `json:"num_predict"` // sin limite de generacion de tokens (limite de tokens)
 	Temperature float64 `json:"temperature"`
 }
