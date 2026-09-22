@@ -15,7 +15,6 @@ type Scroll struct {
 	renglones     []string
 	fd            int
 	tam_renglones int
-	eje_y         int
 }
 
 func (s *Scroll) Renderizar(texto string) {
@@ -114,7 +113,6 @@ func Crear_scroll(alto int) *Scroll {
 		inicio: 0,
 		fin:    n_delta,
 		fd:     Stdin_fd,
-		eje_y:  alto,
 	}
 
 	return &s

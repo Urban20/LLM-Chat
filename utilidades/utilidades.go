@@ -119,7 +119,7 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 		return termerr
 	}
 
-	md, err := render.Render(fmt.Sprintf("# LLM (%s):\n %s", r.Modelo, r.Respuesta_raw))
+	md, err := render.Render(fmt.Sprintf("%s **[USUARIO]**:\n%s\n\n# LLM (%s):\n %s", Tiempo_actual(), r.Prompt, r.Modelo, r.Respuesta_raw))
 
 	if err != nil {
 		return err
