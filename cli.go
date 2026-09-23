@@ -199,9 +199,17 @@ func checkear_status(url string, tiempo time.Duration) error {
 
 	resp, err := c.Get(status)
 
-	if err != nil || resp.StatusCode == 404 {
+	if err != nil {
 
-		return errors.New("servidor apagado o no disponible")
+		return fmt.Errorf("Ocurrio un problema: %v", err)
+
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+
+		return errors.New("Servidor apagado o no disponible")
 
 	}
 
