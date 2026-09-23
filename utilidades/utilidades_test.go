@@ -36,12 +36,15 @@ func TestString_vacio(t *testing.T) {
 		want bool
 	}{
 
-		{str: "", want: true},
-		{str: "    ", want: true},
-		{str: "   test", want: false},
-		{str: "  \n", want: true},
-		{str: "\t \n", want: true},
-		{str: "test", want: false},
+		{name: "basico", str: "", want: true},
+		{name: "espacio", str: "    ", want: true},
+		{name: "texto con espacio", str: "   test", want: false},
+		{name: "salto de linea", str: "  \n", want: true},
+		{name: "salto de linea con tab", str: "\t \n", want: true},
+		{name: "texto normal", str: "test", want: false},
+		{name: "retorno tab", str: "\t\r", want: true},
+		{name: "retorno tab con string", str: "\t\rtest", want: false},
+		{name: "doble salto de linea", str: "\n\n", want: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -235,7 +235,7 @@ func String_vacio(str string) bool {
 
 	for _, c := range str {
 
-		if !slices.Contains([]rune{' ', '\n', '\t'}, c) {
+		if !slices.Contains([]rune{' ', '\n', '\t', '\r'}, c) {
 
 			return false
 		}

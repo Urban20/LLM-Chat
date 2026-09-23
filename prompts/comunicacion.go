@@ -111,7 +111,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 		}
 
-		if !slices.Contains([]string{"", "stop"}, json_respuesta.Done_reason) {
+		if !slices.Contains([]string{"", "stop", "load", "unload"}, json_respuesta.Done_reason) { // cubriria algun caso excepcional del servidor
 
 			fmt.Print("\n\n")
 			utilidades.Advertencia(fmt.Sprintf("se interrumpio la generacion de tokens desde el servidor, razon: %s", json_respuesta.Done_reason))
@@ -143,7 +143,7 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
 	defer fmt.Printf("\n\n%stokens totales generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
 
-	if r.Respuesta_raw == "" {
+	if utilidades.String_vacio(r.Respuesta_raw) {
 
 		fmt.Print("\n\n")
 		utilidades.Error("la respuesta llego vacia")
