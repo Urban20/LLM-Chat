@@ -31,7 +31,7 @@ func (b Box_info) Box_informacion() {
 		"Contexto del LLM":    strconv.Itoa(b.Ctx),
 	}
 	contenidos := Formato_string_box(contenido_box)
-	Box(contenidos...)
+	Box(15, 1, contenidos...)
 }
 
 type Estructura_prompt struct {
