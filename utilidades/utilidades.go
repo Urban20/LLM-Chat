@@ -514,7 +514,7 @@ func Limpiar_listas(l []string) []string {
 
 func Mostrar_archivos(l []string) {
 
-	if len(l) == 0 {
+	if Slice_vacio(l) {
 
 		return
 	}
@@ -527,5 +527,22 @@ func Mostrar_archivos(l []string) {
 
 		fmt.Println(arch)
 	}
+
+}
+
+// se lo considera vacio si los elementos que lo componen son considerados strings vacios
+func Slice_vacio(sl []string) bool {
+
+	for _, el := range sl {
+
+		if !String_vacio(el) {
+
+			return false
+
+		}
+
+	}
+
+	return true
 
 }

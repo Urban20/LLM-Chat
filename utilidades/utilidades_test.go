@@ -13,8 +13,8 @@ func TestEliminar_repetidos(t *testing.T) {
 		elementos []string
 		want      []string
 	}{
-		{elementos: []string{"1", "1", "2", "2", "3", "3"}, want: []string{"1", "2", "3"}},
-		{elementos: []string{}, want: []string{}},
+		{name: "basico", elementos: []string{"1", "1", "2", "2", "3", "3"}, want: []string{"1", "2", "3"}},
+		{name: "slice vacio", elementos: []string{}, want: []string{}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -152,6 +152,30 @@ func TestLimpiar_listas(t *testing.T) {
 
 			if !slices.Equal(got, tt.want) {
 				t.Errorf("Limpiar_listas() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSlice_vacio(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		sl   []string
+		want bool
+	}{
+
+		{name: "basico", sl: []string{}, want: true},
+		{name: "strings invalidos", sl: []string{" ", "", "\t", "\n"}, want: true},
+		{name: "en blanco", sl: []string{"   "}, want: true},
+		{name: "caso falso", sl: []string{"test", " ", ""}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := utilidades.Slice_vacio(tt.sl)
+
+			if got != tt.want {
+				t.Errorf("Slice_vacio() = %v, want %v", got, tt.want)
 			}
 		})
 	}

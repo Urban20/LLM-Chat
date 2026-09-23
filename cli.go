@@ -94,7 +94,7 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 
 			arch_list := utilidades.Abrir_selector_archivos()
 
-			if len(arch_list) == 0 {
+			if utilidades.Slice_vacio(arch_list) {
 
 				continue
 			}
@@ -113,7 +113,7 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 
 			imagenes, imgerr := utilidades.Imagen_a_base64(imgs...)
 
-			if len(imagenes) == 0 {
+			if utilidades.Slice_vacio(imagenes) {
 
 				continue
 			}
@@ -264,10 +264,9 @@ func main() {
 
 	modelos_disponibles := listar_modelos_disponibles(url)
 
-	if len(modelos_disponibles) == 0 {
-		fmt.Print("\n\n")
+	if utilidades.Slice_vacio(modelos_disponibles) {
+
 		utilidades.Advertencia(`No hay modelos disponibles instalados actualmente, usa el comando "ollama pull (modelo)" para descargarlos`)
-		fmt.Print("\n\n")
 		time.Sleep(time.Second * utilidades.TIEMPO_PAUSA)
 		return
 	}
