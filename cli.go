@@ -190,7 +190,7 @@ func listar_modelos_disponibles(url string) []string {
 
 func checkear_status(url string, tiempo time.Duration) error {
 
-	status := fmt.Sprintf("%s/status", url)
+	status := fmt.Sprintf("%s/version", url) // cambie status por version porque (/status) no siempre esta disponible
 
 	c := http.Client{
 
