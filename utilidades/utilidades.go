@@ -355,7 +355,7 @@ func Abrir_selector_archivos() []string {
 
 		arch_actual := fmt.Sprintf("%v", dir.GetValue())
 
-		if arch_actual == "" {
+		if String_vacio(arch_actual) {
 
 			break
 		}
