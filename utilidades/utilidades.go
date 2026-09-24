@@ -366,7 +366,7 @@ func Abrir_selector_archivos() []string {
 
 	}
 
-	return arch_list
+	return Eliminar_repetidos(arch_list)
 
 }
 

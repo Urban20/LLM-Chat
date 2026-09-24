@@ -99,8 +99,6 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 				continue
 			}
 
-			arch_list = utilidades.Eliminar_repetidos(arch_list)
-
 			archivo_prompt = utilidades.Archivo_a_prompt(arch_list)
 
 		case opciones[3]:
