@@ -28,11 +28,14 @@ func (s *Scroll) Renderizar(texto string) {
 func imprimir_scroll(renglon []string) {
 
 	fmt.Print(HOME)
+	var t string
 
 	for _, l := range renglon {
 
-		fmt.Println(l)
+		t += l+"\n"
 	}
+
+	fmt.Println(t)
 
 }
 
