@@ -131,12 +131,12 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 	return nil
 }
 
-func Box(x, y int, msgs ...string) {
+func Box(x, y int, msgs ...string) string {
 
 	superficie := pterm.DefaultBox.WithHorizontalPadding(x).WithVerticalPadding(y)
 	superficie.VerticalString = "│"
 
-	Centrar(superficie.Sprintln(strings.Join(msgs, "\n")))
+	return superficie.Sprintln(strings.Join(msgs, "\n"))
 
 }
 
@@ -517,16 +517,20 @@ func Mostrar_archivos(l []string) {
 	if Slice_vacio(l) {
 
 		return
+
 	}
 
-	fmt.Print(AZUL_OSCURO + "\n\n(*) Archivos adjuntos:\n\n" + RESET)
+	var archivos string
+
+	fmt.Printf("%s\n\n(*) Archivos adjuntos:\n\n%s", AZUL_OSCURO, RESET)
 
 	for _, ruta := range l {
 
-		arch := filepath.Base(ruta)
+		archivos += fmt.Sprintf("● %s\n", filepath.Base(ruta))
 
-		fmt.Println(arch)
 	}
+
+	fmt.Println(Box(10, 1, archivos))
 
 }
 
