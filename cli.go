@@ -95,7 +95,6 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 
 		case opciones[0]:
 
-			prompts.Borrar_memoria()
 			prompts.Descargar_modelo(box.Modelo, api_chat)
 
 			return
