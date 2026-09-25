@@ -11,8 +11,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"os/signal"
 	"runtime"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -23,6 +26,18 @@ const (
 	TEMP_DEFAULT    = 0.5
 	TIMEOUT_DEFAULT = 5.0
 )
+
+func notificacion_salir() {
+
+	s := make(chan os.Signal, 1)
+
+	signal.Notify(s, syscall.SIGINT)
+
+	<-s
+
+	utilidades.Salir()
+
+}
 
 var (
 	conserr      = consola.Iniciar_ANSI()
@@ -279,6 +294,8 @@ func main() {
 	fmt.Print(utilidades.ALTERNATE)
 
 	fmt.Print(utilidades.HOME)
+
+	go notificacion_salir()
 
 	for {
 		menu.Logo()
