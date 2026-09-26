@@ -31,11 +31,7 @@ func Descargar_modelo(modelo, endpoint string) {
 
 	payload := Payload{Model: modelo, Keep_alive: 0}
 
-	b, _ := json.Marshal(&payload)
-
-	data := bytes.NewReader(b)
-
-	http.Post(endpoint, utilidades.CONTENT_TYPE, data)
+	struct_a_respuesta(payload, endpoint)
 
 }
 
