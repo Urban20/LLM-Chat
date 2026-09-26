@@ -161,8 +161,6 @@ func procesar_respuesta(r utilidades.Respuesta_LLM) {
 func enviar_prompt(prompt string, box utilidades.Box_info, endpoint string, chat bool, imagenes []string) (*http.Response, error) {
 	// TODO : meter una struct para ordenar, cambiar los inputs de la funcion
 
-	var json_prompt_usuario any
-
 	Guardar_en_memoria(prompt, "user")
 
 	opciones := Opciones{
@@ -171,25 +169,20 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint string, chat
 		Temperature: box.Temperatura,
 	}
 
+	json_prompt_usuario := Mensaje_usuario{ // cosas en comun entre generate y chat
+		Model:   box.Modelo,
+		Stream:  true,
+		Options: opciones,
+	}
+
 	if chat {
 
-		json_prompt_usuario = Mensaje_usuario_chat{
-
-			Model:    box.Modelo,
-			Messages: Memoria,
-			Stream:   true,
-			Options:  opciones,
-		}
+		json_prompt_usuario.Messages = Memoria
 
 	} else { //generate, para el procesamiento de imagenes
 
-		json_prompt_usuario = Mensaje_usuario_generate{
-
-			Model:   box.Modelo,
-			Prompt:  prompt,
-			Images:  imagenes,
-			Options: opciones,
-		}
+		json_prompt_usuario.Images = imagenes
+		json_prompt_usuario.Prompt = prompt
 
 	}
 

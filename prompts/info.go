@@ -3,6 +3,9 @@ package prompts
 // modulo que contiene la informacion cruda para procesar y extrae los datos
 
 type Info struct {
+
+	// representa la peticion servidor -> cliente
+
 	// ambos
 
 	Num_tokens_prompt int `json:"prompt_eval_count"`
@@ -18,13 +21,6 @@ type Info struct {
 	// para generate
 	Response string `json:"response"`
 	Thinking string `json:"thinking"`
-}
-
-type Mensaje_usuario_generate struct { // envio al server
-	Model   string   `json:"model"`
-	Prompt  string   `json:"prompt"`
-	Images  []string `json:"images"` //base64
-	Options Opciones `json:"options"`
 }
 
 type message_chat struct {
@@ -47,11 +43,22 @@ type Modelos struct {
 	Models []modelo `json:"models"`
 }
 
-type Mensaje_usuario_chat struct {
-	Model    string         `json:"model"`
+type Mensaje_usuario struct {
+	// la peticion que se envia cliente -> servidor
+
+	// los mensajes de usuario se dividen en generate y chat (varian levemente)
+
+	// ambos
+	Stream  bool     `json:"stream"`
+	Model   string   `json:"model"`
+	Options Opciones `json:"options"`
+
+	// para chat
 	Messages []message_chat `json:"messages"`
-	Stream   bool           `json:"stream"`
-	Options  Opciones       `json:"options"`
+
+	// para generate
+	Images []string `json:"images"` //base64
+	Prompt string   `json:"prompt"`
 }
 
 type Opciones struct {
