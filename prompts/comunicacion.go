@@ -170,9 +170,10 @@ func enviar_prompt(prompt string, box utilidades.Box_info, endpoint string, chat
 	}
 
 	json_prompt_usuario := Mensaje_usuario{ // cosas en comun entre generate y chat
-		Model:   box.Modelo,
-		Stream:  true,
-		Options: opciones,
+		Model:      box.Modelo,
+		Stream:     true,
+		Options:    opciones,
+		Keep_alive: box.Keep_alive,
 	}
 
 	if chat {

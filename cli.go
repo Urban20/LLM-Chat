@@ -40,13 +40,14 @@ func notificacion_salir() {
 }
 
 var (
-	conserr      = consola.Iniciar_ANSI()
-	host_selec   = flag.String("host", HOST_DEFAULT, "url al enpoint de Ollama")
-	puerto_selec = flag.Int("puerto", PUERTO_DEFAULT, "puerto donde se escucha el endpoint")
-	ctx          = flag.Int("ctx", CTX_DEFAULT, "cantidad de contexto que usa el LLM")
-	temp         = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
-	timeout      = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion inicial")
-	Output       = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
+	conserr        = consola.Iniciar_ANSI()
+	host_selec     = flag.String("host", HOST_DEFAULT, "url al enpoint de Ollama")
+	puerto_selec   = flag.Int("puerto", PUERTO_DEFAULT, "puerto donde se escucha el endpoint")
+	ctx            = flag.Int("ctx", CTX_DEFAULT, "cantidad de contexto que usa el LLM")
+	temp           = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
+	timeout        = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion inicial")
+	Output         = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
+	Keep_alive_seg = flag.Int("ka", 5, "keep alive (tiempo en minutos que permanece el modelo en memoria)")
 )
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint string, chat bool, imagenes []string) error {
@@ -256,6 +257,7 @@ func main() {
 	Temp := *temp
 	Timeout := time.Duration(*timeout)
 	Out := *Output
+	Ka := *Keep_alive_seg * 60 //conversion en min
 
 	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 
@@ -322,6 +324,7 @@ func main() {
 			Host:        Host,
 			Puerto:      Puerto,
 			Archivo:     Out,
+			Keep_alive:  Ka,
 		}
 
 		iniciar_prompts(url, box)

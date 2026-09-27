@@ -49,9 +49,10 @@ type Mensaje_usuario struct {
 	// los mensajes de usuario se dividen en generate y chat (varian levemente)
 
 	// ambos
-	Stream  bool     `json:"stream"`
-	Model   string   `json:"model"`
-	Options Opciones `json:"options"`
+	Stream     bool     `json:"stream"`
+	Model      string   `json:"model"`
+	Options    Opciones `json:"options"`
+	Keep_alive int      `json:"keep_alive"`
 
 	// para chat
 	Messages []message_chat `json:"messages"`

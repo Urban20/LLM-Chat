@@ -16,6 +16,7 @@ type Box_info struct {
 	Host        string
 	Puerto      int
 	Archivo     bool
+	Keep_alive  int
 }
 
 func (b Box_info) Box_informacion() {
@@ -29,6 +30,7 @@ func (b Box_info) Box_informacion() {
 		"Sistema operativo":   runtime.GOOS,
 		"Temperatura del LLM": fmt.Sprintf("%.2f", b.Temperatura),
 		"Contexto del LLM":    strconv.Itoa(b.Ctx),
+		"Keep alive":          fmt.Sprintf("%d seg", b.Keep_alive),
 	}
 	contenidos := Formato_string_box(contenido_box)
 	Centrar(Box(15, 1, contenidos...))
