@@ -50,6 +50,7 @@ func (e Estructura_prompt) Formatear_prompt() string {
 
 		"[CURRENT DATETIME]": e.Fecha,
 		"[PROMPT]":           e.Prompt,
+		"[FORMAT]":           "Markdown",
 	}
 
 	var instruccion string
