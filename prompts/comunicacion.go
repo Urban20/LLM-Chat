@@ -24,12 +24,10 @@ func Borrar_memoria() {
 // quita el modelo de la carga (no tiene nada que ver con la instalacion de un nuevo modelo)
 func Descargar_modelo(modelo, endpoint string) {
 
-	type Payload struct {
-		Model      string `json:"model"`
-		Keep_alive int    `json:"keep_alive"`
+	payload := Mensaje_usuario{
+		Model:      modelo,
+		Keep_alive: 0,
 	}
-
-	payload := Payload{Model: modelo, Keep_alive: 0}
 
 	struct_a_respuesta(payload, endpoint)
 
