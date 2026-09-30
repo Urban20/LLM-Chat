@@ -1,3 +1,5 @@
+[ENGLISH](https://github.com/Urban20/LLM-Chat/blob/docs/docs/README_en.md) 
+
 # LLM-Chat
 
 Cliente de terminal en Go para conversar con modelos alojados localmente a través de [Ollama](https://ollama.com). Un cliente simple en terminal que soporta entradas multimodales y gestión de contexto.
