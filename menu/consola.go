@@ -186,10 +186,13 @@ func paginado(pag, max_len int) int {
 
 func imprimir_opciones(op string, actual []string, i int) {
 
-	if op == actual[i] { // opcion seleccionada
-		fmt.Println(utilidades.NEGRO_BLANCO + "> " + op + utilidades.RESET + "\r")
+	selec := actual[i]
+
+	if op == selec { // opcion seleccionada
+
+		fmt.Printf("%s> %s%s%s\r\n", utilidades.NEGRO_BLANCO, op, strings.Repeat(" ", utilidades.Max(actual)-len(selec)), utilidades.RESET)
 	} else {
-		fmt.Println("  " + op + "\r")
+		fmt.Printf("  %s\r\n", op)
 	}
 
 }
