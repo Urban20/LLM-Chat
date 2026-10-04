@@ -257,7 +257,7 @@ func main() {
 	Temp := *temp
 	Timeout := time.Duration(*timeout)
 	Out := *Output
-	Ka := *Keep_alive_seg * 60 //conversion en min
+	Ka := *Keep_alive_seg * 60 //conversion de segundos a minutos
 
 	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 

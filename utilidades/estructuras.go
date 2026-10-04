@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 type Box_info struct {
@@ -48,16 +49,16 @@ func (e Estructura_prompt) Formatear_prompt() string {
 	data := map[string]string{
 		// la info la pongo en ingles como lenguaje neutro para el LLM
 
-		"[CURRENT DATETIME]": e.Fecha,
-		"[PROMPT]":           e.Prompt,
-		"[FORMAT]":           "Markdown",
+		"current datetime": e.Fecha,
+		"prompt":           e.Prompt,
+		"format":           "Markdown",
 	}
 
 	var instruccion string
 
 	for c, v := range data {
 
-		instruccion += fmt.Sprintf("%s\n\n%s\n\n", c, v)
+		instruccion += fmt.Sprintf("[%s]\n\n%s\n\n", strings.ToUpper(c), v)
 
 	}
 
