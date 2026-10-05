@@ -1,3 +1,7 @@
+## Why did I build this?
+
+I wanted a simple chat with Ollama directly from the terminal, without graphical intermediaries.
+OpenWebUI felt too heavy for what I needed, and Ollama's native chat is functional but visually unappealing and uncomfortable to use. So I decided to build something that was direct, colorful, and enjoyable to use without leaving the terminal.
 
 # LLM-Chat
 

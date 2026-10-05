@@ -1,3 +1,9 @@
+## ¿Por qué construí esto?
+
+Quería un chat simple con Ollama directo desde la terminal, sin intermediarios gráficos. 
+OpenWebUI se sentía pesado para lo que necesitaba, y el chat nativo de Ollama es funcional pero visualmente poco atractivo e incómodo de usar. Así que decidí hacer 
+algo que fuera directo, colorido y agradable de usar sin abandonar la terminal.
+
 [ENGLISH](https://github.com/Urban20/LLM-Chat/blob/docs/docs/README_en.md) 
 
 # LLM-Chat
