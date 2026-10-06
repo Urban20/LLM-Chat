@@ -9,6 +9,8 @@ A command-line client written in Go to chat with models hosted locally via [Olla
 
 [![llmchat.gif](https://i.postimg.cc/fLjF5PW7/llmchat.gif)](https://postimg.cc/tZJ242x7)
 
+[![llm2.gif](https://i.postimg.cc/rp8k8p79/llm2.gif)](https://postimg.cc/HrPKzTYJ)
+
 ## Requirements
 
 - Go 1.25 or higher (defined in `go.mod`).
