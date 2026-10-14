@@ -279,15 +279,16 @@ func Input_multilinea(input string) string {
 	base.Focused.Description = base.Focused.Description.Foreground(azules)
 	base.Focused.Base = base.Focused.Base.BorderForeground(verdes)
 
-	i := huh.NewText().Title(input)
+	i := huh.NewText()
+	i.Title(input)
 	i.WithTheme(base)
-	i.Description("[ctrl + j/ alt + ENTER] : nueva linea\n")
 	i.Placeholder(seleccion)
 	i.Value(&valor)
-	i.Editor("") //dado que no pude deshabilitar el editor externo (da problemas con el alternate screen)
-	// se me ocurrio esta idea hacky (no es perfecta, mete un bug visual)
-	// TODO: ver si se puede corregir definitivamente
-	i.Run()
+	i.ExternalEditor(false)
+
+	f := huh.NewForm(huh.NewGroup(i))
+
+	f.Run()
 
 	return strings.TrimSpace(valor)
 
