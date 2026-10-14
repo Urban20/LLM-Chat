@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -286,7 +287,15 @@ func Input_multilinea(input string) string {
 	i.Value(&valor)
 	i.ExternalEditor(false)
 
-	f := huh.NewForm(huh.NewGroup(i))
+	k := huh.KeyMap{
+
+		Text: huh.TextKeyMap{
+			Submit:  key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "enviar mensaje")),
+			NewLine: key.NewBinding(key.WithKeys("alt+enter", "ctrl+j"), key.WithHelp("alt+enter / ctrl+j", "nueva linea")),
+		},
+	}
+
+	f := huh.NewForm(huh.NewGroup(i)).WithKeyMap(&k)
 
 	f.Run()
 
