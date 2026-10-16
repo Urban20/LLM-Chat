@@ -127,7 +127,11 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 	}
 	scroll := Crear_scroll(y)
 	scroll.Renderizar(md)
-	scroll.Iniciar()
+
+	if err := scroll.Iniciar(); err != nil {
+
+		return err
+	}
 
 	return nil
 }

@@ -32,16 +32,22 @@ func imprimir_scroll(renglon []string) {
 
 	for _, l := range renglon {
 
-		t += l+"\n"
+		t += l + "\n"
 	}
 
 	fmt.Println(t)
 
 }
 
-func teclas_scroll(s *Scroll, tecla []byte) {
+func teclas_scroll(s *Scroll, tecla []byte) bool {
 
 	flechas := tecla[2]
+
+	if tecla[0] == 'q' {
+
+		return true
+
+	}
 
 	if flechas == KEY_ABAJO || tecla[0] == 's' {
 
@@ -54,6 +60,9 @@ func teclas_scroll(s *Scroll, tecla []byte) {
 		s.fin--
 
 	}
+
+	return false
+
 }
 
 func detectar_tecla() []byte {
@@ -66,19 +75,28 @@ func detectar_tecla() []byte {
 
 }
 
-func (s Scroll) Iniciar() {
+func (s Scroll) Iniciar() error {
 
 	Limpieza_rapida()
 	fmt.Print(OCULTAR_CURSOR)
 
-	st, _ := term.MakeRaw(s.fd)
-	defer term.Restore(s.fd, st)
+	st, err := term.MakeRaw(s.fd)
+
+	if err != nil {
+
+		return err
+	}
+
+	defer func() {
+
+		err = term.Restore(s.fd, st)
+	}()
 
 	if s.fin >= s.tam_renglones {
 
 		imprimir_scroll(s.renglones)
 
-		return
+		return nil
 
 	}
 
@@ -88,9 +106,9 @@ func (s Scroll) Iniciar() {
 
 		tecla := detectar_tecla()
 
-		teclas_scroll(&s, tecla)
+		interrupcion := teclas_scroll(&s, tecla)
 
-		if s.fin >= s.tam_renglones-1 { //si se llega al final del scroll corta el bucle
+		if interrupcion || s.fin >= s.tam_renglones-1 { //si se llega al final del scroll corta el bucle
 
 			break
 		}
@@ -105,6 +123,8 @@ func (s Scroll) Iniciar() {
 		imprimir_scroll(s.renglones[s.inicio:s.fin])
 
 	}
+
+	return err
 
 }
 
