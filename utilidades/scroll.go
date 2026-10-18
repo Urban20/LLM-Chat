@@ -130,7 +130,7 @@ func (s Scroll) Iniciar() error {
 
 func Crear_scroll(alto int) *Scroll {
 
-	n_delta := alto - 5
+	n_delta := alto - 1
 
 	s := Scroll{delta: n_delta,
 		inicio: 0,
