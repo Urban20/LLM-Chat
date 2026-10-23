@@ -114,7 +114,7 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 	}
 
 	render, termerr := glamour.NewTermRenderer(
-		glamour.WithWordWrap(x), glamour.WithStylesFromJSONBytes([]byte(Estilos)))
+		glamour.WithWordWrap(x-2), glamour.WithStylesFromJSONBytes([]byte(Estilos)))
 
 	if termerr != nil {
 

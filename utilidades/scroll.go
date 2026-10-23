@@ -112,9 +112,17 @@ func (s Scroll) Iniciar() error {
 
 		interrupcion := teclas_scroll(&s, tecla)
 
-		if interrupcion || s.fin >= s.tam_renglones-1 { //si se llega al final del scroll corta el bucle
+		if interrupcion {
 
 			break
+
+		}
+
+		if s.fin > s.tam_renglones-1 {
+
+			s.fin = s.tam_renglones - 1
+			s.inicio = s.fin - s.delta
+
 		}
 
 		if s.inicio <= 0 {

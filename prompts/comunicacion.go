@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 )
 
 var Memoria []message_chat
@@ -135,7 +136,7 @@ func recibir_prompt(resp *http.Response, carga *menu.Carga, wg *sync.WaitGroup, 
 
 func procesar_respuesta(r utilidades.Respuesta_LLM) {
 
-	defer fmt.Printf("\n\n%stokens totales generados: %d%s\n", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
+	defer fmt.Printf("%stokens totales generados: %d %s", utilidades.FONDO_VERDE, r.Tokens, utilidades.RESET)
 
 	if utilidades.String_vacio(r.Respuesta_raw) {
 
@@ -209,7 +210,7 @@ func Comunicacion(prompt_archivo, prompt string, box utilidades.Box_info, endpoi
 		return prompterr
 	}
 
-	defer menu.Esperar_tecla()
+	defer time.Sleep(time.Second * 5)
 
 	respuesta := recibir_prompt(resp, carga, wg, chat, prompt, box)
 

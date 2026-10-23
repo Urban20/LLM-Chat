@@ -65,37 +65,6 @@ func (p *Carga) Iniciar(wg *sync.WaitGroup) {
 
 }
 
-func Esperar_tecla() {
-
-	fmt.Print(utilidades.OCULTAR_CURSOR)
-	defer fmt.Print(utilidades.MOSTRAR_CURSOR)
-	info := "[Tab para volver al menu]"
-
-	fmt.Print("\n")
-	fmt.Print(info)
-
-	ejecutando := true
-
-	st, _ := term.MakeRaw(utilidades.Stdin_fd)
-
-	defer term.Restore(utilidades.Stdin_fd, st)
-
-	for ejecutando {
-
-		b := make([]byte, 3)
-
-		os.Stdin.Read(b)
-
-		if b[0] == '\t' {
-
-			ejecutando = false
-
-		}
-
-	}
-
-}
-
 func (p *Carga) Detener(wg *sync.WaitGroup) {
 
 	p.cargando = false
