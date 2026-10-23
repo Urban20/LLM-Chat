@@ -120,6 +120,7 @@ func (s Scroll) Iniciar() error {
 
 		if s.fin > s.tam_renglones-1 {
 
+			Limpieza_rapida()
 			s.fin = s.tam_renglones - 1
 			s.inicio = s.fin - s.delta
 
