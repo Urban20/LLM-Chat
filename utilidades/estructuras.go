@@ -34,7 +34,11 @@ func (b Box_info) Box_informacion() {
 		"Keep alive":          fmt.Sprintf("%d seg", b.Keep_alive),
 	}
 	contenidos := Formato_string_box(contenido_box)
-	Centrar(Box(15, 1, contenidos...))
+
+	Centrar(box.WithHorizontalPadding(15).
+		WithVerticalPadding(1).
+		Sprint(strings.Join(contenidos, "\n")))
+
 }
 
 type Estructura_prompt struct {

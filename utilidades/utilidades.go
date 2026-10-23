@@ -73,6 +73,7 @@ var (
 var (
 	Stdin_fd  = int(os.Stdin.Fd())
 	Stdout_fd = int(os.Stdout.Fd())
+	box       = pterm.DefaultBox.WithVerticalString("│")
 )
 
 func Centrar(texto string) {
@@ -134,14 +135,6 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 	}
 
 	return nil
-}
-
-func Box(x, y int, msgs ...string) string {
-
-	superficie := pterm.DefaultBox.WithHorizontalPadding(x).WithVerticalPadding(y).WithVerticalString("│")
-
-	return superficie.Sprint(strings.Join(msgs, "\n"))
-
 }
 
 func Limpieza_rapida() {
@@ -543,7 +536,9 @@ func Mostrar_archivos(l []string) {
 
 	}
 
-	fmt.Println(Box(10, 1, archivos))
+	fmt.Println(box.WithHorizontalPadding(10).
+		WithVerticalPadding(1).
+		Sprint(archivos))
 
 }
 

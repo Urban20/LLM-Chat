@@ -35,7 +35,11 @@ func imprimir_scroll(renglon []string) {
 		t += l + "\n"
 	}
 
-	fmt.Print(Box(0, 0, t))
+	marco := box.
+		WithTitleBottomLeft(true).
+		WithTitle("Q para cancelar")
+
+	marco.Print(t)
 
 }
 
