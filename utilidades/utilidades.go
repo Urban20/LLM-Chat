@@ -138,10 +138,9 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 
 func Box(x, y int, msgs ...string) string {
 
-	superficie := pterm.DefaultBox.WithHorizontalPadding(x).WithVerticalPadding(y)
-	superficie.VerticalString = "│"
+	superficie := pterm.DefaultBox.WithHorizontalPadding(x).WithVerticalPadding(y).WithVerticalString("│")
 
-	return superficie.Sprintln(strings.Join(msgs, "\n"))
+	return superficie.Sprint(strings.Join(msgs, "\n"))
 
 }
 

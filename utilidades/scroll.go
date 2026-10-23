@@ -35,7 +35,7 @@ func imprimir_scroll(renglon []string) {
 		t += l + "\n"
 	}
 
-	fmt.Println(t)
+	fmt.Print(Box(0, 0, t))
 
 }
 
@@ -130,7 +130,7 @@ func (s Scroll) Iniciar() error {
 
 func Crear_scroll(alto int) *Scroll {
 
-	n_delta := alto - 1
+	n_delta := alto - 3
 
 	s := Scroll{delta: n_delta,
 		inicio: 0,
