@@ -37,7 +37,7 @@ func imprimir_scroll(renglon []string) {
 
 	marco := box.
 		WithTitleBottomLeft(true).
-		WithTitle("Q para cancelar")
+		WithTitle("[Q para cancelar] | [↑ ↓ / w s / scroll] para desplazarse")
 
 	marco.Print(t)
 
