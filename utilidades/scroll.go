@@ -15,17 +15,28 @@ type Scroll struct {
 	renglones     []string
 	fd            int
 	tam_renglones int
+	instrucciones string
 }
 
-func (s *Scroll) Renderizar(texto string) {
+func (s Scroll) SetInstruccion(instruccion ...string) *Scroll {
+
+	s.instrucciones = strings.Join(instruccion, " | ")
+
+	return &s
+
+}
+
+func (s Scroll) Renderizar(texto string) *Scroll {
 
 	s.renglones = strings.Split(texto, "\n")
 
 	s.tam_renglones = len(s.renglones)
 
+	return &s
+
 }
 
-func imprimir_scroll(renglon []string) {
+func (s Scroll) imprimirScroll(renglon []string) {
 
 	fmt.Print(HOME)
 	var t string
@@ -37,7 +48,7 @@ func imprimir_scroll(renglon []string) {
 
 	marco := box.
 		WithTitleBottomLeft(true).
-		WithTitle("[Q para cancelar] | [↑ ↓ / w s / scroll] para desplazarse")
+		WithTitle(s.instrucciones)
 
 	marco.Print(t)
 
@@ -98,13 +109,13 @@ func (s Scroll) Iniciar() error {
 
 	if s.fin >= s.tam_renglones {
 
-		imprimir_scroll(s.renglones)
+		s.imprimirScroll(s.renglones)
 
 		return nil
 
 	}
 
-	imprimir_scroll(s.renglones[s.inicio:s.fin])
+	s.imprimirScroll(s.renglones[s.inicio:s.fin])
 
 	for {
 
@@ -133,7 +144,7 @@ func (s Scroll) Iniciar() error {
 			s.fin = s.inicio + s.delta
 		}
 
-		imprimir_scroll(s.renglones[s.inicio:s.fin])
+		s.imprimirScroll(s.renglones[s.inicio:s.fin])
 
 	}
 
@@ -151,6 +162,6 @@ func Crear_scroll(alto int) *Scroll {
 		fd:     Stdin_fd,
 	}
 
-	return &s
+	return s.SetInstruccion("[Q para cancelar]", "[↑ ↓ / w s / scroll] para desplazarse")
 
 }
