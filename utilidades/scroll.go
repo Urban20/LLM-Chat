@@ -28,12 +28,12 @@ func esperarTecla() error {
 		return erro
 	}
 
-	defer term.Restore(Stdin_fd, st)
+	defer func() { erro = term.Restore(Stdin_fd, st) }()
 
 	tecla := make([]byte, 1)
 	os.Stdin.Read(tecla)
 
-	return nil
+	return erro
 
 }
 

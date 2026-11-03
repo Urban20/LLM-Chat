@@ -234,11 +234,11 @@ func Menu(limite int, opciones ...string) (string, error) {
 		return "", rawerr
 	}
 
-	defer term.Restore(utilidades.Stdin_fd, st)
+	defer func() { rawerr = term.Restore(utilidades.Stdin_fd, st) }()
 
 	opciones = utilidades.Eliminar_repetidos(opciones)
 	opciones = utilidades.Limpiar_listas(opciones)
 
-	return desplegar_opcion(opciones, limite), nil
+	return desplegar_opcion(opciones, limite), rawerr
 
 }
