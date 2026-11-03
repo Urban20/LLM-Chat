@@ -9,18 +9,37 @@ import (
 )
 
 type Scroll struct {
-	delta         int
-	inicio        int
-	fin           int
-	renglones     []string
-	fd            int
-	tam_renglones int
-	instrucciones string
+	delta                       int
+	inicio                      int
+	fin                         int
+	renglones                   []string
+	fd                          int
+	tam_renglones               int
+	instruccionesDesplazamiento string
 }
 
-func (s Scroll) SetInstruccion(instruccion ...string) *Scroll {
+// espera la tecla cuando el mensaje es tan corto que no se llega al bucle
+func esperarTecla() error {
 
-	s.instrucciones = strings.Join(instruccion, " | ")
+	st, erro := term.MakeRaw(Stdin_fd)
+
+	if erro != nil {
+
+		return erro
+	}
+
+	defer term.Restore(Stdin_fd, st)
+
+	tecla := make([]byte, 1)
+	os.Stdin.Read(tecla)
+
+	return nil
+
+}
+
+func (s Scroll) SetInstruccionDesplazamiento(instruccion ...string) *Scroll {
+
+	s.instruccionesDesplazamiento = strings.Join(instruccion, " | ")
 
 	return &s
 
@@ -48,7 +67,7 @@ func (s Scroll) imprimirScroll(renglon []string) {
 
 	marco := box.
 		WithTitleBottomLeft(true).
-		WithTitle(s.instrucciones)
+		WithTitle(s.instruccionesDesplazamiento)
 
 	marco.Print(t)
 
@@ -109,7 +128,8 @@ func (s Scroll) Iniciar() error {
 
 	if s.fin >= s.tam_renglones {
 
-		s.imprimirScroll(s.renglones)
+		s.SetInstruccionDesplazamiento("[presionar cualquier tecla]").imprimirScroll(s.renglones)
+		esperarTecla()
 
 		return nil
 
@@ -162,6 +182,6 @@ func Crear_scroll(alto int) *Scroll {
 		fd:     Stdin_fd,
 	}
 
-	return s.SetInstruccion("[Q para cancelar]", "[↑ ↓ / w s / scroll] para desplazarse")
+	return s.SetInstruccionDesplazamiento("[Q para cancelar]", "[↑ ↓ / w s / scroll] para desplazarse")
 
 }
