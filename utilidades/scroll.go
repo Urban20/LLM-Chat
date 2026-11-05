@@ -65,11 +65,9 @@ func (s Scroll) imprimirScroll(renglon []string) {
 		t += l + "\n"
 	}
 
-	marco := box.
-		WithTitleBottomLeft(true).
-		WithTitle(s.instruccionesDesplazamiento)
-
-	marco.Print(t)
+	fmt.Printf("%s%s", strings.Repeat("\n", s.delta+2), s.instruccionesDesplazamiento)
+	fmt.Print(HOME)
+	fmt.Print(t)
 
 }
 
@@ -149,7 +147,7 @@ func (s Scroll) Iniciar() error {
 
 		}
 
-		if s.fin > s.tam_renglones-1 {
+		if s.fin >= s.tam_renglones-1 {
 
 			Limpieza_rapida()
 			s.fin = s.tam_renglones - 1
