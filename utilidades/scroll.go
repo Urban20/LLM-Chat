@@ -63,7 +63,7 @@ func (s Scroll) imprimirScroll(renglon []string) error {
 
 	for _, l := range renglon {
 
-		t += l + "\n"
+		t += fmt.Sprint("\r", l, "\n")
 	}
 
 	fmt.Print(t)
@@ -87,7 +87,7 @@ func (s Scroll) imprimirScroll(renglon []string) error {
 
 	}
 
-	fmt.Print(strings.Repeat("\n", rep), s.instruccionesDesplazamiento)
+	fmt.Print("\r", strings.Repeat("\n", rep), s.instruccionesDesplazamiento)
 
 	return err
 }
