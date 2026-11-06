@@ -55,10 +55,11 @@ func (s Scroll) Renderizar(texto string) *Scroll {
 
 }
 
-func (s Scroll) imprimirScroll(renglon []string) {
+func (s Scroll) imprimirScroll(renglon []string) error {
 
 	Limpieza_rapida()
 	var t string
+	var err error
 
 	for _, l := range renglon {
 
@@ -66,7 +67,29 @@ func (s Scroll) imprimirScroll(renglon []string) {
 	}
 
 	fmt.Print(t)
-	fmt.Print("\n\n", s.instruccionesDesplazamiento)
+
+	_, Yactual, err := term.GetSize(Stdout_fd) //recalculo la dimension "y" de terminal en cada actualizacion de scroll
+
+	if err != nil {
+
+		return err
+	}
+
+	var rep int
+
+	if s.delta < Yactual {
+
+		rep = Yactual - s.delta - 1
+
+	} else {
+
+		rep = 0
+
+	}
+
+	fmt.Print(strings.Repeat("\n", rep), s.instruccionesDesplazamiento)
+
+	return err
 }
 
 func teclas_scroll(s *Scroll, tecla []byte) bool {
@@ -131,7 +154,10 @@ func (s Scroll) Iniciar() error {
 
 	}
 
-	s.imprimirScroll(s.renglones[s.inicio:s.fin])
+	if err := s.imprimirScroll(s.renglones[s.inicio:s.fin]); err != nil {
+
+		return err
+	}
 
 	for {
 
@@ -158,7 +184,10 @@ func (s Scroll) Iniciar() error {
 			s.fin = s.inicio + s.delta
 		}
 
-		s.imprimirScroll(s.renglones[s.inicio:s.fin])
+		if err := s.imprimirScroll(s.renglones[s.inicio:s.fin]); err != nil {
+
+			return err
+		}
 
 	}
 
