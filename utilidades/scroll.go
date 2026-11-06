@@ -57,7 +57,7 @@ func (s Scroll) Renderizar(texto string) *Scroll {
 
 func (s Scroll) imprimirScroll(renglon []string) {
 
-	fmt.Print(HOME)
+	Limpieza_rapida()
 	var t string
 
 	for _, l := range renglon {
@@ -65,10 +65,8 @@ func (s Scroll) imprimirScroll(renglon []string) {
 		t += l + "\n"
 	}
 
-	fmt.Printf("%s%s", strings.Repeat("\n", s.delta+2), s.instruccionesDesplazamiento)
-	fmt.Print(HOME)
 	fmt.Print(t)
-
+	fmt.Print("\n\n", s.instruccionesDesplazamiento)
 }
 
 func teclas_scroll(s *Scroll, tecla []byte) bool {
@@ -147,9 +145,8 @@ func (s Scroll) Iniciar() error {
 
 		}
 
-		if s.fin >= s.tam_renglones-1 {
+		if s.fin > s.tam_renglones-1 {
 
-			Limpieza_rapida()
 			s.fin = s.tam_renglones - 1
 			s.inicio = s.fin - s.delta
 
@@ -157,7 +154,6 @@ func (s Scroll) Iniciar() error {
 
 		if s.inicio <= 0 {
 
-			Limpieza_rapida() //borra cualquier residuo no deseado, evita que se deforme el texto
 			s.inicio = 0
 			s.fin = s.inicio + s.delta
 		}

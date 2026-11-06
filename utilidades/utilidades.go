@@ -121,7 +121,14 @@ func Imprimir_markdown(r Respuesta_LLM) error {
 		return termerr
 	}
 
-	md, err := render.Render(fmt.Sprintf("%s **[USUARIO]**:\n%s\n\n# LLM (%s):\n %s", Tiempo_actual(), r.Prompt, r.Modelo, r.Respuesta_raw))
+	md, err := render.Render(fmt.Sprint( // evito inyecciones de placeholders
+		Tiempo_actual(),
+		"**[USUARIO]**:",
+		"\n"+r.Prompt,
+		"\n\n",
+		fmt.Sprintf("# LLM (%s):\n", r.Modelo),
+		r.Respuesta_raw,
+	))
 
 	if err != nil {
 		return err
@@ -222,7 +229,7 @@ func Archivo_a_prompt(rutas []string) Prompt_archivo {
 			continue
 		}
 
-		prompt += fmt.Sprintf("file: [ %s ]\n\n%s\n\n", ruta, strings.TrimSpace(string(contenido)))
+		prompt += fmt.Sprintf("file: [ %s ]", ruta) + fmt.Sprint("\n\n", strings.TrimSpace(string(contenido)), "\n\n")
 	}
 
 	return Prompt_archivo{Prompt: prompt, Archivos: archivos}
