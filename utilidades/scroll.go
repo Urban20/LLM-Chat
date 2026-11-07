@@ -21,20 +21,15 @@ type Scroll struct {
 // espera la tecla cuando el mensaje es tan corto que no se llega al bucle
 func esperarTecla() error {
 
-	st, erro := term.MakeRaw(Stdin_fd)
+	tecla := make([]byte, 1)
+	_, err := os.Stdin.Read(tecla)
 
-	if erro != nil {
+	if err != nil {
 
-		return erro
+		return err
 	}
 
-	defer func() { erro = term.Restore(Stdin_fd, st) }()
-
-	tecla := make([]byte, 1)
-	os.Stdin.Read(tecla)
-
-	return erro
-
+	return nil
 }
 
 func (s Scroll) SetInstruccionDesplazamiento(instruccion ...string) *Scroll {
