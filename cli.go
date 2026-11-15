@@ -47,7 +47,7 @@ var (
 	temp           = flag.Float64("temp", TEMP_DEFAULT, "temperatura del LLM")
 	timeout        = flag.Float64("timeout", TIMEOUT_DEFAULT, "tiempo de espera para la conexion inicial")
 	Output         = flag.Bool("o", false, "guarda las respuestas del LLM en un archivo .md")
-	Keep_alive_seg = flag.Int("ka", 5, "keep alive (tiempo en minutos que permanece el modelo en memoria)")
+	Keep_alive_min = flag.Int("ka", 5, "keep alive (tiempo en minutos que permanece el modelo en memoria)")
 )
 
 func iniciar_conversacion(archivo_prompt utilidades.Prompt_archivo, box utilidades.Box_info, endpoint string, chat bool, imagenes []string) error {
@@ -257,7 +257,7 @@ func main() {
 	Temp := *temp
 	Timeout := time.Duration(*timeout)
 	Out := *Output
-	Ka := *Keep_alive_seg * 60 //conversion de segundos a minutos
+	Ka := *Keep_alive_min * 60 //conversion de min a seg
 
 	var url = fmt.Sprintf("http://%s:%d/api", Host, Puerto)
 
