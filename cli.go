@@ -87,10 +87,14 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 	var archivo_prompt utilidades.Prompt_archivo
 
 	for {
-		// TODO : quiza modifique esto
+
 		box.Box_informacion()
 
-		seleccion, _ := menu.Menu(len(opciones), opciones...)
+		seleccion, _ := menu.CrearMenu().
+			SetOpciones(opciones).
+			SetLimite(len(opciones)).
+			SetPaginar(false).
+			Desplegar()
 
 		switch seleccion {
 
@@ -232,14 +236,17 @@ func checkear_status(url string, tiempo time.Duration) error {
 
 func menu_modelos(modelos_disponibles []string) (string, error) {
 
-	limite_muestreo := 5
-
-	IA_MODELO, menuerr := menu.Menu(limite_muestreo, modelos_disponibles...)
+	ia_modelo, menuerr := menu.CrearMenu().
+		SetOpciones(modelos_disponibles).
+		SetPaginar(true).
+		Desplegar()
 
 	if menuerr != nil {
+
 		return "", menuerr
 	}
-	return IA_MODELO, nil
+
+	return ia_modelo, nil
 }
 
 func main() {
