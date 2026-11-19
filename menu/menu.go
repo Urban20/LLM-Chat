@@ -150,16 +150,18 @@ type Menu struct {
 	paginar       bool
 	limite        int //limite de opciones por pagina
 	opciones      []string
+	separador     string
 }
 
 func CrearMenu() *Menu {
 
 	MenuDefault := Menu{
-		paginar: true,
-		limite:  5,
+		paginar:   true,
+		limite:    5,
+		separador: " | ",
 	}
 
-	return MenuDefault.SetInstrucciones("navegar con ↑↓", "← → cambiar pagina")
+	return MenuDefault.SetInstrucciones("navegar con ↑↓", "← → cambiar pagina", "[ENTER] para confirmar")
 
 }
 
@@ -174,7 +176,7 @@ func (m Menu) SetPaginar(paginar bool) *Menu {
 
 func (m Menu) SetInstrucciones(instrucciones ...string) *Menu {
 
-	m.instrucciones = strings.Join(instrucciones, " | ")
+	m.instrucciones = strings.Join(instrucciones, m.separador)
 
 	return &m
 
@@ -195,6 +197,14 @@ func (m Menu) SetLimite(limite int) *Menu {
 func (m Menu) SetOpciones(opciones []string) *Menu {
 
 	m.opciones = opciones
+
+	return &m
+
+}
+
+func (m Menu) SetSeparador(sep string) *Menu {
+
+	m.separador = sep
 
 	return &m
 
