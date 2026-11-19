@@ -108,6 +108,11 @@ func desplegar_opcion(opciones []string, limite int, paginar bool) string {
 	var i int
 	var pag int
 
+	if !paginar {
+
+		limite = len(opciones)
+	}
+
 	fraccionado := utilidades.Separar_lista(opciones, limite)
 	max_len := len(fraccionado)
 	var margen int
@@ -182,7 +187,7 @@ func (m Menu) SetInstrucciones(instrucciones ...string) *Menu {
 
 }
 
-// setea el limite de opciones a mostrar, si el paginado esta deshabilitado y hay mas opciones se truncan
+// solo aplica si paginar = true
 func (m Menu) SetLimite(limite int) *Menu {
 
 	if limite > 0 {

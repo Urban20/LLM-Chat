@@ -92,7 +92,6 @@ func iniciar_prompts(url string, box utilidades.Box_info) {
 
 		seleccion, _ := menu.CrearMenu().
 			SetOpciones(opciones).
-			SetLimite(len(opciones)).
 			SetPaginar(false).
 			Desplegar()
 
