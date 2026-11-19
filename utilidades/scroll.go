@@ -9,13 +9,15 @@ import (
 )
 
 type Scroll struct {
-	delta                       int
-	inicio                      int
-	fin                         int
-	renglones                   []string
-	fd                          int
-	tam_renglones               int
-	instruccionesDesplazamiento string
+	delta                        int
+	inicio                       int
+	fin                          int
+	renglones                    []string
+	fd                           int
+	tam_renglones                int
+	instrucciones_desplazamiento string
+	instruccion_secundaria       string
+	separador                    string
 }
 
 // espera la tecla cuando el mensaje es tan corto que no se llega al bucle
@@ -34,7 +36,23 @@ func esperarTecla() error {
 
 func (s Scroll) SetInstruccionDesplazamiento(instruccion ...string) *Scroll {
 
-	s.instruccionesDesplazamiento = strings.Join(instruccion, " | ")
+	s.instrucciones_desplazamiento = strings.Join(instruccion, s.separador)
+
+	return &s
+
+}
+
+func (s Scroll) SetInstruccionSecundaria(instruccion ...string) *Scroll {
+
+	s.instruccion_secundaria = strings.Join(instruccion, s.separador)
+
+	return &s
+
+}
+
+func (s Scroll) SetSeparador(sep string) *Scroll {
+
+	s.separador = sep
 
 	return &s
 
@@ -82,7 +100,7 @@ func (s Scroll) imprimirScroll(renglon []string) error {
 
 	}
 
-	fmt.Print("\r", strings.Repeat("\n", rep), s.instruccionesDesplazamiento)
+	fmt.Print("\r", strings.Repeat("\n", rep), s.instrucciones_desplazamiento)
 
 	return err
 }
@@ -142,7 +160,7 @@ func (s Scroll) Iniciar() error {
 
 	if s.fin >= s.tam_renglones {
 
-		s.SetInstruccionDesplazamiento("[presionar cualquier tecla]").imprimirScroll(s.renglones)
+		s.SetInstruccionDesplazamiento(s.instruccion_secundaria).imprimirScroll(s.renglones)
 		esperarTecla()
 
 		return nil
@@ -195,11 +213,12 @@ func Crear_scroll(alto int) *Scroll {
 	n_delta := alto - 3
 
 	s := Scroll{delta: n_delta,
-		inicio: 0,
-		fin:    n_delta,
-		fd:     Stdin_fd,
+		inicio:    0,
+		fin:       n_delta,
+		fd:        Stdin_fd,
+		separador: " | ",
 	}
 
-	return s.SetInstruccionDesplazamiento("[Q para cancelar]", "[↑ ↓ / w s / scroll] para desplazarse")
+	return s.SetInstruccionDesplazamiento("[Q para cancelar]", "[↑ ↓ / w s / scroll] para desplazarse").SetInstruccionSecundaria("[presionar cualquier tecla]")
 
 }
